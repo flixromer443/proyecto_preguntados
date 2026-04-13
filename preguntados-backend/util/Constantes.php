@@ -20,6 +20,11 @@
     define('ERROR_300', "Error: ha ocurrido un error de negocio."); 
     define('ERROR_303', "Error: ya existe un usuario registrado con los mismos datos."); 
     
+    //ERRORES FUNCIONALES
+    define('ERROR_501', "Ha ocurrido un error al intentar guardar datos personales");
+
+    //MENSAJES DE EXITO
+    define('SUCCESS_201', "Usuario registrado correctamente");
 
 
 
