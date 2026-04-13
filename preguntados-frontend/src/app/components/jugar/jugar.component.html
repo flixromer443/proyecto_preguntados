@@ -1,0 +1,111 @@
+<div class="container mt-5">
+
+  <!-- SPINNER -->
+  <div class="overlay" *ngIf="cargando || cargando2">
+    <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+  </div>
+
+  <!-- 🟢 PANTALLA DE JUEGO -->
+  <div *ngIf="!juegoTerminado && preguntaActual" class="fade-in">
+
+    <!-- Progreso -->
+    <div class="mb-3 text-muted">
+      Pregunta {{ indiceActual + 1 }} de {{ preguntas.length }}
+    </div>
+
+    <!-- Temática -->
+    <div class="mb-3">
+      <div 
+        class="text-white p-2 rounded text-center fw-bold shadow-sm"
+        [ngClass]="tematicaActual?.color"
+      >
+        {{ tematicaActual?.nombre }}
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="card shadow">
+      <div class="card-body">
+
+        <!-- Pregunta -->
+        <h4 class="mb-3">
+          {{ preguntaActual.pregunta }}
+        </h4>
+
+        <p class="text-muted">
+          Seleccioná la respuesta correcta
+        </p>
+
+        <!-- Imagen opcional -->
+        <div *ngIf="preguntaActual.uri_imagen" class="text-center mb-3">
+          <img 
+            *ngIf="preguntaActual.uri_imagen"
+            [src]="preguntaActual.uri_imagen"
+            class="img-fluid rounded shadow d-block mx-auto"
+            style="max-height: 300px; object-fit: contain;"
+            alt="Imagen de la pregunta"
+          >
+        </div>
+
+        <!-- Respuestas -->
+        <div class="d-grid gap-2">
+          <button 
+            *ngFor="let r of preguntaActual.respuestas"
+            class="btn"
+            [ngClass]="getClaseRespuesta(r)"
+            (click)="seleccionarRespuesta(r)"
+            [disabled]="respondido"
+          >
+            {{ r.respuesta }}
+          </button>
+        </div>
+
+        <!-- Botón siguiente -->
+        <div class="mt-4 text-end">
+          <button 
+            class="btn btn-primary"
+            (click)="siguientePregunta()"
+            [disabled]="!respondido"
+          >
+            Siguiente
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 🔵 PANTALLA FINAL -->
+  <div *ngIf="juegoTerminado" class="fade-in">
+
+    <div class="card text-center shadow">
+      <div class="card-body">
+
+        <h2 class="mb-4">🎉 Juego terminado</h2>
+
+        <p class="fs-4">
+          ✅ Aciertos: <strong>{{ aciertos }}</strong>
+        </p>
+
+        <p class="fs-4">
+          ❌ Fallos: <strong>{{ fallos }}</strong>
+        </p>
+
+        <p class="fs-5">
+          Puntaje: 
+          <strong>
+            {{ (aciertos / preguntas.length) * 100 | number:'1.0-0' }}%
+          </strong>
+        </p>
+
+        <button class="btn btn-success mt-3" (click)="reiniciarJuego()">
+          Volver a jugar
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

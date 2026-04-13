@@ -1,0 +1,53 @@
+version: '3.1'
+services:
+  db:
+    image: mysql:5.7
+#    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+    volumes:
+      - ./dump/:/var/lib/mysql
+
+  frontend:
+    build:
+      context: ./preguntados-frontend
+      dockerfile: dockerfile.frontend
+    env_file:
+      - .env
+    environment:
+      - BACKEND_URL:$BACKEND_URL
+    depends_on:
+      - backend
+    ports:
+      - $FRONTEND_LOCAL_PORT:$FRONTEND_DOCKER_PORT
+
+  backend:
+    build:
+      context: ./preguntados-backend
+      dockerfile: dockerfile.backend
+    env_file:
+      - .env
+    environment:
+      DB_SERVER: $DB_SERVER
+      DB_USERNAME: $DB_USERNAME
+      DB_PASSWORD: $DB_PASSWORD
+      DB_NAME: $DB_NAME
+    links:
+      - db:mysqldb
+    volumes:
+      - ./preguntados-backend/:/var/www/html
+    ports:
+      - $BACKEND_LOCAL_PORT:$BACKEND_DOCKER_PORT
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+    env_file:
+      - .env
+    links:
+      - db:mysqldb
+    ports:
+      - $PHPMYADMIN_LOCAL_PORT:$PHPMYADMIN_DOCKER_PORT
