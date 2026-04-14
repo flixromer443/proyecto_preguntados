@@ -1,23 +1,23 @@
 <?php
-require_once __DIR__ . '/../DAO/PreguntasDAO.php';
-require_once __DIR__ . '/../DAO/RespuestasDAO.php';
 require_once __DIR__ . '/../DAO/UsuariosDAO.php';
 require_once __DIR__ . '/../DAO/DatosPersonalesDAO.php';
+require_once __DIR__ . '/../DAO/CodigosVerificacionDAO.php';
 require_once __DIR__ . '/../util/Constantes.php';
 require_once __DIR__ . '/../util/MessageHandler.php';
 require_once __DIR__ . '/../services/MailService.php';
-
 
 class AuthModel {
 
     private $usuarioDAO;
     private $datosPersonalesDAO;
+    private $codigosVerificacionDAO;
     private $mailService;
     
     public function __construct() {
         $this->usuarioDAO = new UsuariosDAO();
         $this->datosPersonalesDAO = new DatosPersonalesDAO();
         $this->mailService = new MailService();
+        $this->codigosVerificacionDAO = new CodigosVerificacionDAO();
     }
 
     public function iniciarSesion(){
@@ -31,10 +31,8 @@ class AuthModel {
 
         if(!$existeUsuario){
             $idUsuario = $this->crearUsuario($usuario, $datosPersonales);
-            /**aca iria toda la logica del codigo de activacion */
-            $codigo = random_int(100000, 999999);
+            $codigo = $this->generarCodigoVerificacion($idUsuario);
             $mailEnviado = $this->enviarCodigoDeActivacionPorMail($datosPersonales, $codigo);
-            
             return $this->retornarNuevoUsuarioRegistradoOHacerRollback($idUsuario, $codigo, $mailEnviado);
 
         }else{
@@ -48,13 +46,24 @@ class AuthModel {
         return ($idDatosPersonales > 0 && $idUsuario > 0) ? $idUsuario : 0;
     }
 
+    private function generarCodigoVerificacion($idUsuario){
+        $codigo = random_int(100000, 999999);
+        $codigoGenerado = $this->codigosVerificacionDAO->guardarCodigoVerificacion($idUsuario, $codigo);
+        return $codigoGenerado ? $codigo : 0;
+    }
+
     private function enviarCodigoDeActivacionPorMail($datosPersonales, $codigo){
+        return $codigo != 0 ? $this->enviarCodigoActivacion($datosPersonales, $codigo) : false;
+    }
+
+    private function enviarCodigoActivacion($datosPersonales, $codigo){
         return $this->mailService->enviarCodigoVerificacion(
             $datosPersonales->nombre,
             $datosPersonales->correoElectronico,
             $codigo
         );
     }
+
 
     public function retornarNuevoUsuarioRegistradoOHacerRollback($idUsuario, $idCodigoVerificacion, $mailEnviado){
         $usuarioGenerado = $idUsuario > 0;
