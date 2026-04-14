@@ -9,7 +9,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-session_start();
 $correo="flixromer443@gmail.com";
 $nombre="FELIX";
 $codigoActivacion="1234";

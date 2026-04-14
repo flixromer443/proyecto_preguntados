@@ -21,7 +21,7 @@
     define('ERROR_303', "Error: ya existe un usuario registrado con los mismos datos."); 
     
     //ERRORES FUNCIONALES
-    define('ERROR_501', "Ha ocurrido un error al intentar guardar datos personales");
+    define('ERROR_501', "Ha ocurrido un error al intentar generar un nuevo usuario");
 
     //MENSAJES DE EXITO
     define('SUCCESS_201', "Usuario registrado correctamente");
