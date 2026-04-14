@@ -1,12 +1,12 @@
 <?php
-require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/Database.php';
 
 class RespuestasDAO {
 
     private $pdo;
 
     public function __construct() {
-        $this->pdo = getConnection();
+        $this->pdo = Database::getConnection();
     }
     
     public function obtenerRespuestasPorIdPregunta($idPregunta){

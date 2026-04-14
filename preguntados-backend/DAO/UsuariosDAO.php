@@ -1,14 +1,13 @@
 <?php
-require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/../util/Constantes.php';
-
 
 class UsuariosDAO {
 
     private $pdo;
 
     public function __construct() {
-        $this->pdo = getConnection();
+        $this->pdo = Database::getConnection();
     }
     
     public function existeUsuarioConMismoNombreCorreoODocumento($username, $correoElectronico, $documento) : bool{
