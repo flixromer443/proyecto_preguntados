@@ -41,9 +41,9 @@ class AuthModel {
     }
 
     private function crearUsuario($usuario, $datosPersonales){
-        $idDatosPersonales = $this->datosPersonalesDAO->guardarDatosPersonales($datosPersonales); 
-        $idUsuario = $this->usuarioDAO->guardarUsuario($usuario, $idDatosPersonales);
-        return ($idDatosPersonales > 0 && $idUsuario > 0) ? $idUsuario : 0;
+        $idUsuario = $this->usuarioDAO->guardarUsuario($usuario);
+        $idDatosPersonales = $this->datosPersonalesDAO->guardarDatosPersonales($datosPersonales, $idUsuario); 
+        return ($idUsuario > 0 && $idDatosPersonales > 0) ? $idUsuario : 0;
     }
 
     private function generarCodigoVerificacion($idUsuario){
@@ -65,12 +65,13 @@ class AuthModel {
     }
 
 
-    public function retornarNuevoUsuarioRegistradoOHacerRollback($idUsuario, $idCodigoVerificacion, $mailEnviado){
+    private function retornarNuevoUsuarioRegistradoOHacerRollback($idUsuario, $idCodigoVerificacion, $mailEnviado){
         $usuarioGenerado = $idUsuario > 0;
         $codigoVerificacionGenerado = $idCodigoVerificacion > 0;
         if($usuarioGenerado && $codigoVerificacionGenerado && $mailEnviado){
             return MessageHandler::success(201, SUCCESS_201,["id_usuario" => $idUsuario]);
         }else{
+            $this->usuarioDAO->eliminarUsuario($idUsuario);
             return MessageHandler::error(501, ERROR_501);
         }
     }

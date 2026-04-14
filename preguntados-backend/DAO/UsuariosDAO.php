@@ -15,7 +15,7 @@ class UsuariosDAO {
             $stmt = $this->pdo->prepare("SELECT EXISTS (
                                          SELECT 1 FROM usuarios u 
                                          INNER JOIN datos_personales d
-                                         ON u.id_datos_personales = d.id
+                                         ON d.id_usuario = u.id
                                          WHERE u.username=:username 
                                          OR d.correo_electronico=:correo_electronico 
                                          OR d.doc_nro=:doc_nro and d.doc_tipo=:doc_tipo
@@ -34,26 +34,40 @@ class UsuariosDAO {
         }
     }
     
-    public function guardarUsuario($usuario, $idDatosPersonales){
+    public function guardarUsuario($usuario){
         try {
-            if ($idDatosPersonales > 0) {
+            $sql = "INSERT INTO usuarios(username, contrasenia, id_rol, id_estado)
+                    VALUES(:username, :contrasenia, :id_rol, :id_estado)";
         
-                $sql = "INSERT INTO usuarios(username, contrasenia, id_rol, id_estado, id_datos_personales)
-                        VALUES(:username, :contrasenia, :id_rol, :id_estado, :id_datos_personales)";
+            $stmt = $this->pdo->prepare($sql);
         
-                $stmt = $this->pdo->prepare($sql);
-        
-                $stmt->execute([
-                    ':username' => $usuario->username,
-                    ':contrasenia' => password_hash($usuario->contrasenia, PASSWORD_BCRYPT),
-                    ':id_rol' => $usuario->id_rol,
-                    ':id_estado' => ESTADO_1,
-                    ':id_datos_personales' => $idDatosPersonales
-                ]);
-            }
+            $stmt->execute([
+                ':username' => $usuario->username,
+                ':contrasenia' => password_hash($usuario->contrasenia, PASSWORD_BCRYPT),
+                ':id_rol' => $usuario->id_rol,
+                ':id_estado' => ESTADO_1
+            ]);
+            
             return (int) $this->pdo->lastInsertId();
         } catch(PDOException $e){
             error_log("Error insert usuarios: " . $e->getMessage());
+        }
+    }
+
+    public function eliminarUsuario($idUsuario) : bool {
+        try {
+            $sql = "DELETE FROM usuarios WHERE id = :id";
+    
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                ':id' => $idUsuario
+            ]);
+    
+            return $stmt->rowCount() > 0;
+    
+        } catch (PDOException $e) {
+            error_log("Error eliminarUsuario: " . $e->getMessage());
+            return false;
         }
     }
 
