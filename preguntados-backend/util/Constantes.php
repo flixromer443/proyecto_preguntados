@@ -13,8 +13,8 @@
     define('TEMATICA_2', 2); //Matematicas
     define('TEMATICA_3', 3); //Deportes
     define('TEMATICA_4', 4); //Geografia
-    define('TEMATICA_5', 5); //a definirse
-    define('TEMATICA_6', 6); //a definirse
+    define('TEMATICA_5', 5); //Biologia
+    define('TEMATICA_6', 6); //Literatura
 
     //ERRORES LOGICOS
     define('ERROR_300', "Error: ha ocurrido un error de negocio."); 
