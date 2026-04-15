@@ -26,8 +26,22 @@ class AuthModel {
         $this->codigosVerificacionDAO = new CodigosVerificacionDAO();
     }
 
-    public function iniciarSesion(){
-        
+    public function iniciarSesion($data){
+        $datosUsuario = $this->obtenerDatosUsuario($data->credenciales);
+        if($datosUsuario){
+            return MessageHandler::success(200, SUCCESS_202,["usuario" => $datosUsuario]);
+        }else{
+            return MessageHandler::error(500, ERROR_502);
+        }
+    }
+
+    private function obtenerDatosUsuario($credenciales){
+        $contraseniaVerificada = false;
+        $usuarioEncontrado = $this->usuarioDAO->obtenerUsuarioPorUsernameOCorreoElectronico($credenciales->username);
+        if($usuarioEncontrado){
+            $contraseniaVerificada = password_verify($credenciales->contrasenia, $usuarioEncontrado['contrasenia']);
+        }
+        return $usuarioEncontrado && $contraseniaVerificada ? $usuarioEncontrado : false;
     }
 
     public function registrarNuevoUsuario($data){

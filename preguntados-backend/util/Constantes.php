@@ -22,9 +22,11 @@
     
     //ERRORES FUNCIONALES
     define('ERROR_501', "Ha ocurrido un error al intentar generar un nuevo usuario");
+    define('ERROR_502', "Ha ocurrido un error al iniciar sesion, verifique sus credenciales");
 
     //MENSAJES DE EXITO
     define('SUCCESS_201', "Usuario registrado correctamente");
+    define('SUCCESS_202', "Inicio de sesion exitoso");
 
 
 

@@ -34,6 +34,25 @@ class UsuariosDAO {
         }
     }
     
+     public function obtenerUsuarioPorUsernameOCorreoElectronico($input){
+        try{
+            $stmt = $this->pdo->prepare("SELECT u.* FROM usuarios u
+                                         INNER JOIN datos_personales d
+                                         ON d.id_usuario = u.id
+                                         WHERE u.username=:username
+                                         OR d.correo_electronico=:correo_electronico");
+            $stmt->execute([
+                ':username' => $input,
+                ':correo_electronico' => $input
+            ]);
+        
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+            error_log("Error al obtener usuario: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function guardarUsuario($usuario){
         try {
             $sql = "INSERT INTO usuarios(username, contrasenia, id_rol, id_estado)

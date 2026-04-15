@@ -8,7 +8,7 @@ $data = json_decode($json);
 
 if($data->metodo == "iniciarSesion"){
     $controller = new AuthController();
-    echo json_encode($controller->iniciarSesion());
+    echo json_encode($controller->iniciarSesion($data));
 }
 
 
