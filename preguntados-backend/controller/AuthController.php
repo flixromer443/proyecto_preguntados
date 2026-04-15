@@ -9,8 +9,8 @@ class AuthController {
         $this->AuthModel = new AuthModel();
     }
 
-    public function iniciarSesion(){
-        return $this->AuthModel->iniciarSesion();
+    public function iniciarSesion($data){
+        return $this->AuthModel->iniciarSesion($data);
     }
 
     public function registrarNuevoUsuario($data){

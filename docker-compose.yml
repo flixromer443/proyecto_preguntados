@@ -43,6 +43,9 @@ services:
       MAIL_PORT: $MAIL_PORT
       MAIL_FROM_ADDRESS: $MAIL_FROM_ADDRESS
       MAIL_FROM_NAME: $MAIL_FROM_NAME
+      JWT_SECRET: $JWT_SECRET
+      JWT_SIGNING_ALG: $JWT_SIGNING_ALG
+      JWT_TOKEN_LIFETIME: $JWT_TOKEN_LIFETIME
     links:
       - db:mysqldb
     volumes:

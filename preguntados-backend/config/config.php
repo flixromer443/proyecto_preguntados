@@ -19,4 +19,7 @@ define('MAIL_PORT',(int) getenv('MAIL_PORT'));
 define('MAIL_FROM_ADDRESS', getenv('MAIL_FROM_ADDRESS'));
 define('MAIL_FROM_NAME', getenv('MAIL_FROM_NAME'));
 
+define('JWT_SECRET', getenv('JWT_SECRET'));
+define('JWT_SIGNING_ALG', [getenv('JWT_SIGNING_ALG')]);
+define('JWT_TOKEN_LIFETIME', (int) getenv('JWT_TOKEN_LIFETIME'));
 ?>
