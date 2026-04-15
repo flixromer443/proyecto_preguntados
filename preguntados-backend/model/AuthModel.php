@@ -7,6 +7,7 @@ require_once __DIR__ . '/../DAO/CodigosVerificacionDAO.php';
 require_once __DIR__ . '/../util/Constantes.php';
 require_once __DIR__ . '/../util/MessageHandler.php';
 require_once __DIR__ . '/../services/MailService.php';
+require_once __DIR__ . '/../services/TokenService.php';
 
 class AuthModel {
 
@@ -16,20 +17,22 @@ class AuthModel {
     private $clasificacionesDAO;
     private $codigosVerificacionDAO;
     private $mailService;
+    private $tokenService;
     
     public function __construct() {
         $this->usuarioDAO = new UsuariosDAO();
         $this->datosPersonalesDAO = new DatosPersonalesDAO();
         $this->estadisticasDAO = new EstadisticasDAO();
         $this->clasificacionesDAO = new ClasificacionesDAO();
-        $this->mailService = new MailService();
         $this->codigosVerificacionDAO = new CodigosVerificacionDAO();
+        $this->mailService = new MailService();
+        $this->tokenService = new TokenService();
     }
 
     public function iniciarSesion($data){
         $datosUsuario = $this->obtenerDatosUsuario($data->credenciales);
         if($datosUsuario){
-            return MessageHandler::success(200, SUCCESS_202,["usuario" => $datosUsuario]);
+            return MessageHandler::success(200, SUCCESS_202, $this->retornarUsuarioValidadoYToken($datosUsuario));
         }else{
             return MessageHandler::error(500, ERROR_502);
         }
@@ -42,6 +45,21 @@ class AuthModel {
             $contraseniaVerificada = password_verify($credenciales->contrasenia, $usuarioEncontrado['contrasenia']);
         }
         return $usuarioEncontrado && $contraseniaVerificada ? $usuarioEncontrado : false;
+    }
+
+    private function retornarUsuarioValidadoYToken($datosUsuario){
+        return[
+            'usuario' => $this->filtrarDatosNecesarios($datosUsuario),
+            'token' => $this->tokenService->generarToken($datosUsuario)
+        ];
+    }
+
+    private function filtrarDatosNecesarios($datosUsuario){
+        return[
+            'id'=> $datosUsuario['id'],
+            'id_rol'=> $datosUsuario['id'],
+            'id_estado'=> $datosUsuario['id_estado']
+        ];
     }
 
     public function registrarNuevoUsuario($data){
