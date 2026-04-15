@@ -12,11 +12,16 @@ import { BuscarReservaComponent } from './components/buscar-reserva/buscar-reser
 import { ModificarReservaComponent } from './components/modificar-reserva/modificar-reserva.component';
 import { ActualizacionExitosaComponent } from './components/actualizacion-exitosa/actualizacion-exitosa.component';
 import { JugarComponent } from './components/jugar/jugar.component';
+import { IniciarSesionComponent } from './components/iniciar-sesion/iniciar-sesion.component';
+import { RegistrarseComponent } from './components/registrarse/registrarse.component';
+
 
 
 //definir las rutas de la aplicacion
 const routes: Routes = [
   {path: 'jugar', component: JugarComponent},
+  {path: 'iniciar-sesion', component: IniciarSesionComponent},
+  {path: 'registrarse', component: RegistrarseComponent},
   {path: 'about-us', component: AboutUsComponent},
   {path: 'nuestros-servicios', component: NuestrosServiciosComponent},
   {path: 'galeria-imagenes', component: GaleriaImagenesComponent},

@@ -38,6 +38,8 @@ import { ModificarReservaComponent } from './components/modificar-reserva/modifi
 import { FooterComponent } from './components/footer/footer.component';
 import { ActualizacionExitosaComponent } from './components/actualizacion-exitosa/actualizacion-exitosa.component';
 import { JugarComponent } from './components/jugar/jugar.component';
+import { IniciarSesionComponent } from './components/iniciar-sesion/iniciar-sesion.component';
+import { RegistrarseComponent } from './components/registrarse/registrarse.component';
 
 
 @NgModule({
@@ -58,6 +60,8 @@ import { JugarComponent } from './components/jugar/jugar.component';
     DetallesReservaComponent,
     BuscarReservaComponent,
     JugarComponent,
+    IniciarSesionComponent,
+    RegistrarseComponent,
     ModificarReservaComponent,
     FooterComponent,
     ActualizacionExitosaComponent,

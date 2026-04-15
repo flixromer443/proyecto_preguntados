@@ -1,0 +1,149 @@
+<section>
+  <div class="container">
+    
+    <div class="jumbotron">
+      <h2 class="titulo">Crear cuenta</h2>
+    </div>
+
+    <hr class="border border-primary border-2 opacity-75 my-3">
+
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        
+        <p-card styleClass="user-form">
+
+          <form [formGroup]="registerForm" (ngSubmit)="register()">
+
+            <!-- Usuario + Password -->
+            <div class="row">
+              <div class="col-md-6">
+                <label class="labelForm">Usuario</label>
+                <input type="text" pInputText formControlName="username" class="w-100">
+              </div>
+
+              <div class="col-md-6">
+                <label class="labelForm">Contraseña</label>
+                <input type="password" pInputText formControlName="password" class="w-100">
+              </div>
+            </div>
+
+            <br>
+
+            <!-- Nombre + Apellido -->
+            <div class="row">
+              <div class="col-md-6">
+                <label class="labelForm">Nombre</label>
+                <input type="text" pInputText formControlName="nombre" class="w-100">
+              </div>
+
+              <div class="col-md-6">
+                <label class="labelForm">Apellido</label>
+                <input type="text" pInputText formControlName="apellido" class="w-100">
+              </div>
+            </div>
+
+            <br>
+
+            <!-- Sexo + Teléfono -->
+            <div class="row">
+              <div class="col-md-6">
+                <label class="labelForm">Sexo</label>
+                <select class="form-control" formControlName="sexo">
+                  <option value="">Seleccione</option>
+                  <option value="M">Masculino</option>
+                  <option value="F">Femenino</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="labelForm">Teléfono</label>
+                <input type="text" pInputText formControlName="telefono" class="w-100">
+              </div>
+            </div>
+
+            <br>
+
+            <!-- Documento -->
+            <div class="row">
+              <div class="col-md-4">
+                <label class="labelForm">Tipo Doc</label>
+                <select class="form-control" formControlName="tipoDocumento">
+                  <option value="1">DNI</option>
+                  <option value="2">Pasaporte</option>
+                </select>
+              </div>
+
+              <div class="col-md-8">
+                <label class="labelForm">Número</label>
+                <input type="text" pInputText formControlName="numeroDocumento" class="w-100">
+              </div>
+            </div>
+
+            <br>
+
+            <!-- Domicilio -->
+            <h5>Domicilio</h5>
+
+            <div class="row">
+              <div class="col-md-8">
+                <label class="labelForm">Calle</label>
+                <input type="text" pInputText formControlName="calle" class="w-100">
+              </div>
+
+              <div class="col-md-4">
+                <label class="labelForm">Número</label>
+                <input type="text" pInputText formControlName="numero" class="w-100">
+              </div>
+            </div>
+
+            <br>
+
+            <div class="row">
+              <div class="col-md-6">
+                <label class="labelForm">Localidad</label>
+                <input type="text" pInputText formControlName="localidad" class="w-100">
+              </div>
+
+              <div class="col-md-6">
+                <label class="labelForm">Provincia</label>
+                <input type="text" pInputText formControlName="provincia" class="w-100">
+              </div>
+            </div>
+
+            <br>
+
+            <!-- Email -->
+            <div class="row">
+              <div class="col-md-12">
+                <label class="labelForm">Correo electrónico</label>
+                <input type="email" pInputText formControlName="correoElectronico" class="w-100">
+              </div>
+            </div>
+
+            <br>
+
+            <!-- Botón -->
+            <button 
+              type="submit" 
+              class="btn btn-primary w-100"
+              [disabled]="registerForm.invalid">
+              Registrarse
+            </button>
+
+            <br><br>
+
+            <!-- Link login -->
+            <div class="text-center">
+              <span>¿Ya tenés cuenta?</span>
+              <a routerLink="/iniciar-sesion">Iniciar sesión</a>
+            </div>
+
+          </form>
+
+        </p-card>
+
+      </div>
+    </div>
+
+  </div>
+</section>
