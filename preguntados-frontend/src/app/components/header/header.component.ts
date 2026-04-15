@@ -24,6 +24,10 @@ export class HeaderComponent {
   jugar(){
     this.router.navigate(['/jugar']);
   }
+  
+  iniciarSesion(){
+    this.router.navigate(['/iniciar-sesion']);
+  }
 
   sobreNosotros(){
     this.router.navigate(['/about-us']);
