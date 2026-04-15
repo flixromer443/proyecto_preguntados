@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/../util/Constantes.php';
+require_once __DIR__ . '/../util/RowMapper.php';
 
 class UsuariosDAO {
 
@@ -45,8 +46,9 @@ class UsuariosDAO {
                 ':username' => $input,
                 ':correo_electronico' => $input
             ]);
-        
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $usuario ? RowMapper::mapUsuarioFromDB($usuario) : false;
         }catch(PDOException $e){
             error_log("Error al obtener usuario: " . $e->getMessage());
             return false;
