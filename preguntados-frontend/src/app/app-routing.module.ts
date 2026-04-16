@@ -14,6 +14,8 @@ import { ActualizacionExitosaComponent } from './components/actualizacion-exitos
 import { JugarComponent } from './components/jugar/jugar.component';
 import { IniciarSesionComponent } from './components/iniciar-sesion/iniciar-sesion.component';
 import { RegistrarseComponent } from './components/registrarse/registrarse.component';
+import { EstadisticasJugadorComponent} from './components/estadisticas-jugador/estadisticas-jugador.component';
+import { PerfilJugadorComponent } from './components/perfil-jugador/perfil-jugador.component';
 
 
 
@@ -22,6 +24,8 @@ const routes: Routes = [
   {path: 'jugar', component: JugarComponent},
   {path: 'iniciar-sesion', component: IniciarSesionComponent},
   {path: 'registrarse', component: RegistrarseComponent},
+  {path: 'estadisticas-jugador', component: EstadisticasJugadorComponent},
+  {path: 'perfil-jugador', component: PerfilJugadorComponent},
   {path: 'about-us', component: AboutUsComponent},
   {path: 'nuestros-servicios', component: NuestrosServiciosComponent},
   {path: 'galeria-imagenes', component: GaleriaImagenesComponent},

@@ -55,7 +55,7 @@ export class IniciarSesionComponent implements OnInit {
             detail: 'Bienvenido'
           });
 
-          //this.router.navigate(['/home']);
+          this.router.navigate(['/perfil-jugador']);
           this.cargando = false;
         }else{
             this.showError(response.message);

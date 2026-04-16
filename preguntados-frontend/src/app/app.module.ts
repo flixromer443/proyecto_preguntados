@@ -40,6 +40,8 @@ import { ActualizacionExitosaComponent } from './components/actualizacion-exitos
 import { JugarComponent } from './components/jugar/jugar.component';
 import { IniciarSesionComponent } from './components/iniciar-sesion/iniciar-sesion.component';
 import { RegistrarseComponent } from './components/registrarse/registrarse.component';
+import { EstadisticasJugadorComponent} from './components/estadisticas-jugador/estadisticas-jugador.component';
+import { PerfilJugadorComponent } from './components/perfil-jugador/perfil-jugador.component';
 
 
 @NgModule({
@@ -62,6 +64,8 @@ import { RegistrarseComponent } from './components/registrarse/registrarse.compo
     JugarComponent,
     IniciarSesionComponent,
     RegistrarseComponent,
+    EstadisticasJugadorComponent,
+    PerfilJugadorComponent,
     ModificarReservaComponent,
     FooterComponent,
     ActualizacionExitosaComponent,
