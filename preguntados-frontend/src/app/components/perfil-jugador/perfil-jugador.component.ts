@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatosCompartidosService } from '../../services/datos-compartidos.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-perfil-jugador',
@@ -11,12 +12,18 @@ export class PerfilJugadorComponent {
 
   constructor(
     private router: Router,
-    private datosCompartidosService: DatosCompartidosService
+    private datosCompartidosService: DatosCompartidosService,
+    private authService: AuthService
   ) {
     this.datosCompartidosService.esconderBuscador.next(false);
     this.datosCompartidosService.esconderFooter.next(false);
   }
 
+  ngOnInit() {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/iniciar-sesion']);
+    }
+  }
   // =========================
   // NAVEGACIÓN HOME
   // =========================
@@ -41,6 +48,7 @@ export class PerfilJugadorComponent {
     this.router.navigate(['/jugar']);
   }
   cerrarSesion(){
-    
+    this.authService.logout();
+    this.router.navigate(['/iniciar-sesion']);
   }
 }

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { DatosCompartidosService } from '../../services/datos-compartidos.service';
 import { DialogService } from '../../services/dialog.service';
+import { AuthService } from '../../services/auth.service';
 
 interface TematicaEstadistica {
   id: number;
@@ -15,7 +17,6 @@ interface TematicaEstadistica {
   styleUrl: './estadisticas-jugador.component.css'
 })
 export class EstadisticasJugadorComponent {
-
   tematicas: TematicaEstadistica[] = [
     {
       id: 1,
@@ -56,13 +57,21 @@ export class EstadisticasJugadorComponent {
   ];
 
   constructor(
+    private router: Router,
     private servicioDialog: DialogService,
-    private datosCompartidosService: DatosCompartidosService
+    private datosCompartidosService: DatosCompartidosService,
+    private authService: AuthService
   ) {
     this.datosCompartidosService.esconderBuscador.next(false);
     this.datosCompartidosService.esconderFooter.next(false);
 
     // this.cargarEstadisticas();
+  }
+
+  ngOnInit() {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/iniciar-sesion']);
+    }
   }
 
   /*verTematica(t: TematicaEstadistica) {
@@ -78,6 +87,7 @@ export class EstadisticasJugadorComponent {
   }
 
   cerrarSesion(){
-
+    this.authService.logout();
+    this.router.navigate(['/iniciar-sesion']);
   }
 }
