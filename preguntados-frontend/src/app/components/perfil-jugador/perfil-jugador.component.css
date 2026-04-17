@@ -1,0 +1,190 @@
+
+.home-section {
+  padding-top: 20px;
+}
+
+/* =========================
+   GRID WRAPPERS
+========================= */
+.col-12,
+.col-md-6 {
+  position: relative;
+}
+
+/* =========================
+   BORDE ANIMADO (HOVER)
+========================= */
+.col-12::before,
+.col-md-6::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 2px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(13,110,253,0.7),
+    rgba(25,135,84,0.7),
+    transparent
+  );
+
+  background-size: 300% 300%;
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+
+  pointer-events: none;
+}
+
+.col-12:hover::before,
+.col-md-6:hover::before {
+  opacity: 1;
+  animation: borderMove 1.5s linear infinite;
+}
+
+@keyframes borderMove {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+/* =========================
+   CARD BASE
+========================= */
+.home-card {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 20px 22px;
+  border-radius: 16px;
+
+  background: white;
+  border: 1px solid #e6e6e6;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* CONTENIDO IZQUIERDO */
+.home-card > div {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* hover card */
+.home-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+/* =========================
+   ICONOS
+========================= */
+.icon-circle {
+  width: 60px;
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  color: white;
+
+  font-size: 26px;
+}
+
+/* colores */
+.bg-primary { background: #0d6efd; }
+.bg-success { background: #198754; }
+.bg-danger  { background: #dc3545; }
+.bg-warning { background: #ffc107; color: #000; }
+.bg-dark    { background: #212529; }
+
+/* icono interno */
+.icon-circle i {
+  font-size: 26px;
+}
+
+/* =========================
+   FLECHA
+========================= */
+.arrow {
+  color: #aaa;
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+/* pequeño movimiento de flecha */
+.home-card:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* =========================
+   CARD JUGAR (DESTACADA)
+========================= */
+.play-card {
+  background: linear-gradient(135deg, #0d6efd, #6ea8fe);
+  color: white;
+  border: none;
+}
+
+.play-card p {
+  color: rgba(255,255,255,0.85);
+}
+
+.play-card .arrow {
+  color: white;
+}
+
+/* hover JUGAR */
+.play-card:hover {
+  box-shadow: 0 15px 35px rgba(13,110,253,0.35);
+}
+
+
+/* =========================
+   HEADER (logout)
+========================= */
+.home-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* BOTÓN LOGOUT */
+.btn-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  background: none;
+  border: none;
+
+  font-weight: 500;
+  color: #dc3545;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+  color: #a71d2a;
+  transform: translateX(3px);
+}

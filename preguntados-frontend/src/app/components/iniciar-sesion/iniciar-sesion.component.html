@@ -1,0 +1,76 @@
+<section class="vh-100 d-flex align-items-center">
+  <div class="container">
+    
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        
+        <p-card styleClass="user-form text-center">
+
+          <ng-template pTemplate="header">
+            <div class="w-100 text-center">
+              <h3 class="m-0 fw-bold">Iniciar Sesión</h3>
+            </div>
+          </ng-template>
+
+          <!-- 🔥 ALERT -->
+          <div *ngIf="errorMessage" class="alert alert-danger text-center mb-3">
+            {{ errorMessage }}
+          </div>
+          
+          <form [formGroup]="loginForm" (ngSubmit)="login()" class="text-start">
+
+            <!-- Usuario -->
+            <div class="field">
+              <label class="block labelForm w-100 text-start">
+                Nombre de usuario o correo electrónico
+              </label>
+              <input 
+                type="text" 
+                pInputText 
+                placeholder="Ingresa tu usuario o correo"
+                formControlName="usuario"
+                class="w-100"
+              >
+            </div>
+
+            <br>
+
+            <!-- Contraseña -->
+            <div class="field">
+              <label class="block labelForm w-100 text-start">
+                Contraseña
+              </label>
+              <input 
+                type="password" 
+                pInputText 
+                placeholder="Ingresa tu contraseña"
+                formControlName="password"
+                class="w-100"
+              >
+            </div>
+
+            <br>
+
+            <button 
+              type="submit" 
+              class="btn btn-primary w-100"
+              [disabled]="loginForm.invalid">
+              Iniciar sesión
+            </button>
+
+            <br><br>
+
+            <div class="text-center">
+              <span>¿No tenés cuenta?</span>
+              <a routerLink="/registrarse" class="link-primary">Registrate acá</a>
+            </div>
+
+          </form>
+
+        </p-card>
+
+      </div>
+    </div>
+
+  </div>
+</section>

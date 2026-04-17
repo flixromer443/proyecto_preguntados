@@ -12,11 +12,22 @@ import { BuscarReservaComponent } from './components/buscar-reserva/buscar-reser
 import { ModificarReservaComponent } from './components/modificar-reserva/modificar-reserva.component';
 import { ActualizacionExitosaComponent } from './components/actualizacion-exitosa/actualizacion-exitosa.component';
 import { JugarComponent } from './components/jugar/jugar.component';
+import { IniciarSesionComponent } from './components/iniciar-sesion/iniciar-sesion.component';
+import { RegistrarseComponent } from './components/registrarse/registrarse.component';
+import { EstadisticasJugadorComponent} from './components/estadisticas-jugador/estadisticas-jugador.component';
+import { PerfilJugadorComponent } from './components/perfil-jugador/perfil-jugador.component';
+import { IngresarCodigoComponent } from './components/ingresar-codigo/ingresar-codigo.component';
+
 
 
 //definir las rutas de la aplicacion
 const routes: Routes = [
   {path: 'jugar', component: JugarComponent},
+  {path: 'iniciar-sesion', component: IniciarSesionComponent},
+  {path: 'registrarse', component: RegistrarseComponent},
+  {path: 'estadisticas-jugador', component: EstadisticasJugadorComponent},
+  {path: 'ingresar-codigo', component: IngresarCodigoComponent},
+  {path: 'perfil-jugador', component: PerfilJugadorComponent},
   {path: 'about-us', component: AboutUsComponent},
   {path: 'nuestros-servicios', component: NuestrosServiciosComponent},
   {path: 'galeria-imagenes', component: GaleriaImagenesComponent},

@@ -1,0 +1,90 @@
+@import 'primeflex/primeflex.css';
+
+.btnRegresar{
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: black;
+}
+
+.btnRegresar:hover{
+    text-decoration: underline;
+}
+
+/* CARD */
+:host ::ng-deep .user-form {
+    width: 90%;
+}
+
+/* INPUTS */
+:host ::ng-deep .p-inputtext{
+    width: 70%;
+}
+
+.labelForm {
+    color: black;
+}
+
+/* BOTONES */
+:host ::ng-deep .p-button {
+    background-color: #003068;
+    border-radius: 5px;
+}
+
+:host ::ng-deep .p-button:hover {
+    background: #002147;
+}
+
+/* TITULO CARD */
+:host ::ng-deep .p-card-title {
+    color: #1e1e1e;
+    font-weight: 600;
+}
+
+.paypal-button {
+    width: 70%;
+}
+
+/* ========================= */
+/* 🔥 AUTOCOMPLETE FIXES */
+/* ========================= */
+
+/* Contenedor */
+:host ::ng-deep .p-autocomplete {
+    width: 100%;
+}
+
+/* Input interno ocupa todo */
+:host ::ng-deep .p-autocomplete .p-inputtext {
+    width: 100% !important;
+}
+
+/* 🔠 Texto en MAYÚSCULAS */
+:host ::ng-deep .p-autocomplete input {
+    text-transform: uppercase;
+}
+
+/* 📝 Placeholder normal */
+:host ::ng-deep .p-autocomplete input::placeholder {
+    text-transform: none;
+    color: #888;
+}
+
+/* 🔽 BOTÓN DROPDOWN MÁS CHICO */
+:host ::ng-deep .p-autocomplete-dropdown {
+    width: 2rem !important;
+    min-width: 2rem !important;
+    height: 2.2rem !important;
+    padding: 0 !important;
+}
+
+/* Icono más chico */
+:host ::ng-deep .p-autocomplete-dropdown .pi {
+    font-size: 0.8rem !important;
+}
+
+/* Ajuste altura input */
+:host ::ng-deep .p-autocomplete-input {
+    height: 2.2rem;
+}

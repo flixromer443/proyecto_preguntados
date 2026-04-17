@@ -1,0 +1,98 @@
+<section>
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+      <!-- VOLVER -->
+      <button class="btn-back" routerLink="/perfil-jugador">
+        <i class="fa-solid fa-arrow-left me-2"></i>
+        Volver
+      </button>
+
+      <!-- CERRAR SESIÓN -->
+      <button class="btn-logout" (click)="cerrarSesion()">
+        Cerrar sesión
+        <i class="fa-solid fa-right-from-bracket ms-2"></i>
+      </button>
+
+    </div>
+
+    <h1 class="mb-4">Estadísticas del Juego</h1>
+
+    <p class="text-muted">
+      Rendimiento general por temática
+    </p>
+
+    <div class="row g-4 py-4">
+
+      <!-- Historia -->
+      <div class="col-12 col-md-4">
+        <div class="stat-card">
+          <i class="fa-solid fa-landmark stat-icon"></i>
+          <div>
+            <h3 class="fw-bold mb-1">Historia</h3>
+            <p class="text-success mb-0">% acierto</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matemática -->
+      <div class="col-12 col-md-4">
+        <div class="stat-card">
+          <i class="fa-solid fa-square-root-variable stat-icon"></i>
+          <div>
+            <h3 class="fw-bold mb-1">Matemática</h3>
+            <p class="text-success mb-0">% acierto</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deportes -->
+      <div class="col-12 col-md-4">
+        <div class="stat-card">
+          <i class="fa-solid fa-futbol stat-icon"></i>
+          <div>
+            <h3 class="fw-bold mb-1">Deportes</h3>
+            <p class="text-success mb-0">% acierto</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Geografía -->
+      <div class="col-12 col-md-4">
+        <div class="stat-card">
+          <i class="fa-solid fa-earth-americas stat-icon"></i>
+          <div>
+            <h3 class="fw-bold mb-1">Geografía</h3>
+            <p class="text-success mb-0">% acierto</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Biología -->
+      <div class="col-12 col-md-4">
+        <div class="stat-card">
+          <i class="fa-solid fa-dna stat-icon"></i>
+          <div>
+            <h3 class="fw-bold mb-1">Biología</h3>
+            <p class="text-success mb-0">% acierto</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Literatura -->
+      <div class="col-12 col-md-4">
+        <div class="stat-card">
+          <i class="fa-solid fa-book stat-icon"></i>
+          <div>
+            <h3 class="fw-bold mb-1">Literatura</h3>
+            <p class="text-success mb-0">% acierto</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>

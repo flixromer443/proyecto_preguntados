@@ -38,7 +38,13 @@ import { ModificarReservaComponent } from './components/modificar-reserva/modifi
 import { FooterComponent } from './components/footer/footer.component';
 import { ActualizacionExitosaComponent } from './components/actualizacion-exitosa/actualizacion-exitosa.component';
 import { JugarComponent } from './components/jugar/jugar.component';
-
+import { IniciarSesionComponent } from './components/iniciar-sesion/iniciar-sesion.component';
+import { RegistrarseComponent } from './components/registrarse/registrarse.component';
+import { EstadisticasJugadorComponent} from './components/estadisticas-jugador/estadisticas-jugador.component';
+import { PerfilJugadorComponent } from './components/perfil-jugador/perfil-jugador.component';
+import { PasswordModule } from 'primeng/password';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { IngresarCodigoComponent } from './components/ingresar-codigo/ingresar-codigo.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +64,11 @@ import { JugarComponent } from './components/jugar/jugar.component';
     DetallesReservaComponent,
     BuscarReservaComponent,
     JugarComponent,
+    IniciarSesionComponent,
+    RegistrarseComponent,
+    EstadisticasJugadorComponent,
+    PerfilJugadorComponent,
+    IngresarCodigoComponent,
     ModificarReservaComponent,
     FooterComponent,
     ActualizacionExitosaComponent,
@@ -80,8 +91,9 @@ import { JugarComponent } from './components/jugar/jugar.component';
     ReactiveFormsModule,
     InputTextModule,
     CardModule,
-    PanelModule
-  
+    PanelModule,
+    PasswordModule,
+    AutoCompleteModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]
