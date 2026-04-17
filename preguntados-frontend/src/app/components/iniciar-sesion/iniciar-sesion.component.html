@@ -11,6 +11,11 @@
               <h3 class="m-0 fw-bold">Iniciar Sesión</h3>
             </div>
           </ng-template>
+
+          <!-- 🔥 ALERT -->
+          <div *ngIf="errorMessage" class="alert alert-danger text-center mb-3">
+            {{ errorMessage }}
+          </div>
           
           <form [formGroup]="loginForm" (ngSubmit)="login()" class="text-start">
 
@@ -26,10 +31,6 @@
                 formControlName="usuario"
                 class="w-100"
               >
-              <small class="p-error block text-center"
-                *ngIf="loginForm.get('usuario')?.invalid && loginForm.get('usuario')?.dirty">
-                El campo es obligatorio
-              </small>
             </div>
 
             <br>
@@ -46,10 +47,6 @@
                 formControlName="password"
                 class="w-100"
               >
-              <small class="p-error block text-center"
-                *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.dirty">
-                La contraseña es obligatoria
-              </small>
             </div>
 
             <br>

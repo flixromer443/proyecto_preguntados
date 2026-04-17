@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-// import { AuthService } from '../../services/auth.service'; // <- lo vas a crear
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-iniciar-sesion',
@@ -14,11 +14,15 @@ export class IniciarSesionComponent implements OnInit {
   loginForm!: FormGroup;
   cargando: boolean = false;
 
+  // 🔥 NUEVO ALERT
+  errorMessage: string = '';
+  private alertTimeout: any;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private messageService: MessageService,
-    // private authService: AuthService
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -29,12 +33,9 @@ export class IniciarSesionComponent implements OnInit {
   }
 
   login(): void {
+
     if (this.loginForm.invalid) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Formulario inválido',
-        detail: 'Por favor complete todos los campos'
-      });
+      this.showError('Por favor complete todos los campos');
       return;
     }
 
@@ -42,48 +43,41 @@ export class IniciarSesionComponent implements OnInit {
 
     const { usuario, password } = this.loginForm.value;
 
-    // 🔥 Acá después conectás con backend
-    /*
-    this.authService.login(usuario, password).subscribe({
-      next: (response) => {
-        localStorage.setItem('token', response.token);
+    this.authService.iniciarSesion(usuario, password).subscribe({
+      next: (response: any) => {
+        if(response.success){
+          sessionStorage.setItem('usuario', JSON.stringify(response.data.usuario));
+          sessionStorage.setItem('token', response.data.token);
 
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Login exitoso',
-          detail: 'Bienvenido'
-        });
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Login exitoso',
+            detail: 'Bienvenido'
+          });
 
-        this.router.navigate(['/home']);
+          this.router.navigate(['/perfil-jugador']);
+          this.cargando = false;
+        }else{
+            this.showError(response.message);
+            this.cargando = false;
+        }
       },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Credenciales incorrectas'
-        });
+      error: (err: any) => {
+        this.showError(
+          err?.error?.message || 'Credenciales incorrectas'
+        );
         this.cargando = false;
       }
     });
-    */
+  }
 
-    // Simulación temporal
-    setTimeout(() => {
-      if (usuario === 'admin' && password === '1234') {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Login exitoso',
-          detail: 'Bienvenido'
-        });
-        this.router.navigate(['/home']);
-      } else {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Credenciales incorrectas'
-        });
-      }
-      this.cargando = false;
-    }, 1000);
+  private showError(message: string) {
+    this.errorMessage = message;
+
+    clearTimeout(this.alertTimeout);
+
+    this.alertTimeout = setTimeout(() => {
+      this.errorMessage = '';
+    }, 5000);
   }
 }
