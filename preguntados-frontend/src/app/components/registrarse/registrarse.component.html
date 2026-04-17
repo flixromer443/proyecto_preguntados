@@ -166,6 +166,10 @@
             <!-- PASO 2 -->
             <div *ngIf="step === 2">
 
+              <div *ngIf="errorMessage" class="alert alert-danger text-center mb-3">
+                {{ errorMessage }}
+              </div>
+
               <h4 class="mb-3 text-center">Crear Usuario</h4>
 
               <div class="row justify-content-center">

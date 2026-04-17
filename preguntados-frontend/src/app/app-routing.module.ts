@@ -16,6 +16,7 @@ import { IniciarSesionComponent } from './components/iniciar-sesion/iniciar-sesi
 import { RegistrarseComponent } from './components/registrarse/registrarse.component';
 import { EstadisticasJugadorComponent} from './components/estadisticas-jugador/estadisticas-jugador.component';
 import { PerfilJugadorComponent } from './components/perfil-jugador/perfil-jugador.component';
+import { IngresarCodigoComponent } from './components/ingresar-codigo/ingresar-codigo.component';
 
 
 
@@ -25,6 +26,7 @@ const routes: Routes = [
   {path: 'iniciar-sesion', component: IniciarSesionComponent},
   {path: 'registrarse', component: RegistrarseComponent},
   {path: 'estadisticas-jugador', component: EstadisticasJugadorComponent},
+  {path: 'ingresar-codigo', component: IngresarCodigoComponent},
   {path: 'perfil-jugador', component: PerfilJugadorComponent},
   {path: 'about-us', component: AboutUsComponent},
   {path: 'nuestros-servicios', component: NuestrosServiciosComponent},

@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Provincia, Departamento, Localidad } from '../../models/georef.interfaces';
 import { GeorefService } from '../../services/georef.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-registrarse',
@@ -31,11 +32,15 @@ export class RegistrarseComponent implements OnInit {
   calleSeleccionada: any = null;
   alturaMaxima: number = 0;
 
+  errorMessage: string = '';
+  private alertTimeout: any;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private messageService: MessageService,
-    private georefService: GeorefService
+    private georefService: GeorefService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -334,9 +339,10 @@ export class RegistrarseComponent implements OnInit {
           tipo: parseInt(form.tipoDocumento)
         },
         domicilio: {
-          calle: form.calle,
+          calle: form.calle.nombre,
           numero: form.numero,
           localidad: form.localidad,
+          departamento: form.departamento,
           provincia: form.provincia
         },
         telefono: form.telefono,
@@ -344,9 +350,34 @@ export class RegistrarseComponent implements OnInit {
       }
     };
 
-    console.log(payload);
+    this.authService.registrarNuevoUsuario(payload).subscribe({
+      next: (response: any) => {
+        if(response.success){
+          this.cargando = false;
+          this.router.navigate(['/ingresar-codigo'], {
+            queryParams: {
+              id_usuario: response.data.id_usuario,
+            }
+          });
+        }else{
+            this.showError(response.message);
+            this.cargando = false;
+        }
+      },
+      error: (err: any) => {
+        this.showError(
+          err?.error?.message || 'Ha ocurrido un error inesperado'
+        );
+        console.log(err)
+        this.cargando = false;
+      }
+    });
 
-    setTimeout(() => {
+
+
+
+
+    /*setTimeout(() => {
       this.messageService.add({
         severity: 'success',
         summary: 'Registro exitoso',
@@ -355,6 +386,16 @@ export class RegistrarseComponent implements OnInit {
 
       this.router.navigate(['/login']);
       this.cargando = false;
-    }, 1000);
+    }, 1000);*/
+  }
+
+  private showError(message: string) {
+    this.errorMessage = message;
+
+    clearTimeout(this.alertTimeout);
+
+    this.alertTimeout = setTimeout(() => {
+      this.errorMessage = '';
+    }, 5000);
   }
 }
