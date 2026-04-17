@@ -1,5 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors
+} from '@angular/forms';
+
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Provincia, Departamento, Localidad } from '../../models/georef.interfaces';
@@ -19,6 +26,7 @@ export class RegistrarseComponent implements OnInit {
   provincias: Provincia[] = [];
   departamentos: Departamento[] = [];
   localidades: Localidad[] = [];
+
   callesFiltradas: any[] = [];
   calleSeleccionada: any = null;
   alturaMaxima: number = 0;
@@ -35,7 +43,17 @@ export class RegistrarseComponent implements OnInit {
     this.registerForm = this.fb.group({
 
       username: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          this.passwordStrengthValidator,
+          this.passwordNotContainingUserData.bind(this)
+        ]
+      ],
+
       repeatPassword: ['', Validators.required],
 
       nombre: ['', Validators.required],
@@ -53,20 +71,60 @@ export class RegistrarseComponent implements OnInit {
       localidad: ['', Validators.required],
 
       telefono: ['', Validators.required],
-      correoElectronico: ['', [Validators.required, Validators.email]]
+      correoElectronico: ['', [Validators.required, Validators.email]],
+
+      aceptoTerminos: [false, Validators.requiredTrue]
     });
 
-    this.registerForm.get('nombre')?.valueChanges.subscribe(value => {
-      this.aplicarCapitalizacion('nombre', value);
+    // revalidar password cuando cambian datos sensibles
+    ['username', 'nombre', 'apellido', 'correoElectronico'].forEach(field => {
+      this.registerForm.get(field)?.valueChanges.subscribe(() => {
+        this.registerForm.get('password')?.updateValueAndValidity();
+      });
     });
 
-    this.registerForm.get('apellido')?.valueChanges.subscribe(value => {
-      this.aplicarCapitalizacion('apellido', value);
-    });
+    // capitalización
+    this.registerForm.get('nombre')?.valueChanges.subscribe(v =>
+      this.aplicarCapitalizacion('nombre', v)
+    );
+
+    this.registerForm.get('apellido')?.valueChanges.subscribe(v =>
+      this.aplicarCapitalizacion('apellido', v)
+    );
 
     this.cargarProvincias();
   }
 
+  passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+
+    const value = control.value || '';
+
+    const hasLetter = /[a-zA-Z]/.test(value);
+    const hasNumber = /\d/.test(value);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-\\[\]\/+=;]/.test(value);
+
+    return (hasLetter && hasNumber && hasSpecial)
+      ? null
+      : { weakPassword: true };
+  }
+  //revisar esto
+  passwordNotContainingUserData(control: AbstractControl): ValidationErrors | null {
+
+    const password = (control.value || '').toLowerCase();
+
+    const username = (this.registerForm?.get('username')?.value || '').toLowerCase();
+    const nombre = (this.registerForm?.get('nombre')?.value || '').toLowerCase();
+    const apellido = (this.registerForm?.get('apellido')?.value || '').toLowerCase();
+    const email = (this.registerForm?.get('correoElectronico')?.value || '').toLowerCase();
+
+    const forbidden = [username, nombre, apellido, email].filter(v => v && v.length >= 3);
+
+    const contains = forbidden.some(v => password.includes(v));
+
+    return contains ? { containsUserData: true } : null;
+  }
+
+  // CAPITALIZACIÓN
   private aplicarCapitalizacion(campo: string, value: string): void {
 
     if (!value || typeof value !== 'string') return;
@@ -83,9 +141,11 @@ export class RegistrarseComponent implements OnInit {
 
     if (value !== capitalizado) {
       control.setValue(capitalizado, { emitEvent: false });
+      this.registerForm.get('password')?.updateValueAndValidity();
     }
   }
 
+  // GEOREF
   cargarProvincias(): void {
     this.georefService.getProvincias()
       .subscribe((res: { provincias: Provincia[] }) => {
@@ -94,6 +154,7 @@ export class RegistrarseComponent implements OnInit {
   }
 
   onProvinciaChange(): void {
+
     const idProvincia = this.registerForm.get('provincia')?.value;
 
     this.departamentos = [];
@@ -116,6 +177,7 @@ export class RegistrarseComponent implements OnInit {
   }
 
   onDepartamentoChange(): void {
+
     const idProvincia = this.registerForm.get('provincia')?.value;
     const idDepartamento = this.registerForm.get('departamento')?.value;
 
@@ -180,10 +242,8 @@ export class RegistrarseComponent implements OnInit {
     this.alturaMaxima = Math.max(derecha, izquierda);
   }
 
-
-  // Steps
+  // STEPS
   nextStep(): void {
-
     if (!this.validarPaso1()) {
       this.messageService.add({
         severity: 'warn',
@@ -200,7 +260,7 @@ export class RegistrarseComponent implements OnInit {
     this.step = 1;
   }
 
-  // Validacione
+  // VALIDACIONES
   validarPaso1(): boolean {
 
     const campos = [
@@ -211,27 +271,16 @@ export class RegistrarseComponent implements OnInit {
       'telefono','correoElectronico'
     ];
 
-    this.marcarCampos(campos);
+    campos.forEach(c => this.registerForm.get(c)?.markAsTouched());
 
-    const formValido = campos.every(c => this.registerForm.get(c)?.valid);
-
-    if (this.registerForm.get('numero')?.hasError('direccionInvalida')) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Dirección inválida',
-        detail: 'El número ingresado supera la altura máxima de la calle'
-      });
-      return false;
-    }
-
-    return formValido;
+    return campos.every(c => this.registerForm.get(c)?.valid);
   }
 
   validarPaso2(): boolean {
 
     const campos = ['username','password','repeatPassword'];
 
-    this.marcarCampos(campos);
+    campos.forEach(c => this.registerForm.get(c)?.markAsTouched());
 
     if (!campos.every(c => this.registerForm.get(c)?.valid)) return false;
 
@@ -244,19 +293,23 @@ export class RegistrarseComponent implements OnInit {
       return false;
     }
 
-    return true;
-  }
+    if (!this.registerForm.get('aceptoTerminos')?.value) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Términos y condiciones',
+        detail: 'Debes aceptar los términos para continuar'
+      });
+      return false;
+    }
 
-  marcarCampos(campos: string[]) {
-    campos.forEach(c => this.registerForm.get(c)?.markAsTouched());
+    return true;
   }
 
   passwordsNoCoinciden(): boolean {
     return this.registerForm.value.password !== this.registerForm.value.repeatPassword;
   }
 
-  // 
-  // Submit
+  // SUBMIT
   register(): void {
 
     if (!this.validarPaso2()) return;
