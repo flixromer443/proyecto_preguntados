@@ -4,5 +4,5 @@ export var Global = {
     url: environment.apiUrl,
     apiGame: environment.apiGame,
     apiAuth: environment.apiAuth,
-
+    apiGeoref: environment.apiGeoref
 };

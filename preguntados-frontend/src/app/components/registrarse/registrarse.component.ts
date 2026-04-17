@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-// import { AuthService } from '../../services/auth.service';
+import { Provincia, Departamento, Localidad } from '../../models/georef.interfaces';
+import { GeorefService} from '../../services/georef.service';
 
 @Component({
   selector: 'app-registrarse',
@@ -15,11 +16,15 @@ export class RegistrarseComponent implements OnInit {
   cargando: boolean = false;
   step: number = 1;
 
+  provincias: Provincia[] = [];
+  departamentos: Departamento[] = [];
+  localidades: Localidad[] = [];
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private messageService: MessageService,
-    // private authService: AuthService
+    private georefService: GeorefService
   ) {}
 
   ngOnInit(): void {
@@ -38,21 +43,69 @@ export class RegistrarseComponent implements OnInit {
 
       calle: ['', Validators.required],
       numero: ['', Validators.required],
-      localidad: ['', Validators.required],
+
       provincia: ['', Validators.required],
+      departamento: ['', Validators.required],
+      localidad: ['', Validators.required],
 
       telefono: ['', Validators.required],
       correoElectronico: ['', [Validators.required, Validators.email]]
     });
+
+    this.cargarProvincias();
   }
 
+  //Geofef
+  cargarProvincias(): void {
+    this.georefService.getProvincias().subscribe((res: { provincias: Provincia[]; }) => {
+      this.provincias = res.provincias;
+    });
+  }
 
+  onProvinciaChange(): void {
+    const idProvincia = this.registerForm.get('provincia')?.value;
+
+    this.departamentos = [];
+    this.localidades = [];
+
+    this.registerForm.patchValue({
+      departamento: '',
+      localidad: ''
+    });
+
+    if (!idProvincia) return;
+
+    this.georefService.getDepartamentosPorProvincia(idProvincia)
+      .subscribe((res: { departamentos: Departamento[]; })  => {
+        this.departamentos = res.departamentos;
+      });
+  }
+
+  onDepartamentoChange(): void {
+    const idProvincia = this.registerForm.get('provincia')?.value;
+    const idDepartamento = this.registerForm.get('departamento')?.value;
+
+    this.localidades = [];
+
+    this.registerForm.patchValue({
+      localidad: ''
+    });
+
+    if (!idProvincia || !idDepartamento) return;
+
+    this.georefService.getLocalidades(idProvincia, idDepartamento)
+      .subscribe((res: { localidades: Localidad[]; }) => {
+        this.localidades = res.localidades;
+      });
+  }
+
+  //Steps
   nextStep(): void {
     if (!this.validarPaso1()) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Datos incompletos',
-        detail: 'Completá los datos personales antes de continuar'
+        detail: 'Completá los datos personales'
       });
       return;
     }
@@ -64,35 +117,26 @@ export class RegistrarseComponent implements OnInit {
     this.step = 1;
   }
 
-
+  //Validaciones
   validarPaso1(): boolean {
-    const camposPaso1 = [
-      'nombre',
-      'apellido',
-      'sexo',
-      'tipoDocumento',
-      'numeroDocumento',
-      'calle',
-      'numero',
-      'localidad',
-      'provincia',
-      'telefono',
-      'correoElectronico'
+    const campos = [
+      'nombre','apellido','sexo',
+      'tipoDocumento','numeroDocumento',
+      'calle','numero',
+      'provincia','departamento','localidad',
+      'telefono','correoElectronico'
     ];
 
-    this.marcarCamposComoTocados(camposPaso1);
-
-    return camposPaso1.every(campo => this.registerForm.get(campo)?.valid);
+    this.marcarCampos(campos);
+    return campos.every(c => this.registerForm.get(c)?.valid);
   }
 
   validarPaso2(): boolean {
-    const camposPaso2 = ['username', 'password', 'repeatPassword'];
+    const campos = ['username','password','repeatPassword'];
 
-    this.marcarCamposComoTocados(camposPaso2);
+    this.marcarCampos(campos);
 
-    const validos = camposPaso2.every(campo => this.registerForm.get(campo)?.valid);
-
-    if (!validos) return false;
+    if (!campos.every(c => this.registerForm.get(c)?.valid)) return false;
 
     if (this.passwordsNoCoinciden()) {
       this.messageService.add({
@@ -106,25 +150,18 @@ export class RegistrarseComponent implements OnInit {
     return true;
   }
 
-  marcarCamposComoTocados(campos: string[]): void {
-    campos.forEach(campo => {
-      this.registerForm.get(campo)?.markAsTouched();
-    });
+  marcarCampos(campos: string[]) {
+    campos.forEach(c => this.registerForm.get(c)?.markAsTouched());
   }
 
   passwordsNoCoinciden(): boolean {
-    const pass = this.registerForm.get('password')?.value;
-    const repeat = this.registerForm.get('repeatPassword')?.value;
-
-    return pass && repeat && pass !== repeat;
+    return this.registerForm.value.password !== this.registerForm.value.repeatPassword;
   }
 
-
+  //Submit
   register(): void {
 
-    if (!this.validarPaso2()) {
-      return;
-    }
+    if (!this.validarPaso2()) return;
 
     this.cargando = true;
 
@@ -158,29 +195,6 @@ export class RegistrarseComponent implements OnInit {
 
     console.log(payload);
 
-    /*
-    this.authService.register(payload).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Registro exitoso',
-          detail: 'Ya podés iniciar sesión'
-        });
-
-        this.router.navigate(['/login']);
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudo registrar el usuario'
-        });
-        this.cargando = false;
-      }
-    });
-    */
-
-    // Simulación
     setTimeout(() => {
       this.messageService.add({
         severity: 'success',
