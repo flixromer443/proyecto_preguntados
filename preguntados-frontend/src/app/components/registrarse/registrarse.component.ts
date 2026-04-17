@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Provincia, Departamento, Localidad } from '../../models/georef.interfaces';
-import { GeorefService} from '../../services/georef.service';
+import { GeorefService } from '../../services/georef.service';
 
 @Component({
   selector: 'app-registrarse',
@@ -19,6 +19,13 @@ export class RegistrarseComponent implements OnInit {
   provincias: Provincia[] = [];
   departamentos: Departamento[] = [];
   localidades: Localidad[] = [];
+
+  // 🔥 AUTOCOMPLETE CALLES
+  callesFiltradas: any[] = [];
+
+  // 🔥 VALIDACIÓN DIRECCIÓN
+  calleSeleccionada: any = null;
+  alturaMaxima: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -52,14 +59,23 @@ export class RegistrarseComponent implements OnInit {
       correoElectronico: ['', [Validators.required, Validators.email]]
     });
 
+    this.registerForm.get('calle')?.valueChanges.subscribe(value => {
+      if (value && typeof value === 'string') {
+        const upper = value.toUpperCase();
+        if (value !== upper) {
+          this.registerForm.get('calle')?.setValue(upper, { emitEvent: false });
+        }
+      }
+    });
+
     this.cargarProvincias();
   }
 
-  //Geofef
   cargarProvincias(): void {
-    this.georefService.getProvincias().subscribe((res: { provincias: Provincia[]; }) => {
-      this.provincias = res.provincias;
-    });
+    this.georefService.getProvincias()
+      .subscribe((res: { provincias: Provincia[] }) => {
+        this.provincias = res.provincias;
+      });
   }
 
   onProvinciaChange(): void {
@@ -67,16 +83,19 @@ export class RegistrarseComponent implements OnInit {
 
     this.departamentos = [];
     this.localidades = [];
+    this.callesFiltradas = [];
+    this.resetDireccion();
 
     this.registerForm.patchValue({
       departamento: '',
-      localidad: ''
+      localidad: '',
+      calle: ''
     });
 
     if (!idProvincia) return;
 
     this.georefService.getDepartamentosPorProvincia(idProvincia)
-      .subscribe((res: { departamentos: Departamento[]; })  => {
+      .subscribe((res: { departamentos: Departamento[] }) => {
         this.departamentos = res.departamentos;
       });
   }
@@ -86,26 +105,75 @@ export class RegistrarseComponent implements OnInit {
     const idDepartamento = this.registerForm.get('departamento')?.value;
 
     this.localidades = [];
+    this.callesFiltradas = [];
+    this.resetDireccion();
 
     this.registerForm.patchValue({
-      localidad: ''
+      localidad: '',
+      calle: ''
     });
 
     if (!idProvincia || !idDepartamento) return;
 
     this.georefService.getLocalidades(idProvincia, idDepartamento)
-      .subscribe((res: { localidades: Localidad[]; }) => {
+      .subscribe((res: { localidades: Localidad[] }) => {
         this.localidades = res.localidades;
       });
   }
 
-  //Steps
+  resetDireccion(): void {
+    this.calleSeleccionada = null;
+    this.alturaMaxima = 0;
+
+    this.registerForm.patchValue({
+      numero: ''
+    });
+
+    this.registerForm.get('numero')?.setErrors(null);
+  }
+
+  buscarCalles(event: any): void {
+    const query = (event.query || '').toUpperCase();
+
+    const provincia = this.registerForm.get('provincia')?.value;
+    const departamento = this.registerForm.get('departamento')?.value;
+
+    if (!provincia || !departamento || query.length < 2) {
+      this.callesFiltradas = [];
+      return;
+    }
+
+    this.georefService.getCalles(provincia, departamento)
+      .subscribe((res: { calles: any[] }) => {
+
+        this.callesFiltradas = res.calles
+          .filter(c => c.nombre.includes(query))
+          .map(c => ({
+            ...c,
+            nombre: c.nombre.toUpperCase()
+          }));
+
+      });
+  }
+
+  onCalleSelect(event: any): void {
+    this.calleSeleccionada = event;
+
+    const derecha = event.altura_fin_derecha || 0;
+    const izquierda = event.altura_fin_izquierda || 0;
+
+    this.alturaMaxima = Math.max(derecha, izquierda);
+  }
+
+  // =========================
+  // STEPS
+  // =========================
   nextStep(): void {
     if (!this.validarPaso1()) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Datos incompletos',
-        detail: 'Completá los datos personales'
+        detail: 'Completá los datos personales correctamente'
       });
       return;
     }
@@ -117,7 +185,9 @@ export class RegistrarseComponent implements OnInit {
     this.step = 1;
   }
 
-  //Validaciones
+  // =========================
+  // VALIDACIONES
+  // =========================
   validarPaso1(): boolean {
     const campos = [
       'nombre','apellido','sexo',
@@ -128,7 +198,19 @@ export class RegistrarseComponent implements OnInit {
     ];
 
     this.marcarCampos(campos);
-    return campos.every(c => this.registerForm.get(c)?.valid);
+
+    const formValido = campos.every(c => this.registerForm.get(c)?.valid);
+
+    if (this.registerForm.get('numero')?.hasError('direccionInvalida')) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Dirección inválida',
+        detail: 'El número ingresado supera la altura máxima de la calle'
+      });
+      return false;
+    }
+
+    return formValido;
   }
 
   validarPaso2(): boolean {
@@ -158,7 +240,9 @@ export class RegistrarseComponent implements OnInit {
     return this.registerForm.value.password !== this.registerForm.value.repeatPassword;
   }
 
-  //Submit
+  // =========================
+  // SUBMIT
+  // =========================
   register(): void {
 
     if (!this.validarPaso2()) return;

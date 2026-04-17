@@ -61,3 +61,34 @@ export interface LocalidadesResponse {
   total: number;
   localidades: Localidad[];
 }
+
+export interface Calle {
+  id: string;
+  nombre: string;
+  categoria: string;
+  nomenclatura: string;
+
+  provincia_id: string;
+  provincia_nombre: string;
+
+  departamento_id: string;
+  departamento_nombre: string;
+
+  localidad_censal_id: string;
+  localidad_censal_nombre: string;
+
+  localidad_id: string | null;
+  localidad_nombre: string | null;
+
+  altura_inicio_derecha: number;
+  altura_inicio_izquierda: number;
+  altura_fin_derecha: number;
+  altura_fin_izquierda: number;
+}
+
+export interface CallesResponse {
+  cantidad: number;
+  inicio: number;
+  total: number;
+  calles: Calle[];
+}

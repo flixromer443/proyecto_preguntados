@@ -8,9 +8,6 @@
 
           <form [formGroup]="registerForm" (ngSubmit)="register()">
 
-            <!-- ========================= -->
-            <!-- PASO 1: DATOS PERSONALES -->
-            <!-- ========================= -->
             <div *ngIf="step === 1">
 
               <h4 class="mb-3">Cargar Datos Personales</h4>
@@ -63,24 +60,9 @@
               <!-- ========================= -->
               <h5>Domicilio</h5>
 
-              <div class="row">
-                <div class="col-md-8">
-                  <label class="labelForm">Calle</label>
-                  <input type="text" pInputText formControlName="calle" class="w-100">
-                </div>
-
-                <div class="col-md-4">
-                  <label class="labelForm">Número</label>
-                  <input type="text" pInputText formControlName="numero" class="w-100">
-                </div>
-              </div>
-
-              <br>
-
               <!-- GEOREF -->
               <div class="row">
 
-                <!-- Provincia -->
                 <div class="col-md-4">
                   <label class="labelForm">Provincia</label>
                   <select 
@@ -95,7 +77,6 @@
                   </select>
                 </div>
 
-                <!-- Departamento -->
                 <div class="col-md-4">
                   <label class="labelForm">Departamento / Municipio</label>
                   <select 
@@ -110,7 +91,6 @@
                   </select>
                 </div>
 
-                <!-- Localidad -->
                 <div class="col-md-4">
                   <label class="labelForm">Localidad</label>
                   <select 
@@ -124,6 +104,50 @@
                   </select>
                 </div>
 
+              </div>
+
+              <br>
+
+              <!-- Calle + Número -->
+              <div class="row">
+                <div class="col-md-8">
+                  <label class="labelForm">Calle</label>
+
+                  <p-autoComplete
+                    formControlName="calle"
+                    [suggestions]="callesFiltradas"
+                    (completeMethod)="buscarCalles($event)"
+                    field="nombre"
+                    [dropdown]="true"
+                    [forceSelection]="false"
+                    placeholder="Escribí la calle..."
+                    styleClass="w-100"
+                    inputStyleClass="w-100"
+                    [inputStyle]="{'text-transform': 'uppercase'}">
+                  </p-autoComplete>
+
+                </div>
+
+                <div class="col-md-4">
+                  <label class="labelForm">Número</label>
+
+                  <input 
+                    type="text" 
+                    pInputText 
+                    formControlName="numero" 
+                    class="w-100"
+                    [ngClass]="{
+                      'ng-invalid ng-dirty': registerForm.get('numero')?.errors?.['direccionInvalida']
+                    }">
+
+                  <small 
+                    *ngIf="registerForm.get('numero')?.errors?.['direccionInvalida'] 
+                      && registerForm.get('numero')?.touched"
+                    class="text-danger">
+                    Dirección inválida: la altura supera el máximo permitido
+                  </small>
+
+                </div>
               </div>
 
               <br>
@@ -153,9 +177,8 @@
 
             </div>
 
-
             <!-- ========================= -->
-            <!-- PASO 2: USUARIO -->
+            <!-- PASO 2 -->
             <!-- ========================= -->
             <div *ngIf="step === 2">
 

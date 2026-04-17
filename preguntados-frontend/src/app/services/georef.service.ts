@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global';
+
 import {
   ProvinciasResponse,
   DepartamentosResponse,
-  LocalidadesResponse
+  LocalidadesResponse,
+  CallesResponse
 } from '../models/georef.interfaces';
 
 @Injectable({
@@ -75,6 +77,23 @@ export class GeorefService {
 
     return this.http.get<ProvinciasResponse>(
       `${this.georefUrl}/provincias`,
+      { params }
+    );
+  }
+
+  getCalles(provincia: string, departamento: string): Observable<CallesResponse> {
+
+    const params = new HttpParams()
+      .set('provincia', provincia)
+      .set('departamento', departamento)
+      .set('aplanar', 'true')
+      .set('campos', 'estandar')
+      .set('max', '5000')
+      .set('inicio', '0')
+      .set('exacto', 'true');
+
+    return this.http.get<CallesResponse>(
+      `${this.georefUrl}/calles`,
       { params }
     );
   }

@@ -43,6 +43,7 @@ import { RegistrarseComponent } from './components/registrarse/registrarse.compo
 import { EstadisticasJugadorComponent} from './components/estadisticas-jugador/estadisticas-jugador.component';
 import { PerfilJugadorComponent } from './components/perfil-jugador/perfil-jugador.component';
 import { PasswordModule } from 'primeng/password';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import { PasswordModule } from 'primeng/password';
     InputTextModule,
     CardModule,
     PanelModule,
-    PasswordModule
+    PasswordModule,
+    AutoCompleteModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]
