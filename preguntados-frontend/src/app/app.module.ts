@@ -42,7 +42,7 @@ import { IniciarSesionComponent } from './components/iniciar-sesion/iniciar-sesi
 import { RegistrarseComponent } from './components/registrarse/registrarse.component';
 import { EstadisticasJugadorComponent} from './components/estadisticas-jugador/estadisticas-jugador.component';
 import { PerfilJugadorComponent } from './components/perfil-jugador/perfil-jugador.component';
-
+import { PasswordModule } from 'primeng/password';
 
 @NgModule({
   declarations: [
@@ -88,8 +88,8 @@ import { PerfilJugadorComponent } from './components/perfil-jugador/perfil-jugad
     ReactiveFormsModule,
     InputTextModule,
     CardModule,
-    PanelModule
-  
+    PanelModule,
+    PasswordModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]

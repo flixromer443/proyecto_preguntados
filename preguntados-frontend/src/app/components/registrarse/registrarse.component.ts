@@ -13,6 +13,7 @@ export class RegistrarseComponent implements OnInit {
 
   registerForm!: FormGroup;
   cargando: boolean = false;
+  step: number = 1;
 
   constructor(
     private fb: FormBuilder,
@@ -23,8 +24,10 @@ export class RegistrarseComponent implements OnInit {
 
   ngOnInit(): void {
     this.registerForm = this.fb.group({
+
       username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
+      repeatPassword: ['', Validators.required],
 
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
@@ -43,13 +46,83 @@ export class RegistrarseComponent implements OnInit {
     });
   }
 
-  register(): void {
-    if (this.registerForm.invalid) {
+
+  nextStep(): void {
+    if (!this.validarPaso1()) {
       this.messageService.add({
         severity: 'warn',
-        summary: 'Formulario inválido',
-        detail: 'Por favor complete todos los campos'
+        summary: 'Datos incompletos',
+        detail: 'Completá los datos personales antes de continuar'
       });
+      return;
+    }
+
+    this.step = 2;
+  }
+
+  prevStep(): void {
+    this.step = 1;
+  }
+
+
+  validarPaso1(): boolean {
+    const camposPaso1 = [
+      'nombre',
+      'apellido',
+      'sexo',
+      'tipoDocumento',
+      'numeroDocumento',
+      'calle',
+      'numero',
+      'localidad',
+      'provincia',
+      'telefono',
+      'correoElectronico'
+    ];
+
+    this.marcarCamposComoTocados(camposPaso1);
+
+    return camposPaso1.every(campo => this.registerForm.get(campo)?.valid);
+  }
+
+  validarPaso2(): boolean {
+    const camposPaso2 = ['username', 'password', 'repeatPassword'];
+
+    this.marcarCamposComoTocados(camposPaso2);
+
+    const validos = camposPaso2.every(campo => this.registerForm.get(campo)?.valid);
+
+    if (!validos) return false;
+
+    if (this.passwordsNoCoinciden()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Error',
+        detail: 'Las contraseñas no coinciden'
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+  marcarCamposComoTocados(campos: string[]): void {
+    campos.forEach(campo => {
+      this.registerForm.get(campo)?.markAsTouched();
+    });
+  }
+
+  passwordsNoCoinciden(): boolean {
+    const pass = this.registerForm.get('password')?.value;
+    const repeat = this.registerForm.get('repeatPassword')?.value;
+
+    return pass && repeat && pass !== repeat;
+  }
+
+
+  register(): void {
+
+    if (!this.validarPaso2()) {
       return;
     }
 
@@ -85,7 +158,6 @@ export class RegistrarseComponent implements OnInit {
 
     console.log(payload);
 
-    // 🔥 Conexión real (cuando tengas el service)
     /*
     this.authService.register(payload).subscribe({
       next: () => {
@@ -97,7 +169,7 @@ export class RegistrarseComponent implements OnInit {
 
         this.router.navigate(['/login']);
       },
-      error: (err) => {
+      error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -108,7 +180,7 @@ export class RegistrarseComponent implements OnInit {
     });
     */
 
-    // Simulación temporal
+    // Simulación
     setTimeout(() => {
       this.messageService.add({
         severity: 'success',
