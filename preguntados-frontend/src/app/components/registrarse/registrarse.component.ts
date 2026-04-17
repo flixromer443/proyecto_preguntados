@@ -19,11 +19,7 @@ export class RegistrarseComponent implements OnInit {
   provincias: Provincia[] = [];
   departamentos: Departamento[] = [];
   localidades: Localidad[] = [];
-
-  // 🔥 AUTOCOMPLETE CALLES
   callesFiltradas: any[] = [];
-
-  // 🔥 VALIDACIÓN DIRECCIÓN
   calleSeleccionada: any = null;
   alturaMaxima: number = 0;
 
@@ -35,6 +31,7 @@ export class RegistrarseComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
     this.registerForm = this.fb.group({
 
       username: ['', Validators.required],
@@ -59,16 +56,34 @@ export class RegistrarseComponent implements OnInit {
       correoElectronico: ['', [Validators.required, Validators.email]]
     });
 
-    this.registerForm.get('calle')?.valueChanges.subscribe(value => {
-      if (value && typeof value === 'string') {
-        const upper = value.toUpperCase();
-        if (value !== upper) {
-          this.registerForm.get('calle')?.setValue(upper, { emitEvent: false });
-        }
-      }
+    this.registerForm.get('nombre')?.valueChanges.subscribe(value => {
+      this.aplicarCapitalizacion('nombre', value);
+    });
+
+    this.registerForm.get('apellido')?.valueChanges.subscribe(value => {
+      this.aplicarCapitalizacion('apellido', value);
     });
 
     this.cargarProvincias();
+  }
+
+  private aplicarCapitalizacion(campo: string, value: string): void {
+
+    if (!value || typeof value !== 'string') return;
+
+    const control = this.registerForm.get(campo);
+    if (!control) return;
+
+    const capitalizado = value
+      .toLowerCase()
+      .split(' ')
+      .filter(p => p.length > 0)
+      .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+      .join(' ');
+
+    if (value !== capitalizado) {
+      control.setValue(capitalizado, { emitEvent: false });
+    }
   }
 
   cargarProvincias(): void {
@@ -133,6 +148,7 @@ export class RegistrarseComponent implements OnInit {
   }
 
   buscarCalles(event: any): void {
+
     const query = (event.query || '').toUpperCase();
 
     const provincia = this.registerForm.get('provincia')?.value;
@@ -147,12 +163,11 @@ export class RegistrarseComponent implements OnInit {
       .subscribe((res: { calles: any[] }) => {
 
         this.callesFiltradas = res.calles
-          .filter(c => c.nombre.includes(query))
+          .filter(c => c.nombre.toUpperCase().includes(query))
           .map(c => ({
             ...c,
             nombre: c.nombre.toUpperCase()
           }));
-
       });
   }
 
@@ -165,10 +180,10 @@ export class RegistrarseComponent implements OnInit {
     this.alturaMaxima = Math.max(derecha, izquierda);
   }
 
-  // =========================
-  // STEPS
-  // =========================
+
+  // Steps
   nextStep(): void {
+
     if (!this.validarPaso1()) {
       this.messageService.add({
         severity: 'warn',
@@ -185,10 +200,9 @@ export class RegistrarseComponent implements OnInit {
     this.step = 1;
   }
 
-  // =========================
-  // VALIDACIONES
-  // =========================
+  // Validacione
   validarPaso1(): boolean {
+
     const campos = [
       'nombre','apellido','sexo',
       'tipoDocumento','numeroDocumento',
@@ -214,6 +228,7 @@ export class RegistrarseComponent implements OnInit {
   }
 
   validarPaso2(): boolean {
+
     const campos = ['username','password','repeatPassword'];
 
     this.marcarCampos(campos);
@@ -240,9 +255,8 @@ export class RegistrarseComponent implements OnInit {
     return this.registerForm.value.password !== this.registerForm.value.repeatPassword;
   }
 
-  // =========================
-  // SUBMIT
-  // =========================
+  // 
+  // Submit
   register(): void {
 
     if (!this.validarPaso2()) return;
