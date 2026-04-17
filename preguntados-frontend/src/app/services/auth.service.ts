@@ -30,6 +30,11 @@ export class AuthService {
     return this.http.post<LoginResponse>(this.apiAuthUrl, body);
   }
   
+  registrarNuevoUsuario(data: any): Observable<any> {
+    return this.http.post<any>(this.apiAuthUrl, data);
+  }
+
+
   obtenerPreguntasAlAzar(): Observable<Pregunta[]> {
     let headers = new HttpHeaders().set('Content-Type', 'application/json');
     let params = JSON.stringify({'metodo':"obtenerPreguntasAlAzar"});
