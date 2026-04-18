@@ -35,6 +35,7 @@
     define('SUCCESS_203', "Usuario activado exitosamente");
     define('SUCCESS_204', "Solicitud de cambio de contrasenia aprobada");
     define('SUCCESS_205', "Se le ha enviado un nuevo codigo por correo");
+    define('SUCCESS_206', "Se ha encontrado un usuario inactivo."); 
 
 
 

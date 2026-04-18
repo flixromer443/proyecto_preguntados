@@ -32,10 +32,16 @@ class AuthModel {
     public function iniciarSesion($data){
         $datosUsuario = $this->obtenerDatosUsuario($data->credenciales);
         if($datosUsuario){
-            return MessageHandler::success(200, SUCCESS_202, $this->retornarUsuarioValidadoYToken($datosUsuario));
+            $usuarioActivo = $this->elUsuarioSeEncuentraActivo($datosUsuario);
+            return $usuarioActivo ? MessageHandler::success(202, SUCCESS_202, $this->retornarUsuarioValidadoYToken($datosUsuario))
+                                  : MessageHandler::success(206, SUCCESS_206, $this->retornarUsuarioInactivo($datosUsuario));
         }else{
             return MessageHandler::error(500, ERROR_502);
         }
+    }
+    
+    private function elUsuarioSeEncuentraActivo($datosUsuario){
+        return $datosUsuario['id_estado'] == ESTADO_2;
     }
 
     private function obtenerDatosUsuario($credenciales){
@@ -51,6 +57,13 @@ class AuthModel {
         return[
             'usuario' => $this->filtrarDatosNecesarios($datosUsuario),
             'token' => $this->tokenService->generarToken($datosUsuario)
+        ];
+    }
+
+    private function retornarUsuarioInactivo($datosUsuario){
+        return[
+            'id_usuario' => $datosUsuario['id'],
+            'accion' => 1
         ];
     }
 
