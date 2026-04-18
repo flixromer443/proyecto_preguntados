@@ -31,3 +31,17 @@ export interface Usuario {
 }
 
 export type LoginResponse = ApiResponse<LoginData>;
+
+// ===== CODIGO ACTIVACION =====
+
+
+
+export interface CodigoVerificacionRequest {
+  metodo: string;
+  payload: CodigoVerificacionPayload;
+}
+
+export interface CodigoVerificacionPayload {
+  id_usuario: number;
+  codigo: number;
+}

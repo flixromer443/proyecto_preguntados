@@ -92,5 +92,19 @@ class DatosPersonalesDAO {
         
     }
 
+    public function obtenerDatosPersonalesPorIdUsuario($idUsuario){
+        try{
+            $stmt = $this->pdo->prepare("SELECT * FROM datos_personales  
+                                         WHERE id_usuario=:id_usuario ");
+            $stmt->execute([
+                ':id_usuario' => $idUsuario,
+            ]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        }catch(PDOException $e){
+            error_log("Error select datos_personales: " . $e->getMessage());
+            return false;
+        }
+    }
 
 }

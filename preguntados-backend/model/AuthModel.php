@@ -32,10 +32,16 @@ class AuthModel {
     public function iniciarSesion($data){
         $datosUsuario = $this->obtenerDatosUsuario($data->credenciales);
         if($datosUsuario){
-            return MessageHandler::success(200, SUCCESS_202, $this->retornarUsuarioValidadoYToken($datosUsuario));
+            $usuarioActivo = $this->elUsuarioSeEncuentraActivo($datosUsuario);
+            return $usuarioActivo ? MessageHandler::success(202, SUCCESS_202, $this->retornarUsuarioValidadoYToken($datosUsuario))
+                                  : MessageHandler::success(206, SUCCESS_206, $this->retornarUsuarioInactivo($datosUsuario));
         }else{
             return MessageHandler::error(500, ERROR_502);
         }
+    }
+    
+    private function elUsuarioSeEncuentraActivo($datosUsuario){
+        return $datosUsuario['id_estado'] == ESTADO_2;
     }
 
     private function obtenerDatosUsuario($credenciales){
@@ -51,6 +57,13 @@ class AuthModel {
         return[
             'usuario' => $this->filtrarDatosNecesarios($datosUsuario),
             'token' => $this->tokenService->generarToken($datosUsuario)
+        ];
+    }
+
+    private function retornarUsuarioInactivo($datosUsuario){
+        return[
+            'id_usuario' => $datosUsuario['id'],
+            'accion' => 1
         ];
     }
 
@@ -136,9 +149,68 @@ class AuthModel {
     }
    
 
-
-    public function solicitarCambioDeContrasenia(){
+    public function validarCodigoVerificacion($data){
+        $codigoValido = $this->existeCodigoDeVerificacionValido($data);
+        if($codigoValido){
+            return $this->activarUsuarioOHabilitarCambioContrasenia($data);
+        }else{
+            return MessageHandler::error(503, ERROR_503);
+        }
 
     }
+
+    private function existeCodigoDeVerificacionValido($data){
+       return $this->codigosVerificacionDAO->existeCodigoDeVerificacion(
+            $data->payload->id_usuario,
+            $data->payload->codigo
+        );
+    }
+
+    private function activarUsuarioOHabilitarCambioContrasenia($data){
+        $retorno = null;
+        $usuario = $this->usuarioDAO->obtenerUsuarioPorId($data->payload->id_usuario);
+        if($usuario['id_estado'] == ESTADO_1){
+            $retorno = MessageHandler::success(203, SUCCESS_203,[]);
+        }elseif($usuario['id_estado'] == ESTADO_3){
+            $retorno = MessageHandler::success(203, SUCCESS_204,[]);
+        }
+
+        $this->codigosVerificacionDAO->eliminarCodigoDeVerificacion($data->payload->id_usuario);
+        $this->usuarioDAO->cambiarEstado($data->payload->id_usuario, ESTADO_2);        
+
+        return $retorno;
+    }
+
+
+    public function reenviarCodigoVerificacion($data){
+        $retorno = null;
+        $usuario = $this->usuarioDAO->obtenerUsuarioPorId($data->id_usuario);
+        if($usuario){
+            $datosPersonales = $this->datosPersonalesDAO->obtenerDatosPersonalesPorIdUsuario($data->id_usuario);
+            $mailEnviado = $this->enviarCorreoConNuevoCodigoDeVerificacion($datosPersonales, $data->id_usuario);
+            $retorno = $mailEnviado ? MessageHandler::success(205, SUCCESS_205,[]) 
+                                    : MessageHandler::error(503, ERROR_504);
+        }else{
+            $retorno = MessageHandler::error(304, ERROR_304);
+        }
+        return $retorno;
+    }
+    
+    private function mapearDatosPersonalesParaReenviarCodigo($datosPersonales){
+        $datosMapeados = new stdClass();
+        $datosMapeados->nombre = $datosPersonales['nombre'];
+        $datosMapeados->correoElectronico = $datosPersonales['correo_electronico'];
+        return $datosMapeados;
+    }
+
+    private function enviarCorreoConNuevoCodigoDeVerificacion($datosPersonales, $idUsuario){
+        return $this->enviarCodigoDeActivacionPorMail(
+            $this->mapearDatosPersonalesParaReenviarCodigo($datosPersonales), 
+            $this->generarCodigoVerificacion($idUsuario)
+        );
+    }
+    /*public function solicitarCambioDeContrasenia(){
+
+    }*/
 
 }

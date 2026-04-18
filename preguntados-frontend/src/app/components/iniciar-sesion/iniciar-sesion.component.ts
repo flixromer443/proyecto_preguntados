@@ -45,21 +45,20 @@ export class IniciarSesionComponent implements OnInit {
 
     this.authService.iniciarSesion(usuario, password).subscribe({
       next: (response: any) => {
-        if(response.success){
+        if(response.success && response.code == 202){ //usuario activo
           sessionStorage.setItem('usuario', JSON.stringify(response.data.usuario));
           sessionStorage.setItem('token', response.data.token);
 
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Login exitoso',
-            detail: 'Bienvenido'
-          });
-
-          this.router.navigate(['/perfil-jugador']);
           this.cargando = false;
-        }else{
-            this.showError(response.message);
-            this.cargando = false;
+          this.router.navigate(['/perfil-jugador']);
+        }else if(response.success && response.code == 206){ //usuario inactivo
+          this.cargando = false;    
+          this.router.navigate(['/ingresar-codigo'], {
+            queryParams: {
+              id_usuario: response.data.id_usuario,
+              accion: response.data.accion
+            }
+          });
         }
       },
       error: (err: any) => {
