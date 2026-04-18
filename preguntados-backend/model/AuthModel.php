@@ -167,18 +167,11 @@ class AuthModel {
     }
 
     private function activarUsuarioOHabilitarCambioContrasenia($data){
-        $retorno = null;
         $usuario = $this->usuarioDAO->obtenerUsuarioPorId($data->payload->id_usuario);
-        if($usuario['id_estado'] == ESTADO_1){
-            $retorno = MessageHandler::success(203, SUCCESS_203,[]);
-        }elseif($usuario['id_estado'] == ESTADO_3){
-            $retorno = MessageHandler::success(203, SUCCESS_204,[]);
-        }
-
         $this->codigosVerificacionDAO->eliminarCodigoDeVerificacion($data->payload->id_usuario);
         $this->usuarioDAO->cambiarEstado($data->payload->id_usuario, ESTADO_2);        
-
-        return $retorno;
+        $token = $this->tokenService->generarToken($usuario);
+        return MessageHandler::success(203, SUCCESS_203,["token"=>$token]);
     }
 
 
@@ -188,7 +181,7 @@ class AuthModel {
         if($usuario){
             $datosPersonales = $this->datosPersonalesDAO->obtenerDatosPersonalesPorIdUsuario($data->id_usuario);
             $mailEnviado = $this->enviarCorreoConNuevoCodigoDeVerificacion($datosPersonales, $data->id_usuario);
-            $retorno = $mailEnviado ? MessageHandler::success(205, SUCCESS_205,[]) 
+            $retorno = $mailEnviado ? MessageHandler::success(205, SUCCESS_205,["id_usuario"=>$data->id_usuario]) 
                                     : MessageHandler::error(503, ERROR_504);
         }else{
             $retorno = MessageHandler::error(304, ERROR_304);
@@ -230,7 +223,8 @@ class AuthModel {
     }   
 
     public function actualizarConstrasenia($data){
-        $contraseniaActualizada = $this->usuarioDAO->actualizarContrasenia($data->id_usuario, $data->constrasenia);
+        $payload = $data->payload;
+        $contraseniaActualizada = $this->usuarioDAO->actualizarContrasenia($payload->id_usuario, $payload->constrasenia);
         return $contraseniaActualizada ? MessageHandler::success(207, SUCCESS_207,[]) 
                                        : MessageHandler::error(304, ERROR_505);
 
