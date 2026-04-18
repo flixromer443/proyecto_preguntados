@@ -51,7 +51,7 @@ export class IngresarCorreoComponent implements OnInit {
           setTimeout(() => {
             this.router.navigate(['/ingresar-codigo'], {
               queryParams: {
-                id_usuario: response.id_usuario,
+                id_usuario: response.data.id_usuario,
                 accion: 2 
               }
             });

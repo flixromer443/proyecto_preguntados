@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import jwtDecode from 'jwt-decode';
+
+// ✅ Tipado del JWT
+interface JwtPayload {
+  sub: number;
+  exp: number;
+}
 
 @Component({
   selector: 'app-cambiar-password',
@@ -22,16 +29,19 @@ export class CambiarPasswordComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService,
-    private route: ActivatedRoute
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
 
-    this.route.queryParams.subscribe(params => {
-      this.idUsuario = Number(params['id_usuario']);
-    });
+    const userId = this.getUserId();
 
+    if (!userId) {
+      this.router.navigate(['/iniciar-sesion']);
+      return;
+    }
+
+    this.idUsuario = userId;
     this.passwordForm = this.fb.group({
       password: ['', [Validators.required, this.passwordValidator]],
       repeatPassword: ['', Validators.required]
@@ -51,6 +61,9 @@ export class CambiarPasswordComponent implements OnInit {
     return regex.test(value) ? null : { weakPassword: true };
   }
 
+  // =========================
+  // VALIDAR MATCH PASSWORDS
+  // =========================
   passwordsNoCoinciden(): boolean {
     return this.passwordForm.value.password !== this.passwordForm.value.repeatPassword;
   }
@@ -72,8 +85,8 @@ export class CambiarPasswordComponent implements OnInit {
     this.authService.actualizarConstrasenia(this.idUsuario, password).subscribe({
       next: (response: any) => {
         this.cargando = false;
-
         if (response.success) {
+          sessionStorage.clear();
           this.showMessageAndRedirect('Contraseña actualizada correctamente');
         } else {
           this.showError(response.message);
@@ -87,6 +100,33 @@ export class CambiarPasswordComponent implements OnInit {
         );
       }
     });
+  }
+
+  // =========================
+  // OBTENER TOKEN TEMPORAL
+  // =========================
+  getToken(): string | null {
+    return sessionStorage.getItem('tmp_token');
+  }
+
+  // =========================
+  // EXTRAER ID DEL TOKEN
+  // =========================
+  getUserId(): number | null {
+    const token = this.getToken();
+
+    if (!token) return null;
+
+    try {
+      const decoded = jwtDecode<JwtPayload>(token);
+
+      const now = Math.floor(Date.now() / 1000);
+      if (decoded.exp < now) return null;
+
+      return decoded.sub;
+    } catch (e) {
+      return null;
+    }
   }
 
   // =========================
