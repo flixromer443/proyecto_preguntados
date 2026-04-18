@@ -27,11 +27,9 @@ class AuthController {
         return $this->AuthModel->reenviarCodigoVerificacion($data);
     }
 
-
-
-    /*public function solicitarCambioDeContrasenia(){
-        return $this->AuthModel->solicitarCambioDeContrasenia();
-    }*/
+    public function solicitarCambioDeContrasenia($data){
+        return $this->AuthModel->solicitarCambioDeContrasenia($data);
+    }
 
 }
 
