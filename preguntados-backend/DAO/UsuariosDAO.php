@@ -92,4 +92,32 @@ class UsuariosDAO {
         }
     }
 
+    public function obtenerUsuarioPorId($idUsuario){
+        try{
+            $stmt = $this->pdo->prepare("SELECT * FROM usuarios WHERE id=:id_usuario");
+            $stmt->execute([
+                ':id_usuario' => $idUsuario
+            ]);
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $usuario ? RowMapper::mapUsuarioFromDB($usuario) : false;
+        }catch(PDOException $e){
+            error_log("Error al obtener usuario: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function cambiarEstado($idUsuario, $idEstado) {
+        $sql = "UPDATE usuarios SET id_estado = :id_estado 
+                WHERE id = :id_usuario";
+    
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':id_estado' => $idEstado,
+            ':id_usuario' => $idUsuario
+        ]);
+
+        return $stmt->rowCount() > 0;
+    }
+
 }

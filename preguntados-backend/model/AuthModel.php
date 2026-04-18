@@ -136,9 +136,43 @@ class AuthModel {
     }
    
 
-
-    public function solicitarCambioDeContrasenia(){
+    public function validarCodigoVerificacion($data){
+        $codigoValido = $this->existeCodigoDeVerificacionValido($data);
+        if($codigoValido){
+            return $this->activarUsuarioOHabilitarCambioContrasenia($data);
+        }else{
+            return MessageHandler::error(503, ERROR_503);
+        }
 
     }
+
+    public function existeCodigoDeVerificacionValido($data){
+       return $this->codigosVerificacionDAO->existeCodigoDeVerificacion(
+            $data->payload->id_usuario,
+            $data->payload->codigo
+        );
+    }
+
+    public function activarUsuarioOHabilitarCambioContrasenia($data){
+        $retorno = null;
+        $usuario = $this->usuarioDAO->obtenerUsuarioPorId($data->payload->id_usuario);
+        if($usuario['id_estado'] == ESTADO_1){
+            $retorno = MessageHandler::success(203, SUCCESS_203,[]);
+        }elseif($usuario['id_estado'] == ESTADO_3){
+            $retorno = MessageHandler::success(203, SUCCESS_204,[]);
+        }
+
+        $this->codigosVerificacionDAO->eliminarCodigoDeVerificacion($data->payload->id_usuario);
+        $this->usuarioDAO->cambiarEstado($data->payload->id_usuario, ESTADO_2);        
+
+        return $retorno;
+    }
+
+
+    
+
+    /*public function solicitarCambioDeContrasenia(){
+
+    }*/
 
 }

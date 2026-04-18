@@ -23,10 +23,14 @@
     //ERRORES FUNCIONALES
     define('ERROR_501', "Ha ocurrido un error al intentar generar un nuevo usuario");
     define('ERROR_502', "Ha ocurrido un error al iniciar sesion, verifique sus credenciales");
+    define('ERROR_503', "El codigo de verificacion ingresado no es valido");
+
 
     //MENSAJES DE EXITO
     define('SUCCESS_201', "Usuario registrado correctamente");
     define('SUCCESS_202', "Inicio de sesion exitoso");
+    define('SUCCESS_203', "Usuario activado exitosamente");
+    define('SUCCESS_204', "Solicitud de cambio de contrasenia aprobada");
 
 
 

@@ -18,8 +18,19 @@ if($data->metodo == "registrarNuevoUsuario"){
 }
 
 
-if($data->metodo == "solicitarCambioDeContrasenia"){
+
+if($data->metodo == "validarCodigoVerificacion"){
+    $controller = new AuthController();
+    echo json_encode($controller->validarCodigoVerificacion($data));
+}
+/*if($data->metodo == "reenviarCodigoVerificacion"){
+    $controller = new AuthController();
+    echo json_encode($controller->reenviarCodigoVerificacion($data));
+}*/
+
+
+/*if($data->metodo == "solicitarCambioDeContrasenia"){
     $controller = new AuthController();
     echo json_encode($controller->solicitarCambioDeContrasenia());
-}
+}*/
 ?>

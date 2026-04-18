@@ -40,4 +40,32 @@ class CodigosVerificacionDAO {
             return false;
         }
     }
+
+    public function existeCodigoDeVerificacion($idUsuario, $codigo) : bool {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM codigos_verificacion 
+                                         WHERE id_usuario = :id_usuario
+                                         AND codigo = :codigo");
+            $stmt->execute([
+                ':id_usuario' => $idUsuario,
+                ':codigo' => $codigo,
+            ]);
+            return (bool) $stmt->fetchColumn();
+
+        } catch (PDOException $e) {
+            $this->pdo->rollBack();
+            error_log("Error en existeCodigoDeVerificacion: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function eliminarCodigoDeVerificacion($idUsuario){
+        $stmt = $this->pdo->prepare("DELETE FROM codigos_verificacion 
+                                     WHERE id_usuario = :id_usuario
+                                     ");
+        $stmt->execute([
+            ':id_usuario' => $idUsuario,
+        ]);
+        return $stmt->rowCount() > 0;
+    }
 }
