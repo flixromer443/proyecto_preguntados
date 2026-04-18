@@ -17,9 +17,21 @@ class AuthController {
         return $this->AuthModel->registrarNuevoUsuario($data);
     }
 
-    public function solicitarCambioDeContrasenia(){
-        return $this->AuthModel->solicitarCambioDeContrasenia();
+
+
+    public function validarCodigoVerificacion($data){
+        return $this->AuthModel->validarCodigoVerificacion($data);
     }
+
+    public function reenviarCodigoVerificacion($data){
+        return $this->AuthModel->reenviarCodigoVerificacion($data);
+    }
+
+
+
+    /*public function solicitarCambioDeContrasenia(){
+        return $this->AuthModel->solicitarCambioDeContrasenia();
+    }*/
 
 }
 
