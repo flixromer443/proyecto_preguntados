@@ -50,6 +50,26 @@ export class AuthService {
     return this.http.post<LoginResponse>(this.apiAuthUrl, body);
   }
 
+  solicitarCambioDeContrasenia(correo_electronico: string): Observable<LoginResponse> {
+    const body = {
+      metodo: "solicitarCambioDeContrasenia",
+      correo_electronico: correo_electronico
+    };
+    return this.http.post<LoginResponse>(this.apiAuthUrl, body);
+  }
+
+  actualizarConstrasenia(id_usuario: number, password: string): Observable<any> {
+  const body = {
+    metodo: "cambiarPassword",
+    payload: {
+      id_usuario,
+      password
+    }
+  };
+
+  return this.http.post<any>(this.apiAuthUrl, body);
+}
+
   
 
   isLoggedIn(): boolean {

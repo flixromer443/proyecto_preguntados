@@ -45,6 +45,8 @@ import { PerfilJugadorComponent } from './components/perfil-jugador/perfil-jugad
 import { PasswordModule } from 'primeng/password';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { IngresarCodigoComponent } from './components/ingresar-codigo/ingresar-codigo.component';
+import { IngresarCorreoComponent } from './components/ingresar-correo/ingresar-correo.component';
+import { CambiarPasswordComponent } from './components/cambiar-password/cambiar-password.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +71,8 @@ import { IngresarCodigoComponent } from './components/ingresar-codigo/ingresar-c
     EstadisticasJugadorComponent,
     PerfilJugadorComponent,
     IngresarCodigoComponent,
+    IngresarCorreoComponent,
+    CambiarPasswordComponent,
     ModificarReservaComponent,
     FooterComponent,
     ActualizacionExitosaComponent,
