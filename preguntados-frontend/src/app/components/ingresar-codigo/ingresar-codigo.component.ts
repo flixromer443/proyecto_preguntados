@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../services/auth.service';
+import { DatosCompartidosService } from '../../services/datos-compartidos.service';
 
 @Component({
   selector: 'app-ingresar-codigo',
@@ -12,10 +13,11 @@ import { AuthService } from '../../services/auth.service';
 export class IngresarCodigoComponent implements OnInit {
 
   idUsuario!: number;
-
+  accion!: number;
   codeForm!: FormGroup;
   cargando: boolean = false;
 
+  message: string = '';
   errorMessage: string = '';
   private alertTimeout: any;
 
@@ -25,6 +27,7 @@ export class IngresarCodigoComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private messageService: MessageService,
+    private datosCompartidosService: DatosCompartidosService,    
     private authService: AuthService,
     private route: ActivatedRoute
   ) {}
@@ -32,9 +35,8 @@ export class IngresarCodigoComponent implements OnInit {
   ngOnInit(): void {
 
     this.route.queryParams.subscribe((params: { [x: string]: any; }) => {
-      console.log(params['id_usuario']);
       this.idUsuario = Number(params['id_usuario']);
-      console.log('ID usuario:', this.idUsuario);
+      this.accion = Number(params['accion']);
     });
 
     this.codeForm = this.fb.group({
@@ -45,10 +47,19 @@ export class IngresarCodigoComponent implements OnInit {
       d5: ['', [Validators.required, Validators.pattern(/^[0-9]$/)]],
       d6: ['', [Validators.required, Validators.pattern(/^[0-9]$/)]],
     });
+
+    // 🔥 Alternativa pro: auto-submit cuando los 6 dígitos están completos
+    this.codeForm.valueChanges.subscribe(values => {
+      const code = Object.values(values).join('');
+
+      if (code.length === 6 && this.codeForm.valid && !this.cargando) {
+        this.verifyCode();
+      }
+    });
   }
 
   // =========================
-  // INPUT AUTO MOVE
+  // INPUT AUTO MOVE + AUTOSUBMIT
   // =========================
   onInput(event: any, next: HTMLInputElement | HTMLButtonElement | null): void {
 
@@ -56,8 +67,21 @@ export class IngresarCodigoComponent implements OnInit {
 
     input.value = input.value.replace(/[^0-9]/g, '');
 
-    if (input.value.length === 1 && next) {
-      next.focus();
+    if (input.value.length === 1) {
+
+      // Focus al siguiente input
+      if (next instanceof HTMLInputElement) {
+        next.focus();
+      }
+
+      // 👇 Último input → dispara verificación
+      if (next instanceof HTMLButtonElement) {
+        setTimeout(() => {
+          if (this.codeForm.valid && !this.cargando) {
+            this.verifyCode();
+          }
+        }, 0);
+      }
     }
   }
 
@@ -79,7 +103,7 @@ export class IngresarCodigoComponent implements OnInit {
   // =========================
   verifyCode(): void {
 
-    if (this.codeForm.invalid) {
+    if (this.codeForm.invalid || this.cargando) {
       this.showError('Ingresá los 6 dígitos del código');
       return;
     }
@@ -94,14 +118,79 @@ export class IngresarCodigoComponent implements OnInit {
 
     this.cargando = true;
 
-    console.log('CODE:', code);
+    this.authService.validarCodigoVerificacion(this.idUsuario, code).subscribe({
+      next: (response: any) => {
+        this.cargando = false;
 
-    this.cargando = false;
+        if(response.success && this.accion == 1){
+          this.showMessageAndRedirect("Su usuario ha sido activado exitosamente");
+        }else if(response.success && this.accion == 2){
+          // TODO: ir a cambio de contraseña
+        }else{
+          this.showError(response.message);
+        }
+      },
+      error: (err: any) => {
+        this.cargando = false;
+
+        this.showError(
+          err?.error?.message || 'Credenciales incorrectas'
+        );
+      }
+    });
   }
 
   // =========================
-  // ERROR
+  // RESEND CODE
   // =========================
+  resendCode(){
+    this.cargando = true;
+    this.datosCompartidosService.esconderFooter.next(true);
+
+    this.authService.reenviarCodigoVerificacion(this.idUsuario).subscribe({
+      next: (response: any) => {
+        this.cargando = false;
+
+        if(response.success){
+          this.showMessage(response.message);
+        }else{
+          this.showError(response.message);
+        }
+      },
+      error: (err: any) => {
+        this.cargando = false;
+
+        this.showError(
+          err?.error?.message || 'Credenciales incorrectas'
+        );
+      }
+    });
+
+    this.datosCompartidosService.esconderFooter.next(false);
+  }
+
+  // =========================
+  // ALERTS
+  // =========================
+  private showMessageAndRedirect(message: string) {
+    this.message = message;
+    clearTimeout(this.alertTimeout);
+
+    this.alertTimeout = setTimeout(() => {
+      this.message = '';
+      this.router.navigate(['/iniciar-sesion']);
+    }, 5000);
+  }
+
+  private showMessage(message: string) {
+    this.message = message;
+    clearTimeout(this.alertTimeout);
+
+    this.alertTimeout = setTimeout(() => {
+      this.message = '';
+    }, 5000);
+  }
+
   private showError(message: string) {
     this.errorMessage = message;
 
@@ -112,8 +201,4 @@ export class IngresarCodigoComponent implements OnInit {
     }, 5000);
   }
 
-  resendCode(){
-
-  }
 }
-

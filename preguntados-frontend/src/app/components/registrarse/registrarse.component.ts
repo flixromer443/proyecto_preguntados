@@ -357,6 +357,7 @@ export class RegistrarseComponent implements OnInit {
           this.router.navigate(['/ingresar-codigo'], {
             queryParams: {
               id_usuario: response.data.id_usuario,
+              accion: 1
             }
           });
         }else{

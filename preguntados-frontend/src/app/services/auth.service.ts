@@ -5,7 +5,7 @@ import { Reserva } from '../models/reserva';
 import { Global } from './global';
 import { Disponibilidad } from '../models/diponibilidad';
 import { Pregunta } from '../models/pregunta';
-import { LoginResponse, LoginRequest } from '../models/auth.interfaces';
+import { LoginResponse, LoginRequest, CodigoVerificacionRequest } from '../models/auth.interfaces';
 import  jwtDecode  from 'jwt-decode';
 
 @Injectable({
@@ -34,16 +34,23 @@ export class AuthService {
     return this.http.post<any>(this.apiAuthUrl, data);
   }
 
-
-  obtenerPreguntasAlAzar(): Observable<Pregunta[]> {
-    let headers = new HttpHeaders().set('Content-Type', 'application/json');
-    let params = JSON.stringify({'metodo':"obtenerPreguntasAlAzar"});
-    return this.http.post<Pregunta[]>(this.apiAuthUrl, params, {headers: headers});
+  validarCodigoVerificacion(id_usuario: number, codigo: number): Observable<LoginResponse> {
+    const body: CodigoVerificacionRequest = {
+      metodo: "validarCodigoVerificacion",
+      payload: {id_usuario, codigo}
+    };
+    return this.http.post<LoginResponse>(this.apiAuthUrl, body);
   }
 
-   getToken(): string | null {
-    return sessionStorage.getItem('token');
+  reenviarCodigoVerificacion(id_usuario: number): Observable<LoginResponse> {
+    const body = {
+      metodo: "reenviarCodigoVerificacion",
+      id_usuario: id_usuario
+    };
+    return this.http.post<LoginResponse>(this.apiAuthUrl, body);
   }
+
+  
 
   isLoggedIn(): boolean {
     const token = this.getToken();
@@ -60,7 +67,9 @@ export class AuthService {
       return false;
     }
   }
-
+  getToken(): string | null {
+    return sessionStorage.getItem('token');
+  }
   logout() {
     sessionStorage.clear();
   }
