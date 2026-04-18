@@ -30,4 +30,8 @@ if($data->metodo == "solicitarCambioDeContrasenia"){
     $controller = new AuthController();
     echo json_encode($controller->solicitarCambioDeContrasenia($data));
 }
+if($data->metodo == "actualizarConstrasenia"){
+    $controller = new AuthController();
+    echo json_encode($controller->actualizarConstrasenia($data));
+}
 ?>

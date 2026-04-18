@@ -30,6 +30,10 @@ class AuthController {
     public function solicitarCambioDeContrasenia($data){
         return $this->AuthModel->solicitarCambioDeContrasenia($data);
     }
+    
+    public function actualizarConstrasenia($data){
+        return $this->AuthModel->actualizarConstrasenia($data);
+    }
 
 }
 

@@ -27,6 +27,7 @@
     define('ERROR_502', "Ha ocurrido un error al iniciar sesion, verifique sus credenciales");
     define('ERROR_503', "El codigo de verificacion ingresado no es valido");
     define('ERROR_504', "Ha ocurrido un error durante la generacion del codigo");
+    define('ERROR_505', "Ha ocurrido un error al actualizar su contraseña");
 
 
     //MENSAJES DE EXITO
@@ -36,6 +37,7 @@
     define('SUCCESS_204', "Solicitud de cambio de contrasenia aprobada");
     define('SUCCESS_205', "Se le ha enviado un nuevo codigo por correo");
     define('SUCCESS_206', "Se ha encontrado un usuario inactivo."); 
+    define('SUCCESS_207', "Su contraseña ha sido actualizada exitosamente."); 
 
 
 

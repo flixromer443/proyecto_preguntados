@@ -227,6 +227,13 @@ class AuthModel {
 
     private function obtenerUsuarioPorCorreoElectronico($correoElectronico){
         return $this->usuarioDAO->obtenerUsuarioPorUsernameOCorreoElectronico($correoElectronico);
+    }   
+
+    public function actualizarConstrasenia($data){
+        $contraseniaActualizada = $this->usuarioDAO->actualizarContrasenia($data->id_usuario, $data->constrasenia);
+        return $contraseniaActualizada ? MessageHandler::success(207, SUCCESS_207,[]) 
+                                       : MessageHandler::error(304, ERROR_505);
+
     }
 
 }
