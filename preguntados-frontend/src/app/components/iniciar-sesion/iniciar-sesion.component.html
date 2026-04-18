@@ -12,7 +12,6 @@
             </div>
           </ng-template>
 
-          <!-- 🔥 ALERT -->
           <div *ngIf="errorMessage" class="alert alert-danger text-center mb-3">
             {{ errorMessage }}
           </div>
@@ -64,7 +63,12 @@
               <span>¿No tenés cuenta?</span>
               <a routerLink="/registrarse" class="link-primary">Registrate acá</a>
             </div>
-
+            <div class="text-center">
+              <span>¿Olvidaste tu contraseña?</span>
+              <a routerLink="/recuperar-password" class="link-primary">
+                Recuperala acá
+              </a>
+            </div>
           </form>
 
         </p-card>
