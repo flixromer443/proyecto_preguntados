@@ -125,7 +125,8 @@ export class IngresarCodigoComponent implements OnInit {
         if(response.success && this.accion == 1){
           this.showMessageAndRedirect("Su usuario ha sido activado exitosamente");
         }else if(response.success && this.accion == 2){
-          // TODO: ir a cambio de contraseña
+          sessionStorage.setItem('tmp_token', response.data.token);
+          this.router.navigate(['/cambiar-password']);
         }else{
           this.showError(response.message);
         }

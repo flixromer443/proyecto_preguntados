@@ -120,4 +120,17 @@ class UsuariosDAO {
         return $stmt->rowCount() > 0;
     }
 
+    public function actualizarContrasenia($idUsuario, $contrasenia) {
+        $sql = "UPDATE usuarios SET contrasenia = :contrasenia 
+                WHERE id = :id_usuario";
+    
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':contrasenia' => password_hash($contrasenia, PASSWORD_BCRYPT),
+            ':id_usuario' => $idUsuario
+        ]);
+
+        return $stmt->rowCount() > 0;
+    }
+
 }
