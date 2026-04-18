@@ -43,15 +43,54 @@ class CodigosVerificacionDAO {
 
     public function existeCodigoDeVerificacion($idUsuario, $codigo) : bool {
         try {
-            $stmt = $this->pdo->prepare("SELECT * FROM codigos_verificacion 
+            $this->pdo->beginTransaction();
+    
+            $stmt = $this->pdo->prepare("SELECT id, intentos_consulta 
+                                         FROM codigos_verificacion 
                                          WHERE id_usuario = :id_usuario
-                                         AND codigo = :codigo");
+                                           AND codigo = :codigo
+                                         FOR UPDATE
+                                        ");
+    
             $stmt->execute([
                 ':id_usuario' => $idUsuario,
-                ':codigo' => $codigo,
+                ':codigo' => $codigo
             ]);
-            return (bool) $stmt->fetchColumn();
-
+    
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if (!$row) {
+                $this->pdo->commit();
+                return false;
+            }
+    
+            $intentos = (int)$row['intentos_consulta'] + 1;
+    
+            $stmtUpdate = $this->pdo->prepare("UPDATE codigos_verificacion
+                                               SET intentos_consulta = :intentos
+                                               WHERE id = :id
+                                            ");
+    
+            $stmtUpdate->execute([
+                ':intentos' => $intentos,
+                ':id' => $row['id']
+            ]);
+    
+            if ($intentos >= 3 || $row) {
+                $stmtDelete = $this->pdo->prepare("
+                    DELETE FROM codigos_verificacion
+                    WHERE id = :id
+                ");
+    
+                $stmtDelete->execute([
+                    ':id' => $row['id']
+                ]);
+            }
+    
+            $this->pdo->commit();
+    
+            return true;
+    
         } catch (PDOException $e) {
             $this->pdo->rollBack();
             error_log("Error en existeCodigoDeVerificacion: " . $e->getMessage());
