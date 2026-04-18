@@ -209,8 +209,31 @@ class AuthModel {
             $this->generarCodigoVerificacion($idUsuario)
         );
     }
-    /*public function solicitarCambioDeContrasenia(){
+    
+    public function solicitarCambioDeContrasenia($data){
+        $retorno = null;
+        $usuarioEncontrado = $this->obtenerUsuarioPorCorreoElectronico($data->correo_electronico);
+        
+        if($usuarioEncontrado){
+            $payload = new stdClass();
+            $payload->id_usuario = $usuarioEncontrado['id'];
+         
+            $retorno = $this->reenviarCodigoVerificacion($payload);
+        }else{
+            $retorno = MessageHandler::error(304, ERROR_304);
+        }
+        return $retorno;
+    }
 
-    }*/
+    private function obtenerUsuarioPorCorreoElectronico($correoElectronico){
+        return $this->usuarioDAO->obtenerUsuarioPorUsernameOCorreoElectronico($correoElectronico);
+    }   
+
+    public function actualizarConstrasenia($data){
+        $contraseniaActualizada = $this->usuarioDAO->actualizarContrasenia($data->id_usuario, $data->constrasenia);
+        return $contraseniaActualizada ? MessageHandler::success(207, SUCCESS_207,[]) 
+                                       : MessageHandler::error(304, ERROR_505);
+
+    }
 
 }
