@@ -1,5 +1,9 @@
 <section class="vh-100 d-flex align-items-center">
   <div class="container">
+    <!-- SPINNER -->
+  <div class="overlay" *ngIf="cargando">
+    <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+  </div>
 
     <div class="row justify-content-center">
       <div class="col-md-6 col-lg-5">
@@ -13,7 +17,9 @@
             </div>
           </ng-template>
 
-          <!-- ERROR -->
+          <div *ngIf="message" class="alert alert-success text-center mb-3">
+            {{ message }}
+          </div>
           <div *ngIf="errorMessage" class="alert alert-danger text-center mb-3">
             {{ errorMessage }}
           </div>
