@@ -1,0 +1,72 @@
+<section class="vh-100 d-flex align-items-center">
+  <div class="container">
+
+    <!-- SPINNER -->
+    <div class="overlay" *ngIf="cargando">
+      <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+
+        <p-card styleClass="user-form text-center">
+
+          <ng-template pTemplate="header">
+            <div class="w-100 text-center">
+              <h3 class="m-0 fw-bold">Recuperar contraseña</h3>
+              <small>Ingresá tu correo para recibir un código</small>
+            </div>
+          </ng-template>
+
+          <!-- MENSAJES -->
+          <div *ngIf="message" class="alert alert-success text-center mb-3">
+            {{ message }}
+          </div>
+
+          <div *ngIf="errorMessage" class="alert alert-danger text-center mb-3">
+            {{ errorMessage }}
+          </div>
+
+          <!-- FORM -->
+          <form [formGroup]="emailForm" (ngSubmit)="enviarCodigo()" class="text-start">
+
+            <div class="field">
+              <label class="block labelForm w-100 text-start">
+                Correo electrónico
+              </label>
+
+              <input 
+                type="email"
+                pInputText
+                placeholder="Ingresa tu correo"
+                formControlName="email"
+                class="w-100"
+              >
+            </div>
+
+            <br>
+
+            <button 
+              type="submit"
+              class="btn btn-primary w-100"
+              [disabled]="emailForm.invalid || cargando">
+              Enviar código
+            </button>
+
+            <br><br>
+
+            <div class="text-center">
+              <a routerLink="/iniciar-sesion" class="link-secondary small">
+                Volver a iniciar sesión
+              </a>
+            </div>
+
+          </form>
+
+        </p-card>
+
+      </div>
+    </div>
+
+  </div>
+</section>
