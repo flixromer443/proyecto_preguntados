@@ -146,14 +146,14 @@ class AuthModel {
 
     }
 
-    public function existeCodigoDeVerificacionValido($data){
+    private function existeCodigoDeVerificacionValido($data){
        return $this->codigosVerificacionDAO->existeCodigoDeVerificacion(
             $data->payload->id_usuario,
             $data->payload->codigo
         );
     }
 
-    public function activarUsuarioOHabilitarCambioContrasenia($data){
+    private function activarUsuarioOHabilitarCambioContrasenia($data){
         $retorno = null;
         $usuario = $this->usuarioDAO->obtenerUsuarioPorId($data->payload->id_usuario);
         if($usuario['id_estado'] == ESTADO_1){
@@ -169,8 +169,33 @@ class AuthModel {
     }
 
 
+    public function reenviarCodigoVerificacion($data){
+        $retorno = null;
+        $usuario = $this->usuarioDAO->obtenerUsuarioPorId($data->id_usuario);
+        if($usuario){
+            $datosPersonales = $this->datosPersonalesDAO->obtenerDatosPersonalesPorIdUsuario($data->id_usuario);
+            $mailEnviado = $this->enviarCorreoConNuevoCodigoDeVerificacion($datosPersonales, $data->id_usuario);
+            $retorno = $mailEnviado ? MessageHandler::success(205, SUCCESS_205,[]) 
+                                    : MessageHandler::error(503, ERROR_504);
+        }else{
+            $retorno = MessageHandler::error(304, ERROR_304);
+        }
+        return $retorno;
+    }
     
+    private function mapearDatosPersonalesParaReenviarCodigo($datosPersonales){
+        $datosMapeados = new stdClass();
+        $datosMapeados->nombre = $datosPersonales['nombre'];
+        $datosMapeados->correoElectronico = $datosPersonales['correo_electronico'];
+        return $datosMapeados;
+    }
 
+    private function enviarCorreoConNuevoCodigoDeVerificacion($datosPersonales, $idUsuario){
+        return $this->enviarCodigoDeActivacionPorMail(
+            $this->mapearDatosPersonalesParaReenviarCodigo($datosPersonales), 
+            $this->generarCodigoVerificacion($idUsuario)
+        );
+    }
     /*public function solicitarCambioDeContrasenia(){
 
     }*/

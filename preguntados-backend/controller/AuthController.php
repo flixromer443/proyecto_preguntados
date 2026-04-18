@@ -23,11 +23,9 @@ class AuthController {
         return $this->AuthModel->validarCodigoVerificacion($data);
     }
 
-
-    
-    /*public function reenviarCodigoVerificacion($data){
-        return $this->AuthModel->registrarNuevoUsuario($data);
-    }*/
+    public function reenviarCodigoVerificacion($data){
+        return $this->AuthModel->reenviarCodigoVerificacion($data);
+    }
 
 
 

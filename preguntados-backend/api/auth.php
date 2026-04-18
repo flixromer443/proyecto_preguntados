@@ -23,10 +23,11 @@ if($data->metodo == "validarCodigoVerificacion"){
     $controller = new AuthController();
     echo json_encode($controller->validarCodigoVerificacion($data));
 }
-/*if($data->metodo == "reenviarCodigoVerificacion"){
+
+if($data->metodo == "reenviarCodigoVerificacion"){
     $controller = new AuthController();
     echo json_encode($controller->reenviarCodigoVerificacion($data));
-}*/
+}
 
 
 /*if($data->metodo == "solicitarCambioDeContrasenia"){

@@ -19,11 +19,14 @@
     //ERRORES LOGICOS
     define('ERROR_300', "Error: ha ocurrido un error de negocio."); 
     define('ERROR_303', "Error: ya existe un usuario registrado con los mismos datos."); 
+    define('ERROR_304', "No existe usuario asociado al mail ingresados."); 
+
     
     //ERRORES FUNCIONALES
     define('ERROR_501', "Ha ocurrido un error al intentar generar un nuevo usuario");
     define('ERROR_502', "Ha ocurrido un error al iniciar sesion, verifique sus credenciales");
     define('ERROR_503', "El codigo de verificacion ingresado no es valido");
+    define('ERROR_504', "Ha ocurrido un error durante la generacion del codigo");
 
 
     //MENSAJES DE EXITO
@@ -31,6 +34,7 @@
     define('SUCCESS_202', "Inicio de sesion exitoso");
     define('SUCCESS_203', "Usuario activado exitosamente");
     define('SUCCESS_204', "Solicitud de cambio de contrasenia aprobada");
+    define('SUCCESS_205', "Se le ha enviado un nuevo codigo por correo");
 
 
 
