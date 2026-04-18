@@ -39,7 +39,7 @@ const routes: Routes = [
   {path: 'buscar-reserva', component: BuscarReservaComponent},
   {path: 'modificar-reserva/:id', component: ModificarReservaComponent},
   {path: 'actualizacion-exitosa/:id', component: ActualizacionExitosaComponent},
-  {path: '**', component: AboutUsComponent},
+  {path: '**', component: IniciarSesionComponent},
   
 ];
 
