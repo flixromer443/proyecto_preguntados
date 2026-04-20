@@ -13,7 +13,6 @@
 
               <h4 class="mb-3">Cargar Datos Personales</h4>
 
-              <!-- Nombre + Apellido -->
               <div class="row">
                 <div class="col-md-6">
                   <label class="labelForm">Nombre</label>
@@ -28,7 +27,6 @@
 
               <br>
 
-              <!-- Sexo + Documento -->
               <div class="row">
                 <div class="col-md-4">
                   <label class="labelForm">Sexo</label>
@@ -56,7 +54,6 @@
 
               <br>
 
-              <!-- DOMICILIO -->
               <h5>Domicilio</h5>
 
               <div class="row">
@@ -99,7 +96,6 @@
 
               <br>
 
-              <!-- Calle + Número -->
               <div class="row">
                 <div class="col-md-8">
                   <label class="labelForm">Calle</label>
@@ -110,11 +106,8 @@
                     (completeMethod)="buscarCalles($event)"
                     field="nombre"
                     [dropdown]="true"
-                    [forceSelection]="false"
-                    placeholder="Escribí la calle..."
                     styleClass="w-100"
-                    inputStyleClass="w-100"
-                    [inputStyle]="{'text-transform': 'uppercase'}">
+                    inputStyleClass="w-100">
                   </p-autoComplete>
 
                 </div>
@@ -125,22 +118,12 @@
                   <input type="text"
                          pInputText
                          formControlName="numero"
-                         class="w-100"
-                         [ngClass]="{
-                           'ng-invalid ng-dirty': registerForm.get('numero')?.errors?.['direccionInvalida']
-                         }">
-
-                  <small *ngIf="registerForm.get('numero')?.errors?.['direccionInvalida'] && registerForm.get('numero')?.touched"
-                         class="text-danger">
-                    Dirección inválida: la altura supera el máximo permitido
-                  </small>
-
+                         class="w-100">
                 </div>
               </div>
 
               <br>
 
-              <!-- CONTACTO -->
               <h5>Contacto</h5>
 
               <div class="row">
@@ -157,9 +140,8 @@
 
               <br>
 
-              <button type="button" class="btn btn-primary w-100" (click)="nextStep()">
-                Siguiente
-              </button>
+              <button pButton type="button" label="Siguiente" class="w-100"
+                      (click)="nextStep()"></button>
 
             </div>
 
@@ -180,80 +162,46 @@
                     <input type="text" pInputText formControlName="username" class="w-100">
                   </div>
 
-                  <!-- PASSWORD -->
                   <div class="mb-2">
                     <label class="labelForm">Contraseña</label>
-
-                    <p-password
-                      formControlName="password"
-                      [toggleMask]="true"
-                      [feedback]="false"
-                      styleClass="w-100"
-                      inputStyleClass="w-100">
-                    </p-password>
-
-                    <small class="text-danger"
-                      *ngIf="registerForm.get('password')?.hasError('weakPassword') && registerForm.get('password')?.touched">
-                      Mínimo 8 caracteres, una letra, un número y un carácter especial
-                    </small>
+                    <p-password formControlName="password" [toggleMask]="true" styleClass="w-100"></p-password>
                   </div>
 
-                  <!-- REPEAT PASSWORD -->
                   <div class="mb-3">
                     <label class="labelForm">Repetir contraseña</label>
-
-                    <p-password
-                      formControlName="repeatPassword"
-                      [toggleMask]="true"
-                      [feedback]="false"
-                      styleClass="w-100"
-                      inputStyleClass="w-100">
-                    </p-password>
+                    <p-password formControlName="repeatPassword" [toggleMask]="true" styleClass="w-100"></p-password>
                   </div>
 
-                  <!-- ERROR MATCH -->
                   <div *ngIf="passwordsNoCoinciden()" class="text-danger text-center">
                     Las contraseñas no coinciden
                   </div>
 
                   <br>
-                  <!-- TERMINOS Y CONDICIONES -->
+
                   <div class="form-check mb-3 text-center">
-                  
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      id="terminos"
-                      formControlName="aceptoTerminos"
-                    />
-                  
-                    <label class="form-check-label" for="terminos">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           formControlName="aceptoTerminos"/>
+                    <label class="form-check-label">
                       Acepto los términos y condiciones
                     </label>
-                  
                   </div>
-                  <br>
 
-                  <button type="button" class="btn btn-secondary w-100 mb-2" (click)="prevStep()">
-                    Volver
-                  </button>
+                  <button pButton type="button" label="Volver"
+                          class="w-100 mb-2"
+                          (click)="prevStep()"></button>
 
-                  <button type="submit"
-                          class="btn btn-primary w-100"
-                          [disabled]="cargando || registerForm.get('password')?.invalid">
-                    Registrarse
+                  <button pButton
+                          type="submit"
+                          label="Registrarse"
+                          class="w-100"
+                          [loading]="cargando"
+                          [disabled]="cargando || registerForm.invalid">
                   </button>
 
                 </div>
               </div>
 
-            </div>
-
-            <br><br>
-
-            <div class="text-center">
-              <span>¿Ya tenés cuenta?</span>
-              <a routerLink="/iniciar-sesion">Iniciar sesión</a>
             </div>
 
           </form>

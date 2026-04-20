@@ -112,7 +112,7 @@ export class RegistrarseComponent implements OnInit {
       ? null
       : { weakPassword: true };
   }
-  //revisar esto
+
   passwordNotContainingUserData(control: AbstractControl): ValidationErrors | null {
 
     const password = (control.value || '').toLowerCase();
@@ -129,7 +129,6 @@ export class RegistrarseComponent implements OnInit {
     return contains ? { containsUserData: true } : null;
   }
 
-  // CAPITALIZACIÓN
   private aplicarCapitalizacion(campo: string, value: string): void {
 
     if (!value || typeof value !== 'string') return;
@@ -150,7 +149,6 @@ export class RegistrarseComponent implements OnInit {
     }
   }
 
-  // GEOREF
   cargarProvincias(): void {
     this.georefService.getProvincias()
       .subscribe((res: { provincias: Provincia[] }) => {
@@ -207,10 +205,7 @@ export class RegistrarseComponent implements OnInit {
     this.calleSeleccionada = null;
     this.alturaMaxima = 0;
 
-    this.registerForm.patchValue({
-      numero: ''
-    });
-
+    this.registerForm.patchValue({ numero: '' });
     this.registerForm.get('numero')?.setErrors(null);
   }
 
@@ -238,16 +233,6 @@ export class RegistrarseComponent implements OnInit {
       });
   }
 
-  onCalleSelect(event: any): void {
-    this.calleSeleccionada = event;
-
-    const derecha = event.altura_fin_derecha || 0;
-    const izquierda = event.altura_fin_izquierda || 0;
-
-    this.alturaMaxima = Math.max(derecha, izquierda);
-  }
-
-  // STEPS
   nextStep(): void {
     if (!this.validarPaso1()) {
       this.messageService.add({
@@ -265,7 +250,6 @@ export class RegistrarseComponent implements OnInit {
     this.step = 1;
   }
 
-  // VALIDACIONES
   validarPaso1(): boolean {
 
     const campos = [
@@ -314,8 +298,9 @@ export class RegistrarseComponent implements OnInit {
     return this.registerForm.value.password !== this.registerForm.value.repeatPassword;
   }
 
-  // SUBMIT
   register(): void {
+
+    if (this.cargando) return;
 
     if (!this.validarPaso2()) return;
 
@@ -339,7 +324,7 @@ export class RegistrarseComponent implements OnInit {
           tipo: parseInt(form.tipoDocumento)
         },
         domicilio: {
-          calle: form.calle.nombre,
+          calle: form.calle?.nombre || form.calle, // 🔥 fix importante
           numero: form.numero,
           localidad: form.localidad,
           departamento: form.departamento,
@@ -352,42 +337,31 @@ export class RegistrarseComponent implements OnInit {
 
     this.authService.registrarNuevoUsuario(payload).subscribe({
       next: (response: any) => {
-        if(response.success){
-          this.cargando = false;
+
+        this.cargando = false;
+
+        if (response.success) {
           this.router.navigate(['/ingresar-codigo'], {
             queryParams: {
               id_usuario: response.data.id_usuario,
               accion: 1
             }
           });
-        }else{
-            this.showError(response.message);
-            this.cargando = false;
+        } else {
+          this.showError(response.message);
         }
       },
       error: (err: any) => {
+
+        this.cargando = false;
+
         this.showError(
           err?.error?.message || 'Ha ocurrido un error inesperado'
         );
-        console.log(err)
-        this.cargando = false;
+
+        console.log(err);
       }
     });
-
-
-
-
-
-    /*setTimeout(() => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Registro exitoso',
-        detail: 'Usuario creado correctamente'
-      });
-
-      this.router.navigate(['/login']);
-      this.cargando = false;
-    }, 1000);*/
   }
 
   private showError(message: string) {
