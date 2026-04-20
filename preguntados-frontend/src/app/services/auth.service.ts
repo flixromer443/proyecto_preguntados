@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Reserva } from '../models/reserva';
 import { Global } from './global';
-import { Disponibilidad } from '../models/diponibilidad';
-import { Pregunta } from '../models/pregunta';
 import { LoginResponse, LoginRequest, CodigoVerificacionRequest } from '../models/auth.interfaces';
 import  jwtDecode  from 'jwt-decode';
 

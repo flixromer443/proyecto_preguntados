@@ -3,17 +3,11 @@
   padding-top: 20px;
 }
 
-/* =========================
-   GRID WRAPPERS
-========================= */
 .col-12,
 .col-md-6 {
   position: relative;
 }
 
-/* =========================
-   BORDE ANIMADO (HOVER)
-========================= */
 .col-12::before,
 .col-md-6::before {
   content: "";
@@ -55,9 +49,6 @@
   100% { background-position: 300% 50%; }
 }
 
-/* =========================
-   CARD BASE
-========================= */
 .home-card {
   position: relative;
   z-index: 1;
@@ -92,9 +83,6 @@
   box-shadow: 0 10px 25px rgba(0,0,0,0.12);
 }
 
-/* =========================
-   ICONOS
-========================= */
 .icon-circle {
   width: 60px;
   height: 60px;
@@ -121,9 +109,6 @@
   font-size: 26px;
 }
 
-/* =========================
-   FLECHA
-========================= */
 .arrow {
   color: #aaa;
   font-size: 18px;
@@ -135,9 +120,6 @@
   transform: translateX(4px);
 }
 
-/* =========================
-   CARD JUGAR (DESTACADA)
-========================= */
 .play-card {
   background: linear-gradient(135deg, #0d6efd, #6ea8fe);
   color: white;
@@ -158,9 +140,6 @@
 }
 
 
-/* =========================
-   HEADER (logout)
-========================= */
 .home-header {
   display: flex;
   justify-content: flex-end;

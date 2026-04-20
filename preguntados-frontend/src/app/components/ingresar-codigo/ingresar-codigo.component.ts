@@ -48,7 +48,6 @@ export class IngresarCodigoComponent implements OnInit {
       d6: ['', [Validators.required, Validators.pattern(/^[0-9]$/)]],
     });
 
-    // 🔥 Alternativa pro: auto-submit cuando los 6 dígitos están completos
     this.codeForm.valueChanges.subscribe(values => {
       const code = Object.values(values).join('');
 
@@ -58,9 +57,6 @@ export class IngresarCodigoComponent implements OnInit {
     });
   }
 
-  // =========================
-  // INPUT AUTO MOVE + AUTOSUBMIT
-  // =========================
   onInput(event: any, next: HTMLInputElement | HTMLButtonElement | null): void {
 
     const input = event.target as HTMLInputElement;
@@ -69,12 +65,10 @@ export class IngresarCodigoComponent implements OnInit {
 
     if (input.value.length === 1) {
 
-      // Focus al siguiente input
       if (next instanceof HTMLInputElement) {
         next.focus();
       }
 
-      // 👇 Último input → dispara verificación
       if (next instanceof HTMLButtonElement) {
         setTimeout(() => {
           if (this.codeForm.valid && !this.cargando) {
@@ -85,9 +79,6 @@ export class IngresarCodigoComponent implements OnInit {
     }
   }
 
-  // =========================
-  // BACKSPACE MOVE
-  // =========================
   onBackspace(event: Event, prev: HTMLInputElement | null): void {
 
     const keyboardEvent = event as KeyboardEvent;
@@ -98,9 +89,6 @@ export class IngresarCodigoComponent implements OnInit {
     }
   }
 
-  // =========================
-  // VERIFY CODE
-  // =========================
   verifyCode(): void {
 
     if (this.codeForm.invalid || this.cargando) {
@@ -141,9 +129,6 @@ export class IngresarCodigoComponent implements OnInit {
     });
   }
 
-  // =========================
-  // RESEND CODE
-  // =========================
   resendCode(){
     this.cargando = true;
     this.datosCompartidosService.esconderFooter.next(true);
@@ -170,9 +155,6 @@ export class IngresarCodigoComponent implements OnInit {
     this.datosCompartidosService.esconderFooter.next(false);
   }
 
-  // =========================
-  // ALERTS
-  // =========================
   private showMessageAndRedirect(message: string) {
     this.message = message;
     clearTimeout(this.alertTimeout);

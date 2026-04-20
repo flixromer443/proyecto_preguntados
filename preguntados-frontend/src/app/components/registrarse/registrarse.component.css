@@ -46,9 +46,6 @@
     width: 70%;
 }
 
-/* ========================= */
-/* 🔥 AUTOCOMPLETE FIXES */
-/* ========================= */
 
 /* Contenedor */
 :host ::ng-deep .p-autocomplete {
@@ -60,18 +57,15 @@
     width: 100% !important;
 }
 
-/* 🔠 Texto en MAYÚSCULAS */
 :host ::ng-deep .p-autocomplete input {
     text-transform: uppercase;
 }
 
-/* 📝 Placeholder normal */
 :host ::ng-deep .p-autocomplete input::placeholder {
     text-transform: none;
     color: #888;
 }
 
-/* 🔽 BOTÓN DROPDOWN MÁS CHICO */
 :host ::ng-deep .p-autocomplete-dropdown {
     width: 2rem !important;
     min-width: 2rem !important;

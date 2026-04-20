@@ -14,7 +14,6 @@ export class IniciarSesionComponent implements OnInit {
   loginForm!: FormGroup;
   cargando: boolean = false;
 
-  // 🔥 NUEVO ALERT
   errorMessage: string = '';
   private alertTimeout: any;
 
