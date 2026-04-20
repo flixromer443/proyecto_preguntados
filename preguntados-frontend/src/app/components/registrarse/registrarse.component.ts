@@ -61,27 +61,31 @@ export class RegistrarseComponent implements OnInit {
 
       repeatPassword: ['', Validators.required],
 
-      nombre: ['', Validators.required],
-      apellido: ['', Validators.required],
+      nombre: ['', [Validators.required, this.soloLetrasValidator]],
+      apellido: ['', [Validators.required, this.soloLetrasValidator]],
       sexo: ['', Validators.required],
 
       tipoDocumento: ['1', Validators.required],
-      numeroDocumento: ['', Validators.required],
+
+      numeroDocumento: ['', [Validators.required, this.soloNumerosValidator]],
 
       calle: ['', Validators.required],
-      numero: ['', Validators.required],
+
+      numero: ['', [Validators.required, this.soloNumerosValidator]],
 
       provincia: ['', Validators.required],
       departamento: ['', Validators.required],
       localidad: ['', Validators.required],
 
-      telefono: ['', Validators.required],
+      // ✅ teléfono validado como números
+      telefono: ['', [Validators.required, this.soloNumerosValidator]],
+
       correoElectronico: ['', [Validators.required, Validators.email]],
 
       aceptoTerminos: [false, Validators.requiredTrue]
     });
 
-    // revalidar password cuando cambian datos sensibles
+    // revalidar password
     ['username', 'nombre', 'apellido', 'correoElectronico'].forEach(field => {
       this.registerForm.get(field)?.valueChanges.subscribe(() => {
         this.registerForm.get('password')?.updateValueAndValidity();
@@ -97,11 +101,56 @@ export class RegistrarseComponent implements OnInit {
       this.aplicarCapitalizacion('apellido', v)
     );
 
+    // limpiar DNI
+    this.registerForm.get('numeroDocumento')?.valueChanges.subscribe(v => {
+      if (v) {
+        const limpio = v.replace(/[^0-9]/g, '');
+        if (v !== limpio) {
+          this.registerForm.get('numeroDocumento')?.setValue(limpio, { emitEvent: false });
+        }
+      }
+    });
+
+    // limpiar número de calle
+    this.registerForm.get('numero')?.valueChanges.subscribe(v => {
+      if (v) {
+        const limpio = v.replace(/[^0-9]/g, '');
+        if (v !== limpio) {
+          this.registerForm.get('numero')?.setValue(limpio, { emitEvent: false });
+        }
+      }
+    });
+
+    // ✅ limpiar teléfono
+    this.registerForm.get('telefono')?.valueChanges.subscribe(v => {
+      if (v) {
+        const limpio = v.replace(/[^0-9]/g, '');
+        if (v !== limpio) {
+          this.registerForm.get('telefono')?.setValue(limpio, { emitEvent: false });
+        }
+      }
+    });
+
     this.cargarProvincias();
   }
 
-  passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+  // =========================
+  // VALIDADORES
+  // =========================
 
+  soloLetrasValidator(control: AbstractControl): ValidationErrors | null {
+    const value = (control.value || '').trim();
+    const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?:\s[A-Za-zÁÉÍÓÚáéíóúÑñ]+)*$/;
+    return regex.test(value) ? null : { soloLetras: true };
+  }
+
+  soloNumerosValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value || '';
+    const regex = /^[0-9]+$/;
+    return regex.test(value) ? null : { soloNumeros: true };
+  }
+
+  passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value || '';
 
     const hasLetter = /[a-zA-Z]/.test(value);
@@ -129,6 +178,10 @@ export class RegistrarseComponent implements OnInit {
     return contains ? { containsUserData: true } : null;
   }
 
+  // =========================
+  // UTIL
+  // =========================
+
   private aplicarCapitalizacion(campo: string, value: string): void {
 
     if (!value || typeof value !== 'string') return;
@@ -145,9 +198,12 @@ export class RegistrarseComponent implements OnInit {
 
     if (value !== capitalizado) {
       control.setValue(capitalizado, { emitEvent: false });
-      this.registerForm.get('password')?.updateValueAndValidity();
     }
   }
+
+  // =========================
+  // GEOREF
+  // =========================
 
   cargarProvincias(): void {
     this.georefService.getProvincias()
@@ -163,7 +219,6 @@ export class RegistrarseComponent implements OnInit {
     this.departamentos = [];
     this.localidades = [];
     this.callesFiltradas = [];
-    this.resetDireccion();
 
     this.registerForm.patchValue({
       departamento: '',
@@ -186,7 +241,6 @@ export class RegistrarseComponent implements OnInit {
 
     this.localidades = [];
     this.callesFiltradas = [];
-    this.resetDireccion();
 
     this.registerForm.patchValue({
       localidad: '',
@@ -199,14 +253,6 @@ export class RegistrarseComponent implements OnInit {
       .subscribe((res: { localidades: Localidad[] }) => {
         this.localidades = res.localidades;
       });
-  }
-
-  resetDireccion(): void {
-    this.calleSeleccionada = null;
-    this.alturaMaxima = 0;
-
-    this.registerForm.patchValue({ numero: '' });
-    this.registerForm.get('numero')?.setErrors(null);
   }
 
   buscarCalles(event: any): void {
@@ -233,6 +279,10 @@ export class RegistrarseComponent implements OnInit {
       });
   }
 
+  // =========================
+  // STEPS
+  // =========================
+
   nextStep(): void {
     if (!this.validarPaso1()) {
       this.messageService.add({
@@ -242,7 +292,6 @@ export class RegistrarseComponent implements OnInit {
       });
       return;
     }
-
     this.step = 2;
   }
 
@@ -273,23 +322,9 @@ export class RegistrarseComponent implements OnInit {
 
     if (!campos.every(c => this.registerForm.get(c)?.valid)) return false;
 
-    if (this.passwordsNoCoinciden()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Error',
-        detail: 'Las contraseñas no coinciden'
-      });
-      return false;
-    }
+    if (this.passwordsNoCoinciden()) return false;
 
-    if (!this.registerForm.get('aceptoTerminos')?.value) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Términos y condiciones',
-        detail: 'Debes aceptar los términos para continuar'
-      });
-      return false;
-    }
+    if (!this.registerForm.get('aceptoTerminos')?.value) return false;
 
     return true;
   }
@@ -298,10 +333,13 @@ export class RegistrarseComponent implements OnInit {
     return this.registerForm.value.password !== this.registerForm.value.repeatPassword;
   }
 
+  // =========================
+  // SUBMIT
+  // =========================
+
   register(): void {
 
     if (this.cargando) return;
-
     if (!this.validarPaso2()) return;
 
     this.cargando = true;
@@ -324,7 +362,7 @@ export class RegistrarseComponent implements OnInit {
           tipo: parseInt(form.tipoDocumento)
         },
         domicilio: {
-          calle: form.calle?.nombre || form.calle, // 🔥 fix importante
+          calle: form.calle?.nombre || form.calle,
           numero: form.numero,
           localidad: form.localidad,
           departamento: form.departamento,
