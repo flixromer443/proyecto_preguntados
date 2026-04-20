@@ -224,10 +224,15 @@ class AuthModel {
 
     public function actualizarConstrasenia($data){
         $payload = $data->payload;
-        $contraseniaActualizada = $this->usuarioDAO->actualizarContrasenia($payload->id_usuario, $payload->constrasenia);
-        return $contraseniaActualizada ? MessageHandler::success(207, SUCCESS_207,[]) 
-                                       : MessageHandler::error(304, ERROR_505);
 
+        $contraseniaActualizada = $this->usuarioDAO->actualizarContrasenia(
+            $payload->id_usuario, 
+            $payload->contrasenia 
+        );
+
+        return $contraseniaActualizada 
+            ? MessageHandler::success(207, SUCCESS_207,[]) 
+            : MessageHandler::error(304, ERROR_505);
     }
 
 }
