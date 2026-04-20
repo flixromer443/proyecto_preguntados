@@ -56,6 +56,9 @@ export class MiPerfilComponent implements OnInit {
     this.cargarPerfil();
   }
 
+  // =========================
+  // INIT FORM
+  // =========================
   private initForm(): void {
     this.perfilForm = this.fb.group({
       username: [{ value: '', disabled: true }],
@@ -81,6 +84,9 @@ export class MiPerfilComponent implements OnInit {
     this.perfilForm.disable();
   }
 
+  // =========================
+  // PERFIL (FIX ASYNC BUG)
+  // =========================
   cargarPerfil(): void {
 
     this.cargando = true;
@@ -89,6 +95,10 @@ export class MiPerfilComponent implements OnInit {
       next: (res: any) => {
 
         const data = res.data;
+
+        const provincia = data.datos_personales.domicilio.provincia;
+        const departamento = data.datos_personales.domicilio.departamento;
+        const localidad = data.datos_personales.domicilio.localidad;
 
         this.perfilForm.patchValue({
           username: data.username,
@@ -99,19 +109,29 @@ export class MiPerfilComponent implements OnInit {
           numeroDocumento: data.datos_personales.documento.numero,
           calle: data.datos_personales.domicilio.calle,
           numero: data.datos_personales.domicilio.numero,
-          provincia: data.datos_personales.domicilio.provincia,
-          departamento: data.datos_personales.domicilio.departamento,
-          localidad: data.datos_personales.domicilio.localidad,
+          provincia: provincia,
           telefono: data.datos_personales.contacto.telefono,
           correoElectronico: data.datos_personales.contacto.correoElectronico
         });
 
-        this.onProvinciaChange(
-          data.datos_personales.domicilio.departamento,
-          data.datos_personales.domicilio.localidad
-        );
+        // 🔥 ORDEN CORRECTO (FIX BUG SELECT 25 DE MAYO)
+        this.georefService.getDepartamentosPorProvincia(provincia)
+          .subscribe((resDep: any) => {
 
-        this.cargando = false;
+            this.departamentos = resDep.departamentos;
+
+            this.perfilForm.patchValue({ departamento });
+
+            this.georefService.getLocalidades(provincia, departamento)
+              .subscribe((resLoc: any) => {
+
+                this.localidades = resLoc.localidades;
+
+                this.perfilForm.patchValue({ localidad });
+
+                this.cargando = false;
+              });
+          });
       },
       error: () => {
         this.cargando = false;
@@ -120,11 +140,13 @@ export class MiPerfilComponent implements OnInit {
     });
   }
 
+  // =========================
+  // EDICIÓN
+  // =========================
   toggleEditar(): void {
     this.editando = true;
     this.perfilForm.enable();
 
-    // mantener readonly
     this.perfilForm.get('username')?.disable();
     this.perfilForm.get('tipoDocumento')?.disable();
     this.perfilForm.get('numeroDocumento')?.disable();
@@ -136,9 +158,12 @@ export class MiPerfilComponent implements OnInit {
     this.perfilForm.reset();
     this.perfilForm.disable();
 
-    this.cargarPerfil(); // vuelve a datos originales
+    this.cargarPerfil();
   }
 
+  // =========================
+  // GUARDAR
+  // =========================
   guardar(): void {
 
     if (this.perfilForm.invalid) {
@@ -156,29 +181,26 @@ export class MiPerfilComponent implements OnInit {
     }, 800);
   }
 
+  // =========================
+  // GEOREF
+  // =========================
   cargarProvincias(): void {
     this.georefService.getProvincias()
       .subscribe((res: any) => this.provincias = res.provincias);
   }
 
-  onProvinciaChange(depSeleccionado?: any, locSeleccionada?: any): void {
+  onProvinciaChange(): void {
 
     const idProvincia = this.perfilForm.get('provincia')?.value;
     if (!idProvincia) return;
 
     this.georefService.getDepartamentosPorProvincia(idProvincia)
       .subscribe((res: any) => {
-
         this.departamentos = res.departamentos;
-
-        if (depSeleccionado) {
-          this.perfilForm.patchValue({ departamento: depSeleccionado });
-          this.onDepartamentoChange(locSeleccionada);
-        }
       });
   }
 
-  onDepartamentoChange(locSeleccionada?: any): void {
+  onDepartamentoChange(): void {
 
     const prov = this.perfilForm.get('provincia')?.value;
     const dep = this.perfilForm.get('departamento')?.value;
@@ -187,15 +209,13 @@ export class MiPerfilComponent implements OnInit {
 
     this.georefService.getLocalidades(prov, dep)
       .subscribe((res: any) => {
-
         this.localidades = res.localidades;
-
-        if (locSeleccionada) {
-          this.perfilForm.patchValue({ localidad: locSeleccionada });
-        }
       });
   }
 
+  // =========================
+  // CALLES
+  // =========================
   buscarCalles(event: any): void {
 
     const query = (event.query || '').toUpperCase();
@@ -238,6 +258,9 @@ export class MiPerfilComponent implements OnInit {
       : null;
   }
 
+  // =========================
+  // SESIÓN
+  // =========================
   cerrarSesion(): void {
     this.authService.logout();
     this.showMessage('Sesión cerrada correctamente');
@@ -247,6 +270,9 @@ export class MiPerfilComponent implements OnInit {
     }, 800);
   }
 
+  // =========================
+  // ALERTAS
+  // =========================
   private showError(msg: string): void {
     this.errorMessage = msg;
     clearTimeout(this.alertTimeout);
