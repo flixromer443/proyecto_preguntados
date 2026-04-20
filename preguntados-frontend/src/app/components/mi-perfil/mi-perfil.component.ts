@@ -111,7 +111,7 @@ export class MiPerfilComponent implements OnInit {
           numero: data.datos_personales.domicilio.numero,
           provincia: provincia,
           telefono: data.datos_personales.contacto.telefono,
-          correoElectronico: data.datos_personales.contacto.correoElectronico
+          correoElectronico: data.datos_personales.contacto.correo_electronico
         });
 
         // 🔥 ORDEN CORRECTO (FIX BUG SELECT 25 DE MAYO)
