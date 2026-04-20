@@ -24,12 +24,9 @@ export class PerfilJugadorComponent {
       this.router.navigate(['/iniciar-sesion']);
     }
   }
-  // =========================
-  // NAVEGACIÓN HOME
-  // =========================
 
   irPerfil() {
-    this.router.navigate(['/perfil']);
+    this.router.navigate(['/mi-perfil']);
   }
 
   irEstadisticas() {
