@@ -108,4 +108,41 @@ class DatosPersonalesDAO {
         }
     }
 
+    public function actualizarDatosPersonales($datosPersonales, $idUsuario){
+        $sql = "UPDATE datos_personales 
+        SET nombre = :nombre,
+            apellido = :apellido,
+            sexo = :sexo,
+            doc_nro = :doc_nro,
+            doc_tipo = :doc_tipo,
+            dom_calle = :dom_calle,
+            dom_nro = :dom_nro,
+            dom_loc = :dom_loc,
+            dom_depto = :dom_depto,
+            dom_pcia = :dom_pcia,
+            telefono = :telefono,
+            correo_electronico = :correo_electronico
+        WHERE id_usuario = :id_usuario";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->execute([
+           ':nombre' => $datosPersonales->nombre,
+           ':apellido' => $datosPersonales->apellido,
+           ':sexo' => $datosPersonales->sexo,
+           ':doc_nro' => $datosPersonales->documento->numero,
+           ':doc_tipo' => $datosPersonales->documento->tipo,
+           ':dom_calle' => $datosPersonales->domicilio->calle,
+           ':dom_nro' => $datosPersonales->domicilio->numero,
+           ':dom_loc' => $datosPersonales->domicilio->localidad,
+           ':dom_depto' => $datosPersonales->domicilio->departamento,
+           ':dom_pcia' => $datosPersonales->domicilio->provincia,
+           ':telefono' => $datosPersonales->contacto->telefono,
+           ':correo_electronico' => $datosPersonales->contacto->correo_electronico,
+           ':id_usuario' => $idUsuario
+        ]);
+       
+        return $stmt->rowCount() > 0;
+    }
+
 }

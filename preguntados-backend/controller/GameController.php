@@ -20,6 +20,10 @@ class GameController {
         $decoded = $this->tokenService->decodificarToken($token);
         return $this->gameModel->obtenerDatosPerfil($decoded);
     }
+    public function actualizarDatosPerfil($data, $token){
+        $decoded = $this->tokenService->decodificarToken($token);
+        return $this->gameModel->actualizarDatosPerfil($data, $decoded);
+    }
 }
 
 ?>

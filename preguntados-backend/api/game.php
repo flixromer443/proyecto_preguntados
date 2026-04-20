@@ -22,6 +22,10 @@ if($token){
         $controller = new GameController();
         echo json_encode($controller->obtenerDatosPerfil($token));
     }
+    if($data->metodo == "actualizarDatosPerfil"){
+        $controller = new GameController();
+        echo json_encode($controller->actualizarDatosPerfil($data, $token));
+    }
 }
 
 
