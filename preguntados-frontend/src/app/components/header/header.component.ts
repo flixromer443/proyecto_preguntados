@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { DatosCompartidosService } from '../../services/datos-compartidos.service';
 
 @Component({
   selector: 'app-header',
@@ -10,41 +8,9 @@ import { DatosCompartidosService } from '../../services/datos-compartidos.servic
 export class HeaderComponent {
 
   constructor(
-    private router: Router,
-    private datosCompartidosService: DatosCompartidosService
   ) {
 
   }
-
-
-  buscarReserva(){
-    this.router.navigate(['/buscar-reserva']);
-  }
-
-  jugar(){
-    this.router.navigate(['/jugar']);
-  }
-  
-  iniciarSesion(){
-    this.router.navigate(['/iniciar-sesion']);
-  }
-
-  sobreNosotros(){
-    this.router.navigate(['/about-us']);
-  }
-
-  nuestrosServicios(){
-    this.router.navigate(['/nuestros-servicios']);
-  }
-
-  galeriaFotos(){
-    this.router.navigate(['/galeria-imagenes']);
-  }
-
-  ubicacionContacto(){
-    this.router.navigate(['/ubicacion-contacto']);
-  }
-
   
 }
 

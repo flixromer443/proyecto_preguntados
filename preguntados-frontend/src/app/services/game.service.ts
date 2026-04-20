@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Reserva } from '../models/reserva';
 import { Global } from './global';
-import { Disponibilidad } from '../models/diponibilidad';
 import { Pregunta } from '../models/pregunta';
 
 @Injectable({

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatosCompartidosService } from '../../services/datos-compartidos.service';
-import { DialogService } from '../../services/dialog.service';
 import { AuthService } from '../../services/auth.service';
 
 interface TematicaEstadistica {
@@ -58,7 +57,6 @@ export class EstadisticasJugadorComponent {
 
   constructor(
     private router: Router,
-    private servicioDialog: DialogService,
     private datosCompartidosService: DatosCompartidosService,
     private authService: AuthService
   ) {
