@@ -133,4 +133,31 @@ class UsuariosDAO {
         return $stmt->rowCount() > 0;
     }
 
+    public function obtenerDatosPerfil($idUsuario){
+        try{
+            $stmt = $this->pdo->prepare("SELECT u.username, 
+                                                d.nombre, d.apellido, d.sexo,
+                                                d.doc_nro, d.doc_tipo, 
+                                                d.dom_calle, d.dom_nro, 
+                                                d.dom_loc, d.dom_depto, d.dom_pcia,
+                                                d.telefono, d.correo_electronico 
+                                        FROM usuarios u 
+                                        INNER JOIN datos_personales d 
+                                        ON d.id_usuario = u.id
+                                        WHERE u.id = $idUsuario
+                                        ");
+            $stmt->execute([
+                ':id_usuario' => $idUsuario,
+            ]);
+        
+            $datosPerfil = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $datosPerfil ? RowMapper::mapDatosPerfilFromDB($datosPerfil) : false;
+        }catch(PDOException $e){
+            error_log("Error select obtenerDatosPerfil: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+
 }
