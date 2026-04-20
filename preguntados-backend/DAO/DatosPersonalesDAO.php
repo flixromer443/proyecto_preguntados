@@ -53,12 +53,12 @@ class DatosPersonalesDAO {
                  datos_personales (
                     nombre, apellido, sexo, 
                     doc_nro, doc_tipo,
-                    dom_calle, dom_nro, dom_loc, dom_pcia, 
+                    dom_calle, dom_nro, dom_loc, dom_depto, dom_pcia, 
                     telefono, correo_electronico, id_usuario)
                  VALUES(
                     :nombre, :apellido, :sexo, 
                     :doc_nro, :doc_tipo, 
-                    :dom_calle, :dom_nro, :dom_loc, :dom_pcia, 
+                    :dom_calle, :dom_nro, :dom_loc, :dom_depto, :dom_pcia, 
                     :telefono, :correo_electronico, :id_usuario
                 )";
 
@@ -73,6 +73,7 @@ class DatosPersonalesDAO {
                     ':dom_calle' => $datosPersonales->domicilio->calle,
                     ':dom_nro' => $datosPersonales->domicilio->numero,
                     ':dom_loc' => $datosPersonales->domicilio->localidad,
+                    ':dom_depto' => $datosPersonales->domicilio->departamento,
                     ':dom_pcia' => $datosPersonales->domicilio->provincia,
                     ':telefono' => $datosPersonales->telefono,
                     ':correo_electronico' => $datosPersonales->correoElectronico,
