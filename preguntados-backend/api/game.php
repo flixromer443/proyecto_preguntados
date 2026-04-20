@@ -26,6 +26,10 @@ if($token){
         $controller = new GameController();
         echo json_encode($controller->actualizarDatosPerfil($data, $token));
     }
+    if($data->metodo == "eliminarCuenta"){
+        $controller = new GameController();
+        echo json_encode($controller->eliminarCuenta($token));
+    }
 }
 
 

@@ -33,4 +33,8 @@ export class GameService {
     return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'actualizarDatosPerfil',payload});
   }
 
+  eliminarCuenta(): Observable<PerfilResponse> {
+    return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'eliminarCuenta'});
+  }
+
 }

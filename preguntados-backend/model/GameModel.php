@@ -61,4 +61,10 @@ class GameModel {
         return $this->usuarioDAO->actualizarUsername($username, $idUsuario) ||
                $this->datosPersonalesDAO->actualizarDatosPersonales($datosPersonales, $idUsuario);      
     }
+
+    public function eliminarCuenta($decoded){
+        $usuarioEliminado = $this->usuarioDAO->eliminarUsuario($decoded->sub);
+        return $usuarioEliminado ? MessageHandler::success(209, SUCCESS_210)
+                                 : MessageHandler::error(507, ERROR_508);
+    }
 }

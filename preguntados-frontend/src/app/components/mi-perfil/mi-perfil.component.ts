@@ -312,6 +312,40 @@ export class MiPerfilComponent implements OnInit {
     setTimeout(() => this.router.navigate(['/iniciar-sesion']), 800);
   }
 
+  eliminarCuenta(): void {
+
+   const confirmacion = confirm('¿Estás seguro de que querés eliminar tu cuenta? Esta acción no se puede deshacer.');
+    
+   if (!confirmacion) return;
+    
+   this.cargando = true;
+    
+   this.gameService.eliminarCuenta().subscribe({
+     next: (res: any) => {
+      
+       this.cargando = false;
+      
+       if (res?.success) {
+         this.showMessage('Cuenta eliminada correctamente');
+        
+         this.authService.logout();
+        
+         setTimeout(() => {
+           this.router.navigate(['/iniciar-sesion']);
+         }, 800);
+        
+       } else {
+         this.showError(res?.message || 'No se pudo eliminar la cuenta');
+       }
+     },
+     error: () => {
+       this.cargando = false;
+       this.showError('Error de conexión con el servidor');
+     }
+   });
+  }
+
+
   private showError(msg: string): void {
     this.errorMessage = msg;
     clearTimeout(this.alertTimeout);

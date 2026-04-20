@@ -30,6 +30,7 @@
     define('ERROR_505', "Ha ocurrido un error al actualizar su contraseña");
     define('ERROR_506', "Ha ocurrido un error al obtener datos del perfil");
     define('ERROR_507', "Ha ocurrido un error al actualizar datos del perfil");
+    define('ERROR_508', "Ha ocurrido un error al eliminar usuario");
 
 
 
@@ -43,6 +44,7 @@
     define('SUCCESS_207', "Su contraseña ha sido actualizada exitosamente."); 
     define('SUCCESS_208', "Exito al obtener datos del perfil."); 
     define('SUCCESS_209', "Exito al actualizar datos del perfil."); 
+    define('SUCCESS_210', "Exito al eliminar usuario."); 
 
 
 

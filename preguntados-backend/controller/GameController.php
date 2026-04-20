@@ -24,6 +24,10 @@ class GameController {
         $decoded = $this->tokenService->decodificarToken($token);
         return $this->gameModel->actualizarDatosPerfil($data, $decoded);
     }
+    public function eliminarCuenta($token){
+        $decoded = $this->tokenService->decodificarToken($token);
+        return $this->gameModel->eliminarCuenta($decoded);
+    }
 }
 
 ?>
