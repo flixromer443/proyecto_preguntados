@@ -57,21 +57,16 @@ export class MiPerfilComponent implements OnInit {
     this.initLiveValidations();
   }
 
-  // =========================
-  // FORM
-  // =========================
   private initForm(): void {
 
     this.perfilForm = this.fb.group({
 
-      // 🔥 AHORA EDITABLES
       username: ['', [Validators.required]],
 
       nombre: ['', [Validators.required, this.soloLetrasValidator]],
       apellido: ['', [Validators.required, this.soloLetrasValidator]],
       sexo: ['', Validators.required],
 
-      // 🔥 AHORA EDITABLE
       tipoDocumento: ['', Validators.required],
 
       numeroDocumento: ['', [Validators.required, this.soloNumerosValidator]],
@@ -90,9 +85,6 @@ export class MiPerfilComponent implements OnInit {
     this.perfilForm.disable();
   }
 
-  // =========================
-  // VALIDADORES
-  // =========================
   soloLetrasValidator(control: AbstractControl): ValidationErrors | null {
     const value = (control.value || '').trim();
     const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
@@ -114,9 +106,6 @@ export class MiPerfilComponent implements OnInit {
       : null;
   }
 
-  // =========================
-  // LIVE VALIDATIONS
-  // =========================
   private initLiveValidations(): void {
 
     ['numeroDocumento', 'numero', 'telefono'].forEach(field => {
@@ -147,9 +136,6 @@ export class MiPerfilComponent implements OnInit {
     });
   }
 
-  // =========================
-  // PERFIL
-  // =========================
   cargarPerfil(): void {
 
     this.cargando = true;
@@ -199,14 +185,9 @@ export class MiPerfilComponent implements OnInit {
     });
   }
 
-  // =========================
-  // EDICIÓN
-  // =========================
   toggleEditar(): void {
     this.editando = true;
     this.perfilForm.enable();
-
-    // opcional: bloquear solo documento si querés después
   }
 
   cancelar(): void {
@@ -225,17 +206,52 @@ export class MiPerfilComponent implements OnInit {
 
     this.cargando = true;
 
-    setTimeout(() => {
-      this.cargando = false;
-      this.showMessage('Perfil actualizado correctamente');
-      this.editando = false;
-      this.perfilForm.disable();
-    }, 800);
+    const formValue = this.perfilForm.value;
+
+    const payload = {
+      username: formValue.username,
+      datos_personales: {
+        nombre: formValue.nombre,
+        apellido: formValue.apellido,
+        sexo: formValue.sexo,
+        documento: {
+          numero: formValue.numeroDocumento,
+          tipo: formValue.tipoDocumento
+        },
+        domicilio: {
+          calle: formValue.calle,
+          numero: formValue.numero,
+          localidad: formValue.localidad,
+          departamento: formValue.departamento,
+          provincia: formValue.provincia
+        },
+        contacto: {
+          telefono: formValue.telefono,
+          correo_electronico: formValue.correoElectronico
+        }
+      }
+    };
+
+    this.gameService.actualizarDatosPerfil(payload).subscribe({
+      next: (res: { success: any; message: any; }) => {
+
+        this.cargando = false;
+
+        if (res?.success) {
+          this.showMessage('Perfil actualizado correctamente');
+          this.editando = false;
+          this.perfilForm.disable();
+        } else {
+          this.showError(res?.message || 'Error al actualizar perfil');
+        }
+      },
+      error: () => {
+        this.cargando = false;
+        this.showError('Error de conexión con el servidor');
+      }
+    });
   }
 
-  // =========================
-  // GEOREF (igual)
-  // =========================
   cargarProvincias(): void {
     this.georefService.getProvincias()
       .subscribe((res: any) => this.provincias = res.provincias);
@@ -260,9 +276,6 @@ export class MiPerfilComponent implements OnInit {
       .subscribe((res: any) => this.localidades = res.localidades);
   }
 
-  // =========================
-  // CALLES
-  // =========================
   buscarCalles(event: any): void {
 
     const query = (event.query || '').toUpperCase();
@@ -292,9 +305,6 @@ export class MiPerfilComponent implements OnInit {
     control?.updateValueAndValidity();
   }
 
-  // =========================
-  // ALERTAS
-  // =========================
   cerrarSesion(): void {
     this.authService.logout();
     this.showMessage('Sesión cerrada correctamente');

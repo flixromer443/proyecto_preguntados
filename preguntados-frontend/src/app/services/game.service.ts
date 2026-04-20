@@ -29,5 +29,8 @@ export class GameService {
     return this.http.post<PerfilResponse>(this.apiGameUrl,{ metodo: "obtenerDatosPerfil" });
   }
 
+  actualizarDatosPerfil(payload:any): Observable<PerfilResponse> {
+    return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'actualizarDatosPerfil',payload});
+  }
 
 }
