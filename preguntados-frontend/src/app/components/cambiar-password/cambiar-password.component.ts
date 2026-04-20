@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import jwtDecode from 'jwt-decode';
 
-// ✅ Tipado del JWT
 interface JwtPayload {
   sub: number;
   exp: number;
@@ -26,6 +25,8 @@ export class CambiarPasswordComponent implements OnInit {
 
   idUsuario!: number;
 
+  passwordCambiada: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -42,15 +43,13 @@ export class CambiarPasswordComponent implements OnInit {
     }
 
     this.idUsuario = userId;
+
     this.passwordForm = this.fb.group({
       password: ['', [Validators.required, this.passwordValidator]],
       repeatPassword: ['', Validators.required]
     });
   }
 
-  // =========================
-  // VALIDADOR PASSWORD
-  // =========================
   passwordValidator(control: any) {
     const value = control.value;
 
@@ -61,17 +60,13 @@ export class CambiarPasswordComponent implements OnInit {
     return regex.test(value) ? null : { weakPassword: true };
   }
 
-  // =========================
-  // VALIDAR MATCH PASSWORDS
-  // =========================
   passwordsNoCoinciden(): boolean {
     return this.passwordForm.value.password !== this.passwordForm.value.repeatPassword;
   }
 
-  // =========================
-  // CAMBIAR PASSWORD
-  // =========================
   cambiarPassword(): void {
+
+    if (this.passwordCambiada) return;
 
     if (this.passwordForm.invalid || this.passwordsNoCoinciden() || this.cargando) {
       this.showError('Revisá los datos ingresados');
@@ -85,9 +80,17 @@ export class CambiarPasswordComponent implements OnInit {
     this.authService.actualizarConstrasenia(this.idUsuario, password).subscribe({
       next: (response: any) => {
         this.cargando = false;
+
         if (response.success) {
+
+          this.passwordCambiada = true;
+
+          this.passwordForm.disable();
+
           sessionStorage.clear();
+
           this.showMessageAndRedirect('Contraseña actualizada correctamente');
+
         } else {
           this.showError(response.message);
         }
@@ -102,16 +105,10 @@ export class CambiarPasswordComponent implements OnInit {
     });
   }
 
-  // =========================
-  // OBTENER TOKEN TEMPORAL
-  // =========================
   getToken(): string | null {
     return sessionStorage.getItem('tmp_token');
   }
 
-  // =========================
-  // EXTRAER ID DEL TOKEN
-  // =========================
   getUserId(): number | null {
     const token = this.getToken();
 
@@ -129,9 +126,6 @@ export class CambiarPasswordComponent implements OnInit {
     }
   }
 
-  // =========================
-  // ALERTS
-  // =========================
   private showMessageAndRedirect(message: string) {
     this.message = message;
 
