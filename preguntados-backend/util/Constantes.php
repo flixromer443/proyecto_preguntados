@@ -19,7 +19,7 @@
     //ERRORES LOGICOS
     define('ERROR_300', "Error: ha ocurrido un error de negocio."); 
     define('ERROR_303', "Error: ya existe un usuario registrado con los mismos datos."); 
-    define('ERROR_304', "No existe usuario asociado al mail ingresados."); 
+    define('ERROR_304', "No existe usuario asociado al mail ingresado."); 
 
     
     //ERRORES FUNCIONALES
