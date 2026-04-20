@@ -33,7 +33,7 @@ class AuthModel {
         $datosUsuario = $this->obtenerDatosUsuario($data->credenciales);
         if($datosUsuario){
             $usuarioActivo = $this->elUsuarioSeEncuentraActivo($datosUsuario);
-            return $usuarioActivo ? MessageHandler::success(202, SUCCESS_202, $this->retornarUsuarioValidadoYToken($datosUsuario))
+            return $usuarioActivo ? MessageHandler::success(202, SUCCESS_202, $this->retornarToken($datosUsuario))
                                   : MessageHandler::success(206, SUCCESS_206, $this->retornarUsuarioInactivo($datosUsuario));
         }else{
             return MessageHandler::error(500, ERROR_502);
@@ -53,25 +53,14 @@ class AuthModel {
         return $usuarioEncontrado && $contraseniaVerificada ? $usuarioEncontrado : false;
     }
 
-    private function retornarUsuarioValidadoYToken($datosUsuario){
-        return[
-            'usuario' => $this->filtrarDatosNecesarios($datosUsuario),
-            'token' => $this->tokenService->generarToken($datosUsuario)
-        ];
+    private function retornarToken($datosUsuario){
+        return['token' => $this->tokenService->generarToken($datosUsuario)];
     }
 
     private function retornarUsuarioInactivo($datosUsuario){
         return[
             'id_usuario' => $datosUsuario['id'],
             'accion' => 1
-        ];
-    }
-
-    private function filtrarDatosNecesarios($datosUsuario){
-        return[
-            'id'=> $datosUsuario['id'],
-            'id_rol'=> $datosUsuario['id'],
-            'id_estado'=> $datosUsuario['id_estado']
         ];
     }
 

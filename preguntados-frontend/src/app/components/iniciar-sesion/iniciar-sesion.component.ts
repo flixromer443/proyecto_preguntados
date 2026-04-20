@@ -49,7 +49,6 @@ export class IniciarSesionComponent implements OnInit {
         this.cargando = false;
 
         if (response.success && response.code == 202) { //usuario activo
-          sessionStorage.setItem('usuario', JSON.stringify(response.data.usuario));
           sessionStorage.setItem('token', response.data.token);
           this.router.navigate(['/perfil-jugador']);
         }
