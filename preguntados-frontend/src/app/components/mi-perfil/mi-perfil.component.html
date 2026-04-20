@@ -32,7 +32,9 @@
 
       <form [formGroup]="perfilForm">
 
-        <!-- DATOS DE CUENTA -->
+        <!-- =========================
+             DATOS DE CUENTA
+        ========================= -->
         <h5 class="section-title">
           <i class="fa-solid fa-id-card me-2"></i>
           Datos de cuenta
@@ -40,11 +42,20 @@
 
         <div class="row g-3">
 
+          <!-- USERNAME -->
           <div class="col-md-4">
             <label class="form-label">Usuario</label>
-            <input pInputText formControlName="username"
+
+            <input pInputText
+                   formControlName="username"
                    class="w-100"
-                   [disabled]="true">
+                   [disabled]="!editando"
+                   [ngClass]="{'is-invalid': perfilForm.get('username')?.touched && perfilForm.get('username')?.invalid}">
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('username')?.touched && perfilForm.get('username')?.hasError('required')">
+              Campo obligatorio
+            </small>
           </div>
 
           <!-- TIPO DOCUMENTO -->
@@ -53,17 +64,25 @@
 
             <select class="form-select"
                     formControlName="tipoDocumento"
-                    [disabled]="true">
+                    [disabled]="!editando"
+                    [ngClass]="{'is-invalid': perfilForm.get('tipoDocumento')?.touched && perfilForm.get('tipoDocumento')?.invalid}">
 
               <option value="1">DNI</option>
               <option value="2">Pasaporte</option>
 
             </select>
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('tipoDocumento')?.touched && perfilForm.get('tipoDocumento')?.hasError('required')">
+              Campo obligatorio
+            </small>
           </div>
 
+          <!-- DNI -->
           <div class="col-md-4">
             <label class="form-label">Número documento</label>
-            <input pInputText formControlName="numeroDocumento"
+            <input pInputText
+                   formControlName="numeroDocumento"
                    class="w-100"
                    [disabled]="true">
           </div>
@@ -72,24 +91,34 @@
 
         <div class="row g-3 mt-2">
 
+          <!-- SEXO -->
           <div class="col-md-4">
             <label class="form-label">Sexo</label>
+
             <select class="form-select"
                     formControlName="sexo"
-                    [disabled]="!editando">
+                    [disabled]="!editando"
+                    [ngClass]="{'is-invalid': perfilForm.get('sexo')?.touched && perfilForm.get('sexo')?.invalid}">
 
               <option value="M">Masculino</option>
               <option value="F">Femenino</option>
               <option value="X">No Binario</option>
 
             </select>
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('sexo')?.touched && perfilForm.get('sexo')?.hasError('required')">
+              Campo obligatorio
+            </small>
           </div>
 
         </div>
 
         <hr class="my-4">
 
-        <!-- DATOS PERSONALES -->
+        <!-- =========================
+             DATOS PERSONALES
+        ========================= -->
         <h5 class="section-title">
           <i class="fa-solid fa-user me-2"></i>
           Datos personales
@@ -99,23 +128,41 @@
 
           <div class="col-md-6">
             <label class="form-label">Nombre</label>
-            <input pInputText formControlName="nombre"
+
+            <input pInputText
+                   formControlName="nombre"
                    class="w-100"
-                   [disabled]="!editando">
+                   [disabled]="!editando"
+                   [ngClass]="{'is-invalid': perfilForm.get('nombre')?.touched && perfilForm.get('nombre')?.invalid}">
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('nombre')?.touched && perfilForm.get('nombre')?.hasError('required')">
+              Campo obligatorio
+            </small>
           </div>
 
           <div class="col-md-6">
             <label class="form-label">Apellido</label>
-            <input pInputText formControlName="apellido"
+
+            <input pInputText
+                   formControlName="apellido"
                    class="w-100"
-                   [disabled]="!editando">
+                   [disabled]="!editando"
+                   [ngClass]="{'is-invalid': perfilForm.get('apellido')?.touched && perfilForm.get('apellido')?.invalid}">
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('apellido')?.touched && perfilForm.get('apellido')?.hasError('required')">
+              Campo obligatorio
+            </small>
           </div>
 
         </div>
 
         <hr class="my-4">
 
-        <!-- DOMICILIO -->
+        <!-- =========================
+             DOMICILIO
+        ========================= -->
         <h5 class="section-title">
           <i class="fa-solid fa-location-dot me-2"></i>
           Domicilio
@@ -125,43 +172,64 @@
 
           <div class="col-md-4">
             <label class="form-label">Provincia</label>
+
             <select class="form-select"
                     formControlName="provincia"
                     [disabled]="!editando"
-                    (change)="onProvinciaChange()">
+                    (change)="onProvinciaChange()"
+                    [ngClass]="{'is-invalid': perfilForm.get('provincia')?.touched && perfilForm.get('provincia')?.invalid}">
 
               <option *ngFor="let p of provincias" [value]="p.id">
                 {{ p.nombre }}
               </option>
 
             </select>
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('provincia')?.touched && perfilForm.get('provincia')?.hasError('required')">
+              Campo obligatorio
+            </small>
           </div>
 
           <div class="col-md-4">
-            <label class="form-label">Departamento / Municipio</label>
+            <label class="form-label">Departamento</label>
+
             <select class="form-select"
                     formControlName="departamento"
                     [disabled]="!editando"
-                    (change)="onDepartamentoChange()">
+                    (change)="onDepartamentoChange()"
+                    [ngClass]="{'is-invalid': perfilForm.get('departamento')?.touched && perfilForm.get('departamento')?.invalid}">
 
               <option *ngFor="let d of departamentos" [value]="d.id">
                 {{ d.nombre }}
               </option>
 
             </select>
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('departamento')?.touched && perfilForm.get('departamento')?.hasError('required')">
+              Campo obligatorio
+            </small>
           </div>
 
           <div class="col-md-4">
             <label class="form-label">Localidad</label>
+
             <select class="form-select"
                     formControlName="localidad"
-                    [disabled]="!editando">
+                    [disabled]="!editando"
+                    [ngClass]="{'is-invalid': perfilForm.get('localidad')?.touched && perfilForm.get('localidad')?.invalid}">
 
               <option *ngFor="let l of localidades" [value]="l.nombre">
                 {{ l.nombre }}
               </option>
 
             </select>
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('localidad')?.touched && perfilForm.get('localidad')?.hasError('required')">
+              Campo obligatorio
+            </small>
           </div>
 
         </div>
@@ -182,17 +250,29 @@
               [disabled]="!editando">
             </p-autoComplete>
 
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('calle')?.touched && perfilForm.get('calle')?.hasError('required')">
+              Campo obligatorio
+            </small>
           </div>
 
           <div class="col-md-4">
             <label class="form-label">Número</label>
-            <input pInputText formControlName="numero"
+
+            <input pInputText
+                   formControlName="numero"
                    class="w-100"
-                   [disabled]="!editando">
+                   [disabled]="!editando"
+                   [ngClass]="{'is-invalid': perfilForm.get('numero')?.touched && perfilForm.get('numero')?.invalid}">
 
             <small class="text-danger"
-              *ngIf="perfilForm.get('numero')?.hasError('alturaInvalida')">
+                   *ngIf="perfilForm.get('numero')?.hasError('alturaInvalida')">
               Altura inválida
+            </small>
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('numero')?.touched && perfilForm.get('numero')?.hasError('required')">
+              Campo obligatorio
             </small>
           </div>
 
@@ -200,7 +280,9 @@
 
         <hr class="my-4">
 
-        <!-- CONTACTO -->
+        <!-- =========================
+             CONTACTO
+        ========================= -->
         <h5 class="section-title">
           <i class="fa-solid fa-phone me-2"></i>
           Contacto
@@ -210,23 +292,46 @@
 
           <div class="col-md-6">
             <label class="form-label">Teléfono</label>
-            <input pInputText formControlName="telefono"
+
+            <input pInputText
+                   formControlName="telefono"
                    class="w-100"
-                   [disabled]="!editando">
+                   [disabled]="!editando"
+                   [ngClass]="{'is-invalid': perfilForm.get('telefono')?.touched && perfilForm.get('telefono')?.invalid}">
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('telefono')?.touched && perfilForm.get('telefono')?.hasError('required')">
+              Campo obligatorio
+            </small>
           </div>
 
           <div class="col-md-6">
             <label class="form-label">Email</label>
-            <input pInputText formControlName="correoElectronico"
+
+            <input pInputText
+                   formControlName="correoElectronico"
                    class="w-100"
-                   [disabled]="!editando">
+                   [disabled]="!editando"
+                   [ngClass]="{'is-invalid': perfilForm.get('correoElectronico')?.touched && perfilForm.get('correoElectronico')?.invalid}">
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('correoElectronico')?.touched && perfilForm.get('correoElectronico')?.hasError('required')">
+              Campo obligatorio
+            </small>
+
+            <small class="text-danger"
+                   *ngIf="perfilForm.get('correoElectronico')?.touched && perfilForm.get('correoElectronico')?.hasError('email')">
+              Email inválido
+            </small>
           </div>
 
         </div>
 
         <hr class="my-4">
 
-        <!-- BOTONES -->
+        <!-- =========================
+             BOTONES
+        ========================= -->
         <div class="text-center">
 
           <button pButton type="button"

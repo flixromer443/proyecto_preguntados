@@ -54,30 +54,36 @@ export class MiPerfilComponent implements OnInit {
     this.initForm();
     this.cargarProvincias();
     this.cargarPerfil();
+    this.initLiveValidations();
   }
 
   // =========================
-  // INIT FORM
+  // FORM
   // =========================
   private initForm(): void {
-    this.perfilForm = this.fb.group({
-      username: [{ value: '', disabled: true }],
 
-      nombre: ['', Validators.required],
-      apellido: ['', Validators.required],
+    this.perfilForm = this.fb.group({
+
+      // 🔥 AHORA EDITABLES
+      username: ['', [Validators.required]],
+
+      nombre: ['', [Validators.required, this.soloLetrasValidator]],
+      apellido: ['', [Validators.required, this.soloLetrasValidator]],
       sexo: ['', Validators.required],
 
-      tipoDocumento: [{ value: '', disabled: true }],
-      numeroDocumento: [{ value: '', disabled: true }],
+      // 🔥 AHORA EDITABLE
+      tipoDocumento: ['', Validators.required],
+
+      numeroDocumento: ['', [Validators.required, this.soloNumerosValidator]],
 
       calle: ['', Validators.required],
-      numero: ['', [Validators.required, this.validarAltura.bind(this)]],
+      numero: ['', [Validators.required, this.soloNumerosValidator, this.validarAltura.bind(this)]],
 
       provincia: ['', Validators.required],
       departamento: ['', Validators.required],
       localidad: ['', Validators.required],
 
-      telefono: ['', Validators.required],
+      telefono: ['', [Validators.required, this.soloNumerosValidator]],
       correoElectronico: ['', [Validators.required, Validators.email]]
     });
 
@@ -85,7 +91,64 @@ export class MiPerfilComponent implements OnInit {
   }
 
   // =========================
-  // PERFIL (FIX ASYNC BUG)
+  // VALIDADORES
+  // =========================
+  soloLetrasValidator(control: AbstractControl): ValidationErrors | null {
+    const value = (control.value || '').trim();
+    const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+    return regex.test(value) ? null : { soloLetras: true };
+  }
+
+  soloNumerosValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value || '';
+    return /^[0-9]+$/.test(value) ? null : { soloNumeros: true };
+  }
+
+  validarAltura(control: AbstractControl): ValidationErrors | null {
+
+    const valor = Number(control.value);
+    if (!this.alturaMaxima) return null;
+
+    return valor > this.alturaMaxima
+      ? { alturaInvalida: true }
+      : null;
+  }
+
+  // =========================
+  // LIVE VALIDATIONS
+  // =========================
+  private initLiveValidations(): void {
+
+    ['numeroDocumento', 'numero', 'telefono'].forEach(field => {
+      this.perfilForm.get(field)?.valueChanges.subscribe(v => {
+        if (v) {
+          const limpio = v.replace(/[^0-9]/g, '');
+          if (v !== limpio) {
+            this.perfilForm.get(field)?.setValue(limpio, { emitEvent: false });
+          }
+        }
+      });
+    });
+
+    ['nombre', 'apellido'].forEach(field => {
+      this.perfilForm.get(field)?.valueChanges.subscribe(v => {
+        if (!v) return;
+
+        const capitalizado = v
+          .toLowerCase()
+          .split(' ')
+          .map((p: string) => p.charAt(0).toUpperCase() + p.slice(1))
+          .join(' ');
+
+        if (v !== capitalizado) {
+          this.perfilForm.get(field)?.setValue(capitalizado, { emitEvent: false });
+        }
+      });
+    });
+  }
+
+  // =========================
+  // PERFIL
   // =========================
   cargarPerfil(): void {
 
@@ -109,26 +172,22 @@ export class MiPerfilComponent implements OnInit {
           numeroDocumento: data.datos_personales.documento.numero,
           calle: data.datos_personales.domicilio.calle,
           numero: data.datos_personales.domicilio.numero,
-          provincia: provincia,
+          provincia,
+          departamento,
+          localidad,
           telefono: data.datos_personales.contacto.telefono,
           correoElectronico: data.datos_personales.contacto.correo_electronico
         });
 
-        // 🔥 ORDEN CORRECTO (FIX BUG SELECT 25 DE MAYO)
         this.georefService.getDepartamentosPorProvincia(provincia)
           .subscribe((resDep: any) => {
 
             this.departamentos = resDep.departamentos;
 
-            this.perfilForm.patchValue({ departamento });
-
             this.georefService.getLocalidades(provincia, departamento)
               .subscribe((resLoc: any) => {
 
                 this.localidades = resLoc.localidades;
-
-                this.perfilForm.patchValue({ localidad });
-
                 this.cargando = false;
               });
           });
@@ -147,23 +206,16 @@ export class MiPerfilComponent implements OnInit {
     this.editando = true;
     this.perfilForm.enable();
 
-    this.perfilForm.get('username')?.disable();
-    this.perfilForm.get('tipoDocumento')?.disable();
-    this.perfilForm.get('numeroDocumento')?.disable();
+    // opcional: bloquear solo documento si querés después
   }
 
   cancelar(): void {
     this.editando = false;
-
     this.perfilForm.reset();
     this.perfilForm.disable();
-
     this.cargarPerfil();
   }
 
-  // =========================
-  // GUARDAR
-  // =========================
   guardar(): void {
 
     if (this.perfilForm.invalid) {
@@ -182,7 +234,7 @@ export class MiPerfilComponent implements OnInit {
   }
 
   // =========================
-  // GEOREF
+  // GEOREF (igual)
   // =========================
   cargarProvincias(): void {
     this.georefService.getProvincias()
@@ -190,14 +242,11 @@ export class MiPerfilComponent implements OnInit {
   }
 
   onProvinciaChange(): void {
-
     const idProvincia = this.perfilForm.get('provincia')?.value;
     if (!idProvincia) return;
 
     this.georefService.getDepartamentosPorProvincia(idProvincia)
-      .subscribe((res: any) => {
-        this.departamentos = res.departamentos;
-      });
+      .subscribe((res: any) => this.departamentos = res.departamentos);
   }
 
   onDepartamentoChange(): void {
@@ -208,9 +257,7 @@ export class MiPerfilComponent implements OnInit {
     if (!prov || !dep) return;
 
     this.georefService.getLocalidades(prov, dep)
-      .subscribe((res: any) => {
-        this.localidades = res.localidades;
-      });
+      .subscribe((res: any) => this.localidades = res.localidades);
   }
 
   // =========================
@@ -226,7 +273,6 @@ export class MiPerfilComponent implements OnInit {
 
     this.georefService.getCalles(prov, dep)
       .subscribe((res: any) => {
-
         this.callesFiltradas = res.calles.filter((c: any) =>
           c.nombre.toUpperCase().includes(query)
         );
@@ -243,36 +289,19 @@ export class MiPerfilComponent implements OnInit {
     this.alturaMaxima = Math.max(finDerecha, finIzquierda);
 
     const control = this.perfilForm.get('numero');
-    control?.setValue(control?.value);
     control?.updateValueAndValidity();
-  }
-
-  validarAltura(control: AbstractControl): ValidationErrors | null {
-
-    const valor = Number(control.value);
-
-    if (!this.alturaMaxima) return null;
-
-    return valor > this.alturaMaxima
-      ? { alturaInvalida: true }
-      : null;
-  }
-
-  // =========================
-  // SESIÓN
-  // =========================
-  cerrarSesion(): void {
-    this.authService.logout();
-    this.showMessage('Sesión cerrada correctamente');
-
-    setTimeout(() => {
-      this.router.navigate(['/iniciar-sesion']);
-    }, 800);
   }
 
   // =========================
   // ALERTAS
   // =========================
+  cerrarSesion(): void {
+    this.authService.logout();
+    this.showMessage('Sesión cerrada correctamente');
+
+    setTimeout(() => this.router.navigate(['/iniciar-sesion']), 800);
+  }
+
   private showError(msg: string): void {
     this.errorMessage = msg;
     clearTimeout(this.alertTimeout);
