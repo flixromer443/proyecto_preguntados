@@ -43,15 +43,18 @@ export class IniciarSesionComponent implements OnInit {
     const { usuario, password } = this.loginForm.value;
 
     this.authService.iniciarSesion(usuario, password).subscribe({
+
       next: (response: any) => {
-        if(response.success && response.code == 202){ //usuario activo
+
+        this.cargando = false;
+
+        if (response.success && response.code == 202) { //usuario activo
           sessionStorage.setItem('usuario', JSON.stringify(response.data.usuario));
           sessionStorage.setItem('token', response.data.token);
-
-          this.cargando = false;
           this.router.navigate(['/perfil-jugador']);
-        }else if(response.success && response.code == 206){ //usuario inactivo
-          this.cargando = false;    
+        }
+
+        else if (response.success && response.code == 206) { //usuario inactivo
           this.router.navigate(['/ingresar-codigo'], {
             queryParams: {
               id_usuario: response.data.id_usuario,
@@ -59,12 +62,20 @@ export class IniciarSesionComponent implements OnInit {
             }
           });
         }
+
+        else {
+          this.showError(response.message || 'Credenciales incorrectas');
+        }
       },
+
       error: (err: any) => {
-        this.showError(
-          err?.error?.message || 'Credenciales incorrectas'
-        );
         this.cargando = false;
+
+        this.showError(
+          err?.error?.message || 'Error de conexión con el servidor'
+        );
+
+        console.log(err);
       }
     });
   }
