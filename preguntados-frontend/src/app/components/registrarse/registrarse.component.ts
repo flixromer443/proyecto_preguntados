@@ -77,7 +77,6 @@ export class RegistrarseComponent implements OnInit {
       departamento: ['', Validators.required],
       localidad: ['', Validators.required],
 
-      // ✅ teléfono validado como números
       telefono: ['', [Validators.required, this.soloNumerosValidator]],
 
       correoElectronico: ['', [Validators.required, Validators.email]],
@@ -121,7 +120,6 @@ export class RegistrarseComponent implements OnInit {
       }
     });
 
-    // ✅ limpiar teléfono
     this.registerForm.get('telefono')?.valueChanges.subscribe(v => {
       if (v) {
         const limpio = v.replace(/[^0-9]/g, '');
@@ -133,10 +131,6 @@ export class RegistrarseComponent implements OnInit {
 
     this.cargarProvincias();
   }
-
-  // =========================
-  // VALIDADORES
-  // =========================
 
   soloLetrasValidator(control: AbstractControl): ValidationErrors | null {
     const value = (control.value || '').trim();
@@ -178,10 +172,6 @@ export class RegistrarseComponent implements OnInit {
     return contains ? { containsUserData: true } : null;
   }
 
-  // =========================
-  // UTIL
-  // =========================
-
   private aplicarCapitalizacion(campo: string, value: string): void {
 
     if (!value || typeof value !== 'string') return;
@@ -200,10 +190,6 @@ export class RegistrarseComponent implements OnInit {
       control.setValue(capitalizado, { emitEvent: false });
     }
   }
-
-  // =========================
-  // GEOREF
-  // =========================
 
   cargarProvincias(): void {
     this.georefService.getProvincias()
@@ -279,10 +265,6 @@ export class RegistrarseComponent implements OnInit {
       });
   }
 
-  // =========================
-  // STEPS
-  // =========================
-
   nextStep(): void {
     if (!this.validarPaso1()) {
       this.messageService.add({
@@ -332,10 +314,6 @@ export class RegistrarseComponent implements OnInit {
   passwordsNoCoinciden(): boolean {
     return this.registerForm.value.password !== this.registerForm.value.repeatPassword;
   }
-
-  // =========================
-  // SUBMIT
-  // =========================
 
   register(): void {
 
