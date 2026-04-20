@@ -9,6 +9,7 @@ require_once __DIR__ . '/../lib/php-jwt/BeforeValidException.php';
 require_once __DIR__ . '/../config/config.php';
 
 use \Firebase\JWT\JWT;
+use \Firebase\JWT\Key;
 
 class TokenService {
 
@@ -36,70 +37,14 @@ class TokenService {
         return JWT::encode($payload, $this->secret, $this->alg[0]);
     }
 
-    public function validarToken() {
-
-        if(!isset($_SERVER['HTTP_X_ACCESS_TOKEN'])){
-            $this->errorResponse('token is required');
-        }
-
+    public function decodificarToken($token){
         try {
-            $token = $_SERVER['HTTP_X_ACCESS_TOKEN'];
-
-            $payload = JWT::decode(
-                $token,
-                $this->secret,
-                $this->alg
-            );
-
-            $newPayload = (array) $payload;
-            $newPayload['iat'] = time();
-            $newPayload['exp'] = time() + $this->lifetime;
-
-            $newToken = JWT::encode(
-                $newPayload,
-                $this->secret,
-                $this->alg[0]
-            );
-
-            return [
-                'payload' => $payload,
-                'token' => $newToken
-            ];
-
-        } catch(\Exception $e){
-            $this->errorResponse($e->getMessage());
+            $decoded = JWT::decode($token, new Key($this->secret, $this->alg[0]));
+            return $decoded;
+        } catch (Exception $e) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Token inválido']);
+            exit;
         }
-    }
-
-    // 📦 DATA protegida (ejemplo)
-    public function getData() {
-
-        $jwtData = $this->validarToken();
-
-        $data = [
-            ['id' => 1, 'name' => 'product 01'],
-            ['id' => 2, 'name' => 'product 02'],
-            ['id' => 3, 'name' => 'product 03'],
-            ['id' => 4, 'name' => 'product 04']
-        ];
-
-        return [
-            'status' => true,
-            'payload' => [
-                'data' => $data
-            ],
-            'jwt' => $jwtData
-        ];
-    }
-
-    private function errorResponse($message){
-        header("Content-Type: application/json");
-        echo json_encode([
-            'status' => false,
-            'payload' => [
-                'message' => $message
-            ]
-        ]);
-        exit();
     }
 }

@@ -35,7 +35,46 @@ class UsuariosDAO {
         }
     }
     
-     public function obtenerUsuarioPorUsernameOCorreoElectronico($input){
+    public function existeOtroUsuarioConMismoNombreCorreoODocumento($data, $idUsuario) : bool{
+        try{
+            $stmt = $this->pdo->prepare("SELECT EXISTS (
+                                         SELECT 1 FROM usuarios u 
+                                         INNER JOIN datos_personales d
+                                         ON d.id_usuario = u.id
+                                         WHERE 
+                                            u.username=:username and u.id != :id_usuario
+                                         OR d.correo_electronico=:correo_electronico and u.id != :id_usuario 
+                                         OR d.doc_nro=:doc_nro and d.doc_tipo=:doc_tipo and u.id != :id_usuario
+
+                                        )");
+            $stmt->execute([
+                ':username' => $data->username,
+                ':correo_electronico' => $data->contacto->correoElectronico,
+                ':doc_nro' => $data->documento->numero,
+                ':doc_tipo' => $data->documento->tipo,
+                ':id_usuario' => $idUsuario,
+            ]);
+        
+            return (bool) $stmt->fetchColumn();
+        }catch(PDOException $e){
+            error_log("Error select datos_personales: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function actualizarUsername($username, $idUsuario) {
+        $sql = "UPDATE usuarios SET username =:username WHERE id = :id_usuario";
+    
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':username' => $username,
+            ':id_usuario' => $idUsuario
+        ]);
+
+        return $stmt->rowCount() > 0;
+    }
+    
+    public function obtenerUsuarioPorUsernameOCorreoElectronico($input){
         try{
             $stmt = $this->pdo->prepare("SELECT u.* FROM usuarios u
                                          INNER JOIN datos_personales d
@@ -132,5 +171,32 @@ class UsuariosDAO {
 
         return $stmt->rowCount() > 0;
     }
+
+    public function obtenerDatosPerfil($idUsuario){
+        try{
+            $stmt = $this->pdo->prepare("SELECT u.username, 
+                                                d.nombre, d.apellido, d.sexo,
+                                                d.doc_nro, d.doc_tipo, 
+                                                d.dom_calle, d.dom_nro, 
+                                                d.dom_loc, d.dom_depto, d.dom_pcia,
+                                                d.telefono, d.correo_electronico 
+                                        FROM usuarios u 
+                                        INNER JOIN datos_personales d 
+                                        ON d.id_usuario = u.id
+                                        WHERE u.id = $idUsuario
+                                        ");
+            $stmt->execute([
+                ':id_usuario' => $idUsuario,
+            ]);
+        
+            $datosPerfil = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $datosPerfil ? RowMapper::mapDatosPerfilFromDB($datosPerfil) : false;
+        }catch(PDOException $e){
+            error_log("Error select obtenerDatosPerfil: " . $e->getMessage());
+            return false;
+        }
+    }
+    
 
 }

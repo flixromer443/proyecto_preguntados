@@ -23,10 +23,11 @@ import { GalleriaModule } from 'primeng/galleria';
 import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { PasswordModule } from 'primeng/password'; // ✅ ESTE FALTABA
+import { PasswordModule } from 'primeng/password'; 
 
 // Servicios
 import { MessageService } from 'primeng/api';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // Componentes
 import { HeaderComponent } from './components/header/header.component';
@@ -39,6 +40,8 @@ import { PerfilJugadorComponent } from './components/perfil-jugador/perfil-jugad
 import { IngresarCodigoComponent } from './components/ingresar-codigo/ingresar-codigo.component';
 import { IngresarCorreoComponent } from './components/ingresar-correo/ingresar-correo.component';
 import { CambiarPasswordComponent } from './components/cambiar-password/cambiar-password.component';
+import { MiPerfilComponent } from './components/mi-perfil/mi-perfil.component';
+import { AuthInterceptor } from './services/interceptor';
 
 @NgModule({
   declarations: [
@@ -52,7 +55,8 @@ import { CambiarPasswordComponent } from './components/cambiar-password/cambiar-
     PerfilJugadorComponent,
     IngresarCodigoComponent,
     IngresarCorreoComponent,
-    CambiarPasswordComponent
+    CambiarPasswordComponent,
+    MiPerfilComponent
   ],
   imports: [
     BrowserModule,
@@ -79,7 +83,14 @@ import { CambiarPasswordComponent } from './components/cambiar-password/cambiar-
     AutoCompleteModule,
     PasswordModule
   ],
-  providers: [MessageService],
+  providers: [
+    MessageService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

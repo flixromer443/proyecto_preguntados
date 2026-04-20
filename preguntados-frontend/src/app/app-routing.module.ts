@@ -8,6 +8,7 @@ import { PerfilJugadorComponent } from './components/perfil-jugador/perfil-jugad
 import { IngresarCodigoComponent } from './components/ingresar-codigo/ingresar-codigo.component';
 import { IngresarCorreoComponent } from './components/ingresar-correo/ingresar-correo.component';
 import { CambiarPasswordComponent } from './components/cambiar-password/cambiar-password.component';
+import { MiPerfilComponent } from './components/mi-perfil/mi-perfil.component';
 
 //definir las rutas de la aplicacion
 const routes: Routes = [
@@ -19,6 +20,7 @@ const routes: Routes = [
   {path: 'ingresar-correo', component: IngresarCorreoComponent},
   {path: 'cambiar-password', component: CambiarPasswordComponent},
   {path: 'perfil-jugador', component: PerfilJugadorComponent},
+  {path: 'mi-perfil', component: MiPerfilComponent},
   {path: '**', component: IniciarSesionComponent},
   
 ];
