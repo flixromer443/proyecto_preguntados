@@ -1,0 +1,215 @@
+<section>
+  <div class="container">
+
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+
+        <p-card styleClass="user-form">
+
+          <form [formGroup]="registerForm" (ngSubmit)="register()">
+
+            <!-- PASO 1 -->
+            <div *ngIf="step === 1">
+
+              <h4 class="mb-3">Cargar Datos Personales</h4>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <label class="labelForm">Nombre</label>
+                  <input type="text" pInputText formControlName="nombre" class="w-100">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="labelForm">Apellido</label>
+                  <input type="text" pInputText formControlName="apellido" class="w-100">
+                </div>
+              </div>
+
+              <br>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <label class="labelForm">Sexo</label>
+                  <select class="form-control" formControlName="sexo">
+                    <option value="">Seleccione</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                    <option value="X">No Binario</option>
+                  </select>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="labelForm">Tipo Doc</label>
+                  <select class="form-control" formControlName="tipoDocumento">
+                    <option value="1">DNI</option>
+                    <option value="2">Pasaporte</option>
+                  </select>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="labelForm">Número</label>
+                  <input type="text" pInputText formControlName="numeroDocumento" class="w-100">
+                </div>
+              </div>
+
+              <br>
+
+              <h5>Domicilio</h5>
+
+              <div class="row">
+
+                <div class="col-md-4">
+                  <label class="labelForm">Provincia</label>
+                  <select class="form-control"
+                          formControlName="provincia"
+                          (change)="onProvinciaChange()">
+                    <option value="">Seleccione</option>
+                    <option *ngFor="let p of provincias" [value]="p.id">
+                      {{ p.nombre }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="labelForm">Departamento / Municipio</label>
+                  <select class="form-control"
+                          formControlName="departamento"
+                          (change)="onDepartamentoChange()">
+                    <option value="">Seleccione</option>
+                    <option *ngFor="let d of departamentos" [value]="d.id">
+                      {{ d.nombre }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="labelForm">Localidad</label>
+                  <select class="form-control" formControlName="localidad">
+                    <option value="">Seleccione</option>
+                    <option *ngFor="let l of localidades" [value]="l.nombre">
+                      {{ l.nombre }}
+                    </option>
+                  </select>
+                </div>
+
+              </div>
+
+              <br>
+
+              <div class="row">
+                <div class="col-md-8">
+                  <label class="labelForm">Calle</label>
+
+                  <p-autoComplete
+                    formControlName="calle"
+                    [suggestions]="callesFiltradas"
+                    (completeMethod)="buscarCalles($event)"
+                    field="nombre"
+                    [dropdown]="true"
+                    styleClass="w-100"
+                    inputStyleClass="w-100">
+                  </p-autoComplete>
+
+                </div>
+
+                <div class="col-md-4">
+                  <label class="labelForm">Número</label>
+
+                  <input type="text"
+                         pInputText
+                         formControlName="numero"
+                         class="w-100">
+                </div>
+              </div>
+
+              <br>
+
+              <h5>Contacto</h5>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <label class="labelForm">Correo electrónico</label>
+                  <input type="email" pInputText formControlName="correoElectronico" class="w-100">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="labelForm">Teléfono</label>
+                  <input type="text" pInputText formControlName="telefono" class="w-100">
+                </div>
+              </div>
+
+              <br>
+
+              <button pButton type="button" label="Siguiente" class="w-100"
+                      (click)="nextStep()"></button>
+
+            </div>
+
+            <!-- PASO 2 -->
+            <div *ngIf="step === 2">
+
+              <div *ngIf="errorMessage" class="alert alert-danger text-center mb-3">
+                {{ errorMessage }}
+              </div>
+
+              <h4 class="mb-3 text-center">Crear Usuario</h4>
+
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+
+                  <div class="mb-3">
+                    <label class="labelForm">Usuario</label>
+                    <input type="text" pInputText formControlName="username" class="w-100">
+                  </div>
+
+                  <div class="mb-2">
+                    <label class="labelForm">Contraseña</label>
+                    <p-password formControlName="password" [toggleMask]="true" styleClass="w-100"></p-password>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="labelForm">Repetir contraseña</label>
+                    <p-password formControlName="repeatPassword" [toggleMask]="true" styleClass="w-100"></p-password>
+                  </div>
+
+                  <div *ngIf="passwordsNoCoinciden()" class="text-danger text-center">
+                    Las contraseñas no coinciden
+                  </div>
+
+                  <br>
+
+                  <div class="form-check mb-3 text-center">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           formControlName="aceptoTerminos"/>
+                    <label class="form-check-label">
+                      Acepto los términos y condiciones
+                    </label>
+                  </div>
+
+                  <button pButton type="button" label="Volver"
+                          class="w-100 mb-2"
+                          (click)="prevStep()"></button>
+
+                  <button pButton
+                          type="submit"
+                          label="Registrarse"
+                          class="w-100"
+                          [loading]="cargando"
+                          [disabled]="cargando || registerForm.invalid">
+                  </button>
+
+                </div>
+              </div>
+
+            </div>
+
+          </form>
+
+        </p-card>
+
+      </div>
+    </div>
+
+  </div>
+</section>

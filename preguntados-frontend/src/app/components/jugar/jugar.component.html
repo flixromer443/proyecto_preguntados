@@ -5,7 +5,7 @@
     <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
   </div>
 
-  <!-- 🟢 PANTALLA DE JUEGO -->
+  <!-- PANTALLA DE JUEGO -->
   <div *ngIf="!juegoTerminado && preguntaActual" class="fade-in">
 
     <!-- Progreso -->
@@ -76,7 +76,7 @@
 
   </div>
 
-  <!-- 🔵 PANTALLA FINAL -->
+  <!-- PANTALLA FINAL -->
   <div *ngIf="juegoTerminado" class="fade-in">
 
     <div class="card text-center shadow">
@@ -95,7 +95,7 @@
         <p class="fs-5">
           Puntaje: 
           <strong>
-            {{ (aciertos / preguntas.length) * 100 | number:'1.0-0' }}%
+            {{ (aciertos / preguntas.length) * 100  }}%
           </strong>
         </p>
 

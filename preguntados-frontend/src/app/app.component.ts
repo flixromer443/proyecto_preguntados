@@ -9,7 +9,7 @@ import { DatosCompartidosService } from './services/datos-compartidos.service';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'Hotel Copo de nieve';
+  title = 'Preguntados';
 
   esconderBuscador = false;
 
