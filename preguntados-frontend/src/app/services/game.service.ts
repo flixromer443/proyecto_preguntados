@@ -41,4 +41,8 @@ export class GameService {
     return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'guardarResultados',payload});
   }
 
+  obtenerEstadisticas(): Observable<PerfilResponse> {
+    return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'obtenerEstadisticas'});
+  }
+
 }
