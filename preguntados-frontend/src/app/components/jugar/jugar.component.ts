@@ -182,7 +182,7 @@ export class JugarComponent {
     this.gameService.guardarResultados(payload).subscribe({
       next: (response: any) => {
         this.cargando = false;
-        this.router.navigate(['/pefil-jugador']);
+        this.router.navigate(['/perfil-jugador']);
       },
       error: (err: any) => {
         this.cargando = false;
