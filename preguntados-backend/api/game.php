@@ -18,17 +18,25 @@ if($token){
        $controller = new GameController();
         echo json_encode($controller->obtenerPreguntasAlAzar($token));
     }
+
     if($data->metodo == "obtenerDatosPerfil"){
         $controller = new GameController();
         echo json_encode($controller->obtenerDatosPerfil($token));
     }
+
     if($data->metodo == "actualizarDatosPerfil"){
         $controller = new GameController();
         echo json_encode($controller->actualizarDatosPerfil($data, $token));
     }
+
     if($data->metodo == "eliminarCuenta"){
         $controller = new GameController();
         echo json_encode($controller->eliminarCuenta($token));
+    }
+    
+    if($data->metodo == "guardarResultados"){
+        $controller = new GameController();
+        echo json_encode($controller->guardarResultados($data, $token));
     }
 }
 

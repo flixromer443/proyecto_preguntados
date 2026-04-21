@@ -3,6 +3,9 @@ require_once __DIR__ . '/../DAO/PreguntasDAO.php';
 require_once __DIR__ . '/../DAO/RespuestasDAO.php';
 require_once __DIR__ . '/../DAO/UsuariosDAO.php';
 require_once __DIR__ . '/../DAO/DatosPersonalesDAO.php';
+require_once __DIR__ . '/../DAO/PartidasDAO.php';
+require_once __DIR__ . '/../DAO/ClasificacionesDAO.php';
+require_once __DIR__ . '/../DAO/EstadisticasDAO.php';
 require_once __DIR__ . '/../util/MessageHandler.php';
 
 
@@ -12,12 +15,19 @@ class GameModel {
     private $respuestasDAO;
     private $usuarioDAO;
     private $datosPersonalesDAO;
+    private $partidasDAO;
+    private $clasificacionesDAO;
+    private $estadisticasDAO;
+
 
     public function __construct() {
         $this->respuestasDAO = new RespuestasDAO();
         $this->preguntasDAO = new PreguntasDAO();
         $this->usuarioDAO = new UsuariosDAO();
         $this->datosPersonalesDAO = new DatosPersonalesDAO();
+        $this->partidasDAO = new PartidasDAO();
+        $this->clasificacionesDAO = new ClasificacionesDAO();
+        $this->estadisticasDAO = new EstadisticasDAO();
     }
     
     public function obtenerPreguntasAlAzar(){
@@ -67,4 +77,30 @@ class GameModel {
         return $usuarioEliminado ? MessageHandler::success(209, SUCCESS_210)
                                  : MessageHandler::error(507, ERROR_508);
     }
+
+    public function guardarResultados($data, $decoded){
+        //grabar partida
+        $idUsuario = $decoded->sub;
+        $payload = $data->payload;
+        $partidaGuardada = $this->partidasDAO->guardarPartida($payload, $idUsuario);
+        
+        //sumar aciertos en clasificaciones
+        $clasificacion = $this->clasificacionesDAO->obtenerClasificacion($idUsuario);
+        $nuevoPuntaje = $payload->aciertos + (int) $clasificacion['puntaje'];
+        $puntajeActualizado = $this->clasificacionesDAO->actualizarPuntaje($nuevoPuntaje, $idUsuario);
+        
+        //grabar las estadisticas
+        $estadisticasActualizadas = false;
+        $estadisticas = $payload->estadisticas;
+        foreach ($estadisticas as $idTematica => $estadistica) {
+            $estadisticasActualizadas = $this->estadisticasDAO->actualizarEstadisticas($estadistica, $idTematica, $idUsuario);
+        }
+
+        $resultadosGuardadosExitosamente = $partidaGuardada > 0 && $puntajeActualizado && $estadisticasActualizadas;
+        return $resultadosGuardadosExitosamente ? MessageHandler::success(211, SUCCESS_211)
+                                                : MessageHandler::error(509, ERROR_509);
+    }
+
+
+
 }
