@@ -44,4 +44,45 @@ class ClasificacionesDAO {
         return $stmt->rowCount() > 0;
     }
 
+    public function obtenerRanking(){
+        try {
+            $sql = "SELECT 
+                        u.id,
+                        u.username,
+                        c.puntaje,
+                        SUM(e.aciertos) AS total_aciertos,
+                        SUM(e.fallos) AS total_fallos,
+                        ROUND(
+                            (SUM(e.aciertos) * 100.0) / NULLIF(SUM(e.aciertos + e.fallos), 0),
+                            2
+                        ) AS porcentaje_acierto
+                    FROM clasificaciones c
+                        INNER JOIN datos_personales d ON d.id_usuario = c.id_usuario
+                        INNER JOIN usuarios u ON u.id = c.id_usuario
+                        INNER JOIN estadisticas e ON e.id_usuario = c.id_usuario
+                    GROUP BY c.id_usuario, u.username, c.puntaje
+                    ORDER BY c.puntaje DESC
+                    LIMIT 100";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+
+            $ranking = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Agregamos la posición en PHP (ya que no usás ROW_NUMBER)
+            foreach ($ranking as $i => &$row) {
+                $row['posicion'] = $i + 1;
+            }
+
+            return $ranking;
+
+        } catch(PDOException $e){
+            error_log("Error obtenerRanking: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
+
+
 }

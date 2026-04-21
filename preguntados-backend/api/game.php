@@ -48,6 +48,11 @@ if($token){
         $controller = new GameController();
         echo json_encode($controller->obtenerHistorial($token));
     }
+
+    if($data->metodo == "obtenerRanking"){
+        $controller = new GameController();
+        echo json_encode($controller->obtenerRanking($token));
+    }
 }
 
 

@@ -151,5 +151,25 @@ class GameModel {
         return $response;
     }
 
+    public function obtenerRanking($decoded){
+        $idUsuario = $decoded->sub;
+        $ranking = $this->clasificacionesDAO->obtenerRanking();
+
+        if (!$ranking) {
+            return false;
+        }
+        $posicionUsuario = null;
+        foreach ($ranking as $row) {
+            if ($row['id'] == $idUsuario) {
+                $posicionUsuario = $row;
+                break;
+            }
+        }
+        return [
+            "posicion_usuario" => $posicionUsuario,
+            "clasificaciones" => $ranking
+        ];
+    }
+
 
 }
