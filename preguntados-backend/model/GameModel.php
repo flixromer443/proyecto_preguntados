@@ -92,14 +92,28 @@ class GameModel {
         //grabar las estadisticas
         $estadisticasActualizadas = false;
         $estadisticas = $payload->estadisticas;
+        $estadisticasAlmacenadas = $this->estadisticasDAO->obtenerEstadisticas($idUsuario);
+
         foreach ($estadisticas as $idTematica => $estadistica) {
-            $estadisticasActualizadas = $this->estadisticasDAO->actualizarEstadisticas($estadistica, $idTematica, $idUsuario);
+            $estadisticaActualizada = $this->obtenerEstadisticaActualizada($idTematica, $estadistica, $estadisticasAlmacenadas);
+            $estadisticasActualizadas = $this->estadisticasDAO->actualizarEstadisticas($estadisticaActualizada, $idTematica, $idUsuario);
         }
 
         $resultadosGuardadosExitosamente = $partidaGuardada > 0 && $puntajeActualizado && $estadisticasActualizadas;
         return $resultadosGuardadosExitosamente ? MessageHandler::success(211, SUCCESS_211)
                                                 : MessageHandler::error(509, ERROR_509);
     }
+    
+    private function obtenerEstadisticaActualizada($idTematica, $estadistica, $estadisticasAlmacenadas){
+        foreach($estadisticasAlmacenadas as $estadisticaAlmacenada){
+            if($idTematica == (int) $estadisticaAlmacenada['id_tematica']){
+                $estadistica->aciertos += (int) $estadisticaAlmacenada['aciertos'];
+                $estadistica->fallos += (int) $estadisticaAlmacenada['fallos'];
+            }
+        }
+        return $estadistica;
+    }
+    
 
     public function obtenerEstadisticas($decoded){
         $idUsuario = $decoded->sub;
