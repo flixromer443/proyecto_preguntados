@@ -49,4 +49,8 @@ export class GameService {
     return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'obtenerHistorial'});
   }
 
+  obtenerRanking(): Observable<PerfilResponse> {
+    return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'obtenerRanking'});
+  }
+
 }

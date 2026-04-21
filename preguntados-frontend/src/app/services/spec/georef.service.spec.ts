@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GeorefService } from './georef.service';
+import { GeorefService } from '../georef.service';
 
 describe('ReservaService', () => {
   let service: GeorefService;
