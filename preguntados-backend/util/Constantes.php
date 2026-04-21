@@ -32,6 +32,7 @@
     define('ERROR_507', "Ha ocurrido un error al actualizar datos del perfil");
     define('ERROR_508', "Ha ocurrido un error al eliminar usuario");
     define('ERROR_509', "Ha ocurrido un error al guardar resultados");
+    define('ERROR_510', "Existe otro usuario registrado con las mismas credenciales");
 
 
 

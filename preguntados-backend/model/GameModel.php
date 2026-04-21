@@ -53,7 +53,7 @@ class GameModel {
         );
 
         if ($existeOtroUsuario) {
-            return MessageHandler::error(507, ERROR_507);
+            return MessageHandler::error(510, ERROR_510);
         }
 
         $datosActualizados = $this->actualizarUsernameYDatosPersonales(
@@ -103,7 +103,7 @@ class GameModel {
         return $resultadosGuardadosExitosamente ? MessageHandler::success(211, SUCCESS_211)
                                                 : MessageHandler::error(509, ERROR_509);
     }
-    
+
     private function obtenerEstadisticaActualizada($idTematica, $estadistica, $estadisticasAlmacenadas){
         foreach($estadisticasAlmacenadas as $estadisticaAlmacenada){
             if($idTematica == (int) $estadisticaAlmacenada['id_tematica']){
