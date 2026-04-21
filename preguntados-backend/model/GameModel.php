@@ -101,6 +101,25 @@ class GameModel {
                                                 : MessageHandler::error(509, ERROR_509);
     }
 
+    public function obtenerEstadisticas($decoded){
+        $idUsuario = $decoded->sub;
+        $estadisticas = $this->estadisticasDAO->obtenerEstadisticas($idUsuario);
 
+        $response = ["estadisticas" => []];
+        foreach ($estadisticas as $fila) {
+            $aciertos = (int)$fila['aciertos'];
+            $fallos   = (int)$fila['fallos'];
+            $total    = $aciertos + $fallos;
+
+            $porcentaje = $total > 0 ? round(($aciertos / $total) * 100, 2) : 0;
+
+            $response["estadisticas"][] = [
+                "id_tematica" => (string)$fila['id_tematica'],
+                "porcentaje_acierto" => $porcentaje
+            ];
+        }
+
+        return $response;
+    }
 
 }

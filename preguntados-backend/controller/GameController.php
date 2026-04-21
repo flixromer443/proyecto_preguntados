@@ -36,6 +36,11 @@ class GameController {
         $decoded = $this->tokenService->decodificarToken($token);
         return $this->gameModel->guardarResultados($data, $decoded);
     }
+
+    public function obtenerEstadisticas($token){
+        $decoded = $this->tokenService->decodificarToken($token);
+        return $this->gameModel->obtenerEstadisticas($decoded);
+    }
 }
 
 ?>

@@ -33,10 +33,15 @@ if($token){
         $controller = new GameController();
         echo json_encode($controller->eliminarCuenta($token));
     }
-    
+
     if($data->metodo == "guardarResultados"){
         $controller = new GameController();
         echo json_encode($controller->guardarResultados($data, $token));
+    }
+
+    if($data->metodo == "obtenerEstadisticas"){
+        $controller = new GameController();
+        echo json_encode($controller->obtenerEstadisticas($token));
     }
 }
 

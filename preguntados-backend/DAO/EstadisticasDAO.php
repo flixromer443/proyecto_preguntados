@@ -55,5 +55,23 @@ class EstadisticasDAO {
     }
 
 
+    public function obtenerEstadisticas($idUsuario){
+        try{
+            $stmt = $this->pdo->prepare("SELECT * FROM estadisticas 
+                                         WHERE id_usuario = :id_usuario
+                                         ORDER BY id_tematica ASC");
+            $stmt->execute([
+                ':id_usuario' => $idUsuario,
+            ]);
+        
+            $estadisticas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $estadisticas ? $estadisticas : false;
+        }catch(PDOException $e){
+            error_log("Error select obtenerDatosPerfil: " . $e->getMessage());
+            return false;
+        }
+    }
+
 
 }
