@@ -1,0 +1,5 @@
+window.__env = {
+  API_AUTH_URL: "$API_AUTH_URL",
+  API_GAME_URL: "$API_GAME_URL",
+  API_GEOREF_URL: "$API_GEOREF_URL",
+};

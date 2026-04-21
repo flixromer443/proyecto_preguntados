@@ -15,13 +15,11 @@ import {
 })
 export class GeorefService {
 
-  public url: string;
   public georefUrl: string = '';
 
   constructor(
     private http: HttpClient
   ) { 
-    this.url = Global.url;
     this.georefUrl = Global.apiGeoref;
   }
 

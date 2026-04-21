@@ -10,12 +10,10 @@ import { PerfilResponse } from '../models/game.interfaces';
 })
 export class GameService {
 
-  public url: string;
   public apiGameUrl: string;
   constructor(
     private http: HttpClient
   ) { 
-    this.url = Global.url;
     this.apiGameUrl = Global.apiGame;
   }
   

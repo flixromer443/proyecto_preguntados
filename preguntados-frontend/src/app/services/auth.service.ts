@@ -10,12 +10,10 @@ import  jwtDecode  from 'jwt-decode';
 })
 export class AuthService {
 
-  public url: string;
   public apiAuthUrl: string;
   constructor(
     private http: HttpClient
   ) { 
-    this.url = Global.url;
     this.apiAuthUrl = Global.apiAuth;
   }
 

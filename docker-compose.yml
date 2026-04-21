@@ -17,7 +17,9 @@ services:
     env_file:
       - .env
     environment:
-      - BACKEND_URL:$BACKEND_URL
+      - API_AUTH_URL:$API_AUTH_URL
+      - API_GAME_URL:$API_GAME_URL
+      - API_GEOREF_URL:$API_GEOREF_URL
     depends_on:
       - backend
     ports:
