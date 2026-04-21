@@ -42,6 +42,7 @@ import { IngresarCorreoComponent } from './components/ingresar-correo/ingresar-c
 import { CambiarPasswordComponent } from './components/cambiar-password/cambiar-password.component';
 import { MiPerfilComponent } from './components/mi-perfil/mi-perfil.component';
 import { AuthInterceptor } from './services/interceptor';
+import { HistorialJugadorComponent } from './components/historial-jugador/historial-jugador.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { AuthInterceptor } from './services/interceptor';
     IngresarCodigoComponent,
     IngresarCorreoComponent,
     CambiarPasswordComponent,
-    MiPerfilComponent
+    MiPerfilComponent, 
+    HistorialJugadorComponent
   ],
   imports: [
     BrowserModule,

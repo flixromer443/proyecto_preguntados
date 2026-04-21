@@ -1,0 +1,127 @@
+<section>
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+      <button class="btn-back" routerLink="/perfil-jugador">
+        <i class="fa-solid fa-arrow-left me-2"></i>
+        Volver
+      </button>
+
+      <button class="btn-logout" (click)="cerrarSesion()">
+        Cerrar sesión
+        <i class="fa-solid fa-right-from-bracket ms-2"></i>
+      </button>
+
+    </div>
+
+    <h1 class="mb-4 display-5 fw-bold">Historial de Partidas</h1>
+
+    <p class="text-muted fs-5">
+      Tus partidas jugadas
+    </p>
+
+    <div *ngIf="cargando" class="text-center py-5">
+      <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+      <p class="mt-3 text-muted fs-5">Cargando historial...</p>
+    </div>
+
+    <div *ngIf="!cargando && historialPartidas.length > 0" 
+         class="table-responsive py-4">
+
+      <table class="table table-hover align-middle shadow-sm fs-5">
+
+        <thead class="table-dark fs-5">
+          <tr>
+            <th>#</th>
+            <th>Fecha</th>
+            <th class="text-center">Aciertos</th>
+            <th class="text-center">Fallos</th>
+            <th class="text-center">Resultado</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let p of partidasPaginadas; let i = index">
+
+            <!-- INDEX -->
+            <td class="fw-semibold">
+              {{ (paginaActual - 1) * itemsPorPagina + i + 1 }}
+            </td>
+
+            <!-- FECHA -->
+            <td>
+              {{ p.fecha | date:'dd/MM/yyyy HH:mm' }}
+            </td>
+
+            <!-- ACIERTOS -->
+            <td class="text-success fw-bold text-center">
+              {{ p.aciertos }}
+            </td>
+
+            <!-- FALLOS -->
+            <td class="text-danger fw-bold text-center">
+              {{ p.fallos }}
+            </td>
+
+            <!-- RESULTADO -->
+            <td class="text-center">
+              <span 
+                class="fw-bold fs-4"
+                [ngClass]="{
+                  'text-success': p.porcentaje >= 70,
+                  'text-warning': p.porcentaje >= 40 && p.porcentaje < 70,
+                  'text-danger': p.porcentaje < 40
+                }"
+              >
+                {{ p.porcentaje | number:'1.0-2' }}%
+              </span>
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+      <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+
+        <button 
+          class="btn btn-outline-primary"
+          (click)="paginaAnterior()"
+          [disabled]="paginaActual === 1"
+        >
+          ← Anterior
+        </button>
+
+        <span class="fw-bold fs-5">
+          Página {{ paginaActual }} de {{ totalPaginas }}
+        </span>
+
+        <button 
+          class="btn btn-outline-primary"
+          (click)="siguientePagina()"
+          [disabled]="paginaActual === totalPaginas"
+        >
+          Siguiente →
+        </button>
+
+      </div>
+
+    </div>
+
+    <div *ngIf="!cargando && historialPartidas.length === 0" 
+         class="text-center py-5">
+
+      <i class="fa-solid fa-face-sad-tear fs-1 text-muted mb-3"></i>
+
+      <p class="text-muted fs-5">
+        Todavía no jugaste ninguna partida
+      </p>
+
+    </div>
+
+  </div>
+</section>

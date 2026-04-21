@@ -45,4 +45,8 @@ export class GameService {
     return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'obtenerEstadisticas'});
   }
 
+  obtenerHistorial(): Observable<PerfilResponse> {
+    return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'obtenerHistorial'});
+  }
+
 }
