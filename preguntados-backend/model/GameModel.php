@@ -122,4 +122,20 @@ class GameModel {
         return $response;
     }
 
+    public function obtenerHistorial($decoded){
+        $idUsuario = $decoded->sub;
+        $partidas = $this->partidasDAO->obtenerPartidasJugadas($idUsuario);
+
+        $response = ["partidas" => []];
+        foreach ($partidas as $fila) {
+            $response["partidas"][] = [
+                "fallos" => (int) $fila['fallos'],
+                "aciertos" => (int) $fila['aciertos'],
+                "fecha_y_hora" =>  $fila['fecha_y_hora'],
+            ];
+        }
+        return $response;
+    }
+
+
 }

@@ -41,6 +41,11 @@ class GameController {
         $decoded = $this->tokenService->decodificarToken($token);
         return $this->gameModel->obtenerEstadisticas($decoded);
     }
+
+    public function obtenerHistorial($token){
+        $decoded = $this->tokenService->decodificarToken($token);
+        return $this->gameModel->obtenerHistorial($decoded);
+    }
 }
 
 ?>

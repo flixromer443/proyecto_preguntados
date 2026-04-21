@@ -43,6 +43,11 @@ if($token){
         $controller = new GameController();
         echo json_encode($controller->obtenerEstadisticas($token));
     }
+
+    if($data->metodo == "obtenerHistorial"){
+        $controller = new GameController();
+        echo json_encode($controller->obtenerHistorial($token));
+    }
 }
 
 

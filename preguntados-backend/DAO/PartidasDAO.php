@@ -30,6 +30,24 @@ class PartidasDAO {
         }
     }
 
+    public function obtenerPartidasJugadas($idUsuario){
+        try{
+            $stmt = $this->pdo->prepare("SELECT fallos, aciertos, fecha_y_hora
+                                         FROM partidas 
+                                         WHERE id_usuario = :id_usuario");
+            $stmt->execute([
+                ':id_usuario' => $idUsuario,
+            ]);
+        
+            $partidasJugadas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $partidasJugadas ? $partidasJugadas : false;
+        }catch(PDOException $e){
+            error_log("Error select obtenerDatosPerfil: " . $e->getMessage());
+            return false;
+        }
+    }
+
    
     
 
