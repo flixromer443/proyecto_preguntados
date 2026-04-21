@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DatosCompartidosService } from './datos-compartidos.service';
+import { DatosCompartidosService } from '../datos-compartidos.service';
 
 describe('DatosCompartidosService', () => {
   let service: DatosCompartidosService;

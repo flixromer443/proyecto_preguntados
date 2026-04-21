@@ -30,4 +30,48 @@ class EstadisticasDAO {
         }
     }
 
+    public function actualizarEstadisticas($data, $idTematica, $idUsuario){
+        try {
+
+           $sql = "UPDATE estadisticas
+                   SET aciertos = :aciertos,
+                       fallos = :fallos
+                   WHERE id_usuario =  :id_usuario
+                     AND id_tematica = :id_tematica";
+
+           $stmt = $this->pdo->prepare($sql);
+
+           return $stmt->execute([
+               ':aciertos' => $data->aciertos,
+               ':fallos' => $data->fallos,
+               ':id_usuario' => $idUsuario,
+               ':id_tematica' => $idTematica
+           ]);
+
+       } catch(PDOException $e){
+           error_log("Error update estadisticas: " . $e->getMessage());
+           return false;
+       }
+    }
+
+
+    public function obtenerEstadisticas($idUsuario){
+        try{
+            $stmt = $this->pdo->prepare("SELECT * FROM estadisticas 
+                                         WHERE id_usuario = :id_usuario
+                                         ORDER BY id_tematica ASC");
+            $stmt->execute([
+                ':id_usuario' => $idUsuario,
+            ]);
+        
+            $estadisticas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $estadisticas ? $estadisticas : false;
+        }catch(PDOException $e){
+            error_log("Error select obtenerDatosPerfil: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
 }

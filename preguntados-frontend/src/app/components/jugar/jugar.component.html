@@ -39,7 +39,6 @@
         <!-- Imagen opcional -->
         <div *ngIf="preguntaActual.uri_imagen" class="text-center mb-3">
           <img 
-            *ngIf="preguntaActual.uri_imagen"
             [src]="preguntaActual.uri_imagen"
             class="img-fluid rounded shadow d-block mx-auto"
             style="max-height: 300px; object-fit: contain;"
@@ -60,8 +59,8 @@
           </button>
         </div>
 
-        <!-- Botón siguiente -->
-        <div class="mt-4 text-end">
+        <!-- BOTÓN -->
+        <div class="mt-4 d-flex justify-content-center">
           <button 
             class="btn btn-primary"
             (click)="siguientePregunta()"
@@ -77,7 +76,11 @@
   </div>
 
   <!-- PANTALLA FINAL -->
-  <div *ngIf="juegoTerminado" class="fade-in">
+  <div 
+    *ngIf="juegoTerminado" 
+    class="fade-in d-flex justify-content-center align-items-center"
+    style="min-height: 100vh;"
+  >
 
     <div class="card text-center shadow">
       <div class="card-body">
@@ -95,12 +98,15 @@
         <p class="fs-5">
           Puntaje: 
           <strong>
-            {{ (aciertos / preguntas.length) * 100  }}%
+            {{ (aciertos / preguntas.length) * 100 }}%
           </strong>
         </p>
 
-        <button class="btn btn-success mt-3" (click)="reiniciarJuego()">
-          Volver a jugar
+        <button 
+          class="btn btn-outline-danger"
+          (click)="finalizarJuego()"
+        >
+          Finalizar partida
         </button>
 
       </div>

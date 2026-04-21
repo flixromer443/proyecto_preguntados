@@ -7,6 +7,7 @@ import { Message } from 'primeng/api';
 import { Router } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { Pregunta, Respuesta } from '../../models/pregunta';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-jugar',
@@ -14,10 +15,11 @@ import { Pregunta, Respuesta } from '../../models/pregunta';
   styleUrl: './jugar.component.css'
 })
 export class JugarComponent {
-  html: string = ''; 
-  cargando = true;//Para mostrar el spinner de cargando cuando inicializa el componente
-  cargando2 = false;//Para mostrar el spinner de cargando cuando se busca la reserva
-  
+
+  html: string = '';
+  cargando = true;
+  cargando2 = false;
+
   mostrarPreguntas = false;
   preguntas: Pregunta[] = [];
   indiceActual = 0;
@@ -26,6 +28,16 @@ export class JugarComponent {
   aciertos = 0;
   fallos = 0;
   juegoTerminado = false;
+  mostrarModalFin = false;
+
+  estadisticasTematicas: any = {
+    "1": { nombre: "Historia", aciertos: 0, fallos: 0 },
+    "2": { nombre: "Matemáticas", aciertos: 0, fallos: 0 },
+    "3": { nombre: "Deportes", aciertos: 0, fallos: 0 },
+    "4": { nombre: "Geografía", aciertos: 0, fallos: 0 },
+    "5": { nombre: "Biología", aciertos: 0, fallos: 0 },
+    "6": { nombre: "Literatura", aciertos: 0, fallos: 0 }
+  };
 
   tematicas: any = {
     "1": { nombre: "Historia", color: "bg-danger" },
@@ -36,25 +48,30 @@ export class JugarComponent {
     "6": { nombre: "Literatura", color: "bg-dark" }
   };
 
-
   constructor(
-    private fb: FormBuilder,//Formulario reactivo
-    private datosCompartidosService: DatosCompartidosService,//Servicio para compartir datos entre componentes
+    private fb: FormBuilder,
+    private router: Router,
+    private datosCompartidosService: DatosCompartidosService,
+    private authService: AuthService,
     private gameService: GameService,
-    ) {
-      this.datosCompartidosService.esconderBuscador.next(true);
-      this.datosCompartidosService.esconderFooter.next(true);
+  ) {
+    this.datosCompartidosService.esconderBuscador.next(true);
+    this.datosCompartidosService.esconderFooter.next(true);
   }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.cargando = false;
-      this.datosCompartidosService.esconderFooter.next(false);
-     }, 500);
-
-    this.gameService.obtenerPreguntasAlAzar().subscribe((data: Pregunta[]) => {
-      this.preguntas = data;
-    });
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/iniciar-sesion']);
+    }else{
+      setTimeout(() => {
+        this.cargando = false;
+        this.datosCompartidosService.esconderFooter.next(false);
+      }, 500);
+    
+      this.gameService.obtenerPreguntasAlAzar().subscribe((data: Pregunta[]) => {
+        this.preguntas = data;
+      });
+    }
   }
 
   get preguntaActual(): Pregunta | null {
@@ -63,18 +80,32 @@ export class JugarComponent {
 
   get tematicaActual() {
     if (!this.preguntaActual) return null;
-
     return this.tematicas[this.preguntaActual.id_tematica];
   }
 
   seleccionarRespuesta(r: Respuesta) {
+
     this.respuestaSeleccionada = r;
     this.respondido = true;
 
+    const idTematica = this.preguntaActual?.id_tematica;
+
     if (r.id_estado_respuesta === "1") {
+
       this.aciertos++;
-    } else {
+
+      if (idTematica && this.estadisticasTematicas[idTematica]) {
+        this.estadisticasTematicas[idTematica].aciertos++;
+      }
+
+    }
+    else {
+
       this.fallos++;
+
+      if (idTematica && this.estadisticasTematicas[idTematica]) {
+        this.estadisticasTematicas[idTematica].fallos++;
+      }
     }
   }
 
@@ -84,12 +115,10 @@ export class JugarComponent {
       return 'btn-outline-primary';
     }
 
-    // Respuesta correcta
     if (r.id_estado_respuesta === "1") {
       return 'btn-success';
     }
 
-    // Respuesta incorrecta seleccionada
     if (r === this.respuestaSeleccionada) {
       return 'btn-danger';
     }
@@ -97,27 +126,68 @@ export class JugarComponent {
     return 'btn-outline-secondary';
   }
 
-
-
   siguientePregunta() {
-    if (this.indiceActual < this.preguntas.length - 1) {
-      this.indiceActual++;
 
+    if (this.indiceActual < this.preguntas.length - 1) {
+
+      this.indiceActual++;
       this.respondido = false;
       this.respuestaSeleccionada = null;
 
     } else {
+
       this.juegoTerminado = true;
+
+      // opcional: log final
+      console.log('RESULTADO FINAL:', {
+        aciertos: this.aciertos,
+        fallos: this.fallos,
+        porTematica: this.estadisticasTematicas
+      });
     }
   }
-  
+
   reiniciarJuego() {
+
     this.indiceActual = 0;
     this.aciertos = 0;
     this.fallos = 0;
     this.juegoTerminado = false;
     this.respondido = false;
     this.respuestaSeleccionada = null;
+
+    // reset estadísticas por temática
+    Object.keys(this.estadisticasTematicas).forEach(key => {
+      this.estadisticasTematicas[key].aciertos = 0;
+      this.estadisticasTematicas[key].fallos = 0;
+    });
   }
 
+
+  abrirModalFinalizar() {
+    this.mostrarModalFin = true;
+  }
+
+  finalizarJuego() {
+
+    const payload ={
+      "aciertos":this.aciertos,
+      "fallos":this.fallos,
+      "estadisticas":this.estadisticasTematicas
+    }
+
+    this.mostrarModalFin = false;
+    this.juegoTerminado = true;
+
+    this.gameService.guardarResultados(payload).subscribe({
+      next: (response: any) => {
+        this.cargando = false;
+        this.router.navigate(['/perfil-jugador']);
+      },
+      error: (err: any) => {
+        this.cargando = false;
+        console.log(err)
+      }
+    });
+  }
 }

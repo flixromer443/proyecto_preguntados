@@ -10,12 +10,10 @@ import { PerfilResponse } from '../models/game.interfaces';
 })
 export class GameService {
 
-  public url: string;
   public apiGameUrl: string;
   constructor(
     private http: HttpClient
   ) { 
-    this.url = Global.url;
     this.apiGameUrl = Global.apiGame;
   }
   
@@ -35,6 +33,22 @@ export class GameService {
 
   eliminarCuenta(): Observable<PerfilResponse> {
     return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'eliminarCuenta'});
+  }
+
+  guardarResultados(payload:any): Observable<PerfilResponse> {
+    return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'guardarResultados',payload});
+  }
+
+  obtenerEstadisticas(): Observable<PerfilResponse> {
+    return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'obtenerEstadisticas'});
+  }
+
+  obtenerHistorial(): Observable<PerfilResponse> {
+    return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'obtenerHistorial'});
+  }
+
+  obtenerRanking(): Observable<PerfilResponse> {
+    return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'obtenerRanking'});
   }
 
 }

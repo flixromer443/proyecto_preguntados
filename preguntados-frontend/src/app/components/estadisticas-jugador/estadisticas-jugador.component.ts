@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatosCompartidosService } from '../../services/datos-compartidos.service';
 import { AuthService } from '../../services/auth.service';
+import { GameService } from '../../services/game.service';
 
 interface TematicaEstadistica {
   id: number;
@@ -58,7 +59,8 @@ export class EstadisticasJugadorComponent {
   constructor(
     private router: Router,
     private datosCompartidosService: DatosCompartidosService,
-    private authService: AuthService
+    private authService: AuthService,
+    private gameService: GameService
   ) {
     this.datosCompartidosService.esconderBuscador.next(false);
     this.datosCompartidosService.esconderFooter.next(false);
@@ -69,6 +71,8 @@ export class EstadisticasJugadorComponent {
   ngOnInit() {
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/iniciar-sesion']);
+    } else {
+      this.cargarEstadisticas();
     }
   }
 
@@ -76,12 +80,27 @@ export class EstadisticasJugadorComponent {
     this.servicioDialog.abrirDialog(t); // ahora acepta cualquier objeto
   }*/
 
-  // 💡 futuro: conectar API
   cargarEstadisticas() {
-    // ejemplo:
-    // this.service.getStats().subscribe(res => {
-    //   this.tematicas = res.data;
-    // });
+    this.gameService.obtenerEstadisticas().subscribe({
+      next: (res: any) => {
+
+        const stats = res.estadisticas;
+
+        stats.forEach((stat: any) => {
+          const id = Number(stat.id_tematica);
+
+          const tematica = this.tematicas.find(t => t.id === id);
+
+          if (tematica) {
+            tematica.porcentaje = stat.porcentaje_acierto;
+          }
+        });
+
+      },
+      error: (err) => {
+        console.error('Error cargando estadísticas', err);
+      }
+    });
   }
 
   cerrarSesion(){

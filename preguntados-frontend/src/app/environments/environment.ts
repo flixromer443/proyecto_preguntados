@@ -1,8 +1,8 @@
+const env = (window as any).__env || {};
+
 export const environment = {
     production: false,
-    apiUrl: 'http://localhost:8081/api/',
-    apiGame: 'http://localhost:8081/api/game.php',
-    apiAuth: 'http://localhost:8081/api/auth.php',
-    apiGeoref: 'https://apis.datos.gob.ar/georef/api/v2.0'
-
+    apiGame: env.API_GAME_URL,
+    apiAuth: env.API_AUTH_URL,
+    apiGeoref: env.API_GEOREF_URL
 };
