@@ -43,6 +43,7 @@ import { CambiarPasswordComponent } from './components/cambiar-password/cambiar-
 import { MiPerfilComponent } from './components/mi-perfil/mi-perfil.component';
 import { AuthInterceptor } from './services/interceptor';
 import { HistorialJugadorComponent } from './components/historial-jugador/historial-jugador.component';
+import { RankingJugadorComponent } from './components/ranking-jugador/ranking-jugador.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { HistorialJugadorComponent } from './components/historial-jugador/histor
     IngresarCorreoComponent,
     CambiarPasswordComponent,
     MiPerfilComponent, 
-    HistorialJugadorComponent
+    HistorialJugadorComponent,
+    RankingJugadorComponent
   ],
   imports: [
     BrowserModule,
