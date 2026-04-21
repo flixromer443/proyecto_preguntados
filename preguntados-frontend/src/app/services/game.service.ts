@@ -37,4 +37,8 @@ export class GameService {
     return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'eliminarCuenta'});
   }
 
+  guardarResultados(payload:any): Observable<PerfilResponse> {
+    return this.http.post<PerfilResponse>(this.apiGameUrl,{metodo: 'guardarResultados',payload});
+  }
+
 }
