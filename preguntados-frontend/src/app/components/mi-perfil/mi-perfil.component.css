@@ -1,8 +1,5 @@
 @import 'primeflex/primeflex.css';
 
-/* =========================
-   HEADER / BOTONES NAV
-========================= */
 .btn-back {
     display: inline-flex;
     align-items: center;
@@ -43,9 +40,6 @@
     transform: translateX(3px);
 }
 
-/* =========================
-   BOTÓN VIEJO (lo dejo por compatibilidad)
-========================= */
 .btnRegresar{
     background: none;
     border: none;
@@ -58,9 +52,6 @@
     text-decoration: underline;
 }
 
-/* =========================
-   CARD
-========================= */
 :host ::ng-deep .user-form {
     width: 90%;
 }
@@ -70,9 +61,6 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-/* =========================
-   INPUTS
-========================= */
 :host ::ng-deep .p-inputtext{
     width: 70%;
 }
@@ -81,9 +69,6 @@
     color: black;
 }
 
-/* =========================
-   BOTONES (PrimeNG)
-========================= */
 :host ::ng-deep .p-button {
     background-color: #003068;
     border-radius: 5px;
@@ -94,17 +79,11 @@
     background: #002147;
 }
 
-/* =========================
-   TITULO CARD
-========================= */
 :host ::ng-deep .p-card-title {
     color: #1e1e1e;
     font-weight: 600;
 }
 
-/* =========================
-   AUTOCOMPLETE
-========================= */
 .paypal-button {
     width: 70%;
 }

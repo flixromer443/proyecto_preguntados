@@ -4,5 +4,6 @@ export const environment = {
   production: true,
   apiGame: env.API_GAME_URL,
   apiAuth: env.API_AUTH_URL,
+  apiAdmin: env.API_ADMIN_URL,
   apiGeoref: env.API_GEOREF_URL
 };

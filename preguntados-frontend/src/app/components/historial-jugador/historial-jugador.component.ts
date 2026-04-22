@@ -21,7 +21,6 @@ export class HistorialJugadorComponent implements OnInit {
   historialPartidas: Partida[] = [];
   cargando: boolean = false;
 
-  // 🔥 PAGINACIÓN
   itemsPorPagina: number = 5;
   paginaActual: number = 1;
 
@@ -36,7 +35,7 @@ export class HistorialJugadorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.authService.isLoggedIn()) {
+    if (!this.authService.isLoggedInAsJugador() && !this.authService.isLoggedInAsSuperUsuario()) {
       this.router.navigate(['/iniciar-sesion']);
       return;
     }
@@ -68,7 +67,7 @@ export class HistorialJugadorComponent implements OnInit {
           };
         });
 
-        // 🔥 ordenar por fecha DESC
+        
         this.historialPartidas.sort(
           (a, b) => b.fecha.getTime() - a.fecha.getTime()
         );
@@ -82,26 +81,22 @@ export class HistorialJugadorComponent implements OnInit {
     });
   }
 
-  // 🔁 GETTER para la tabla paginada
   get partidasPaginadas(): Partida[] {
     const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
     return this.historialPartidas.slice(inicio, inicio + this.itemsPorPagina);
   }
 
-  // 🔢 TOTAL DE PÁGINAS
   get totalPaginas(): number {
     return Math.ceil(this.historialPartidas.length / this.itemsPorPagina);
   }
 
-  // ▶ SIGUIENTE
   siguientePagina(): void {
     if (this.paginaActual < this.totalPaginas) {
       this.paginaActual++;
     }
   }
 
-  // ◀ ANTERIOR
-  paginaAnterior(): void {
+ paginaAnterior(): void {
     if (this.paginaActual > 1) {
       this.paginaActual--;
     }

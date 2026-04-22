@@ -10,20 +10,6 @@ class DatosPersonalesDAO {
         $this->pdo = Database::getConnection();
     }
 
-    /*public function guardarOActualizarDatosPersonales($datosPersonales){
-        try{
-            $existePersona = $this->existePersonaCargadaConMismoDocumento($datosPersonales->documento);
-            if($existePersona){
-                $this->actualizarDatosPersonalesPorDocumento($datosPersonales);
-            }else{
-                $this->guardarDatosPersonales($datosPersonales);
-            }
-        }catch(PDOException $e){
-            error_log("Error insert o update datos_personales: " . $e->getMessage());
-            return false;
-        }
-    }*/
-
     public function existePersonaCargadaConMismoDocumento($documento){
         try{
             $stmt = $this->pdo->prepare("SELECT EXISTS 
@@ -39,7 +25,7 @@ class DatosPersonalesDAO {
             return (bool) $stmt->fetchColumn();
 
         }catch(PDOException $e){
-            error_log("Error insert datos_personales: " . $e->getMessage());
+            error_log("Error existePersonaCargadaConMismoDocumento: " . $e->getMessage());
             return false;
         }
     }
@@ -84,13 +70,9 @@ class DatosPersonalesDAO {
             return (int) $this->pdo->lastInsertId();
 
         }catch(PDOException $e){
-            error_log("Error insert datos_personales: " . $e->getMessage());
+            error_log("Error insert guardarDatosPersonales: " . $e->getMessage());
             return false;
         }
-    }
-
-    public function actualizarDatosPersonalesPorDocumento($data){
-        
     }
 
     public function obtenerDatosPersonalesPorIdUsuario($idUsuario){
@@ -103,7 +85,7 @@ class DatosPersonalesDAO {
             return $stmt->fetch(PDO::FETCH_ASSOC);
 
         }catch(PDOException $e){
-            error_log("Error select datos_personales: " . $e->getMessage());
+            error_log("Error select obtenerDatosPersonalesPorIdUsuario: " . $e->getMessage());
             return false;
         }
     }

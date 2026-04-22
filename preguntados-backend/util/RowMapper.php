@@ -41,6 +41,15 @@ class RowMapper{
             ]
         ];
     }
+
+    public static function mapUsuariosFromDB($row) {
+       return [
+            'id' => isset($row['id']) ? (int)$row['id'] : null,
+            'username' => $row['username'],
+            'id_rol' => (int)$row['id_rol'],
+            'id_estado' => (int)$row['id_estado']
+        ];
+    }
 }
 
     

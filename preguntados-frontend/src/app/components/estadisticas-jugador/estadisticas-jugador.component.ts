@@ -65,20 +65,15 @@ export class EstadisticasJugadorComponent {
     this.datosCompartidosService.esconderBuscador.next(false);
     this.datosCompartidosService.esconderFooter.next(false);
 
-    // this.cargarEstadisticas();
   }
 
   ngOnInit() {
-    if (!this.authService.isLoggedIn()) {
+    if (!this.authService.isLoggedInAsJugador() && !this.authService.isLoggedInAsSuperUsuario()) {
       this.router.navigate(['/iniciar-sesion']);
     } else {
       this.cargarEstadisticas();
     }
   }
-
-  /*verTematica(t: TematicaEstadistica) {
-    this.servicioDialog.abrirDialog(t); // ahora acepta cualquier objeto
-  }*/
 
   cargarEstadisticas() {
     this.gameService.obtenerEstadisticas().subscribe({

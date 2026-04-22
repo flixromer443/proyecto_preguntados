@@ -30,7 +30,7 @@ class UsuariosDAO {
         
             return (bool) $stmt->fetchColumn();
         }catch(PDOException $e){
-            error_log("Error insert o update datos_personales: " . $e->getMessage());
+            error_log("Error en existeUsuarioConMismoNombreCorreoODocumento: " . $e->getMessage());
             return false;
         }
     }
@@ -57,7 +57,7 @@ class UsuariosDAO {
         
             return (bool) $stmt->fetchColumn();
         }catch(PDOException $e){
-            error_log("Error select datos_personales: " . $e->getMessage());
+            error_log("Error select existeOtroUsuarioConMismoNombreCorreoODocumento: " . $e->getMessage());
             return false;
         }
     }
@@ -197,6 +197,24 @@ class UsuariosDAO {
             return false;
         }
     }
+    
+    public function obtenerUsuarios(){
+        try{
+            $stmt = $this->pdo->prepare("SELECT id, username, id_rol, id_estado FROM usuarios");
+            $stmt->execute();
+
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return array_map(function($row){
+                return RowMapper::mapUsuarioFromDB($row);
+            }, $rows);
+
+        }catch(PDOException $e){
+            error_log("Error select usuarios: " . $e->getMessage());
+            return false;
+        }
+    }
+
     
 
 }

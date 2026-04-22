@@ -1,0 +1,239 @@
+<section>
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+      <button class="btn-back" routerLink="/perfil-administrador">
+        <i class="fa-solid fa-arrow-left me-2"></i>
+        Volver
+      </button>
+
+      <div class="d-flex gap-2">
+        <button class="btn btn-success" (click)="mostrarModal = true">
+          <i class="fa-solid fa-plus me-2"></i>
+          Nueva pregunta
+        </button>
+
+        <button class="btn-logout" (click)="cerrarSesion()">
+          Cerrar sesión
+          <i class="fa-solid fa-right-from-bracket ms-2"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <h1 class="mb-4 display-5 fw-bold">Gestión de Preguntas</h1>
+
+    <!-- LOADING -->
+    <div *ngIf="cargando" class="text-center py-5">
+      <p-progressSpinner></p-progressSpinner>
+      <p class="mt-3 text-muted">Cargando preguntas...</p>
+    </div>
+
+    <!-- TABLA -->
+    <div *ngIf="!cargando && preguntas.length > 0" class="table-responsive py-4">
+
+      <table class="table table-hover align-middle shadow-sm fs-5">
+
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Pregunta</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <ng-container *ngFor="let p of preguntasPaginadas; let i = index">
+
+            <tr>
+              <td class="fw-semibold">
+                {{ (paginaActual - 1) * itemsPorPagina + i + 1 }}
+              </td>
+
+              <td>
+                {{ p.pregunta }}
+              </td>
+
+              <!--  ACCIONES -->
+              <td class="text-center d-flex justify-content-center gap-3">
+
+                <!-- EXPANDIR -->
+                <i class="fa-solid"
+                   (click)="togglePregunta(p.id)"
+                   [ngClass]="{
+                     'fa-chevron-down': preguntaExpandida !== p.id,
+                     'fa-chevron-up': preguntaExpandida === p.id
+                   }"
+                   style="cursor: pointer;">
+                </i>
+
+                <!-- 🗑 ELIMINAR -->
+                <i class="fa-solid fa-trash text-danger"
+                   (click)="abrirConfirmacionEliminar(p.id); $event.stopPropagation()"
+                   style="cursor: pointer;">
+                </i>
+
+              </td>
+            </tr>
+
+            <!-- RESPUESTAS -->
+            <tr *ngIf="preguntaExpandida === p.id">
+              <td colspan="3">
+                <div class="p-3 bg-light rounded">
+
+                  <h5 class="mb-3">Respuestas:</h5>
+
+                  <ul class="list-group">
+                    <li *ngFor="let r of p.respuestas"
+                        class="list-group-item d-flex justify-content-between align-items-center">
+
+                      <span>{{ r.respuesta }}</span>
+
+                      <span class="badge"
+                        [ngClass]="{
+                          'bg-success': esCorrecta(r.id_estado_respuesta),
+                          'bg-secondary': !esCorrecta(r.id_estado_respuesta)
+                        }">
+                        {{ esCorrecta(r.id_estado_respuesta) ? 'Correcta' : 'Incorrecta' }}
+                      </span>
+
+                    </li>
+                  </ul>
+
+                </div>
+              </td>
+            </tr>
+
+          </ng-container>
+
+        </tbody>
+
+      </table>
+
+      <!-- PAGINACIÓN -->
+      <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+
+        <button 
+          class="btn btn-outline-primary"
+          (click)="paginaAnterior()"
+          [disabled]="paginaActual === 1"
+        >
+          ← Anterior
+        </button>
+
+        <span class="fw-bold fs-5">
+          Página {{ paginaActual }} de {{ totalPaginas }}
+        </span>
+
+        <button 
+          class="btn btn-outline-primary"
+          (click)="siguientePagina()"
+          [disabled]="paginaActual === totalPaginas"
+        >
+          Siguiente →
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- VACÍO -->
+    <div *ngIf="!cargando && preguntas.length === 0" class="text-center py-5">
+      <i class="fa-solid fa-circle-question fs-1 text-muted mb-3"></i>
+      <p class="text-muted fs-5">No hay preguntas cargadas</p>
+    </div>
+
+  </div>
+</section>
+
+<div class="modal fade show"
+     tabindex="-1"
+     [ngStyle]="{
+       display: mostrarModal ? 'block' : 'none',
+       background: 'rgba(0,0,0,0.5)'
+     }">
+
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Nueva pregunta</h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="mb-3">
+          <label class="form-label">Pregunta</label>
+          <input type="text"
+                 class="form-control"
+                 [(ngModel)]="nuevaPregunta.pregunta">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Temática</label>
+          <select class="form-select" [(ngModel)]="nuevaPregunta.id_tematica">
+            <option value="" disabled>Seleccionar temática</option>
+            <option value="1">Historia</option>
+            <option value="2">Matemática</option>
+            <option value="3">Deportes</option>
+            <option value="4">Geografía</option>
+            <option value="5">Biología</option>
+            <option value="6">Literatura</option>
+          </select>
+        </div>
+
+        <div *ngFor="let r of nuevaPregunta.respuestas; let i = index" class="mb-3">
+          <label class="form-label">Respuesta {{ i + 1 }}</label>
+
+          <div class="d-flex align-items-center gap-2">
+            <input type="text" class="form-control" [(ngModel)]="r.respuesta">
+
+            <input type="checkbox"
+                   [checked]="r.correcta"
+                   (change)="seleccionarCorrecta(i)">
+
+            <label>Correcta</label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn btn-primary" (click)="guardarPregunta()">Guardar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 🔥 MODAL CONFIRMAR ELIMINACIÓN -->
+<div class="modal fade show"
+     tabindex="-1"
+     *ngIf="mostrarConfirmacion"
+     style="display:block; background: rgba(0,0,0,0.5)">
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Eliminar pregunta</h5>
+        <button type="button" class="btn-close" (click)="cerrarConfirmacion()"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>¿Seguro que querés eliminar esta pregunta?</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="cerrarConfirmacion()">Cancelar</button>
+        <button class="btn btn-danger" (click)="eliminarPregunta()">Eliminar</button>
+      </div>
+
+    </div>
+  </div>
+</div>

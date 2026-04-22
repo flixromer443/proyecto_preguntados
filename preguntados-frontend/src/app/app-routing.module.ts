@@ -11,6 +11,10 @@ import { CambiarPasswordComponent } from './components/cambiar-password/cambiar-
 import { MiPerfilComponent } from './components/mi-perfil/mi-perfil.component';
 import { HistorialJugadorComponent } from './components/historial-jugador/historial-jugador.component';
 import { RankingJugadorComponent } from './components/ranking-jugador/ranking-jugador.component';
+import { PerfilAdministradorComponent } from './components/perfil-administrador/perfil-administrador.component';
+import { PreguntasAdministradorComponent } from './components/preguntas-administrador/preguntas-administrador.component';
+import { UsuariosAdministradorComponent } from './components/usuarios-administrador/usuarios-administrador.component';
+import { PerfilSuperUsuarioComponent } from './components/perfil-super-usuario/perfil-super-usuario.component';
 
 //definir las rutas de la aplicacion
 const routes: Routes = [
@@ -25,6 +29,10 @@ const routes: Routes = [
   {path: 'mi-perfil', component: MiPerfilComponent},
   {path: 'historial-jugador', component: HistorialJugadorComponent},
   {path: 'ranking-jugador', component: RankingJugadorComponent},
+  {path: 'perfil-administrador', component: PerfilAdministradorComponent},
+  {path: 'preguntas-administrador', component: PreguntasAdministradorComponent},
+  {path: 'usuarios-administrador', component: UsuariosAdministradorComponent},
+  {path: 'perfil-super-usuario', component: PerfilSuperUsuarioComponent},
   {path: '**', component: IniciarSesionComponent},
   
 ];

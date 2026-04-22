@@ -11,7 +11,7 @@ class PartidasDAO {
         $this->pdo = Database::getConnection();
     }
     
-    public function guardarPartida($data, $idUsuario) : bool{
+    public function guardarPartida($data, $idUsuario){
         try {
             $sql = "INSERT INTO partidas(fallos, aciertos, id_usuario)
                     VALUES(:fallos, :aciertos, :id_usuario)";
@@ -26,7 +26,7 @@ class PartidasDAO {
             
             return (int) $this->pdo->lastInsertId();
         } catch(PDOException $e){
-            error_log("Error insert usuarios: " . $e->getMessage());
+            error_log("Error guardarPartida: " . $e->getMessage());
         }
     }
 
@@ -43,7 +43,7 @@ class PartidasDAO {
 
             return $partidasJugadas ? $partidasJugadas : false;
         }catch(PDOException $e){
-            error_log("Error select obtenerDatosPerfil: " . $e->getMessage());
+            error_log("Error select obtenerPartidasJugadas: " . $e->getMessage());
             return false;
         }
     }

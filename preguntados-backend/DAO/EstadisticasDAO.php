@@ -25,7 +25,7 @@ class EstadisticasDAO {
 
             return $result; // true/false
         } catch(PDOException $e){
-            error_log("Error insert estadisticas: " . $e->getMessage());
+            error_log("Error generarEstadisticas " . $e->getMessage());
             return false;
         }
     }
@@ -49,7 +49,7 @@ class EstadisticasDAO {
            ]);
 
        } catch(PDOException $e){
-           error_log("Error update estadisticas: " . $e->getMessage());
+           error_log("Error update actualizarEstadisticas: " . $e->getMessage());
            return false;
        }
     }
@@ -68,7 +68,7 @@ class EstadisticasDAO {
 
             return $estadisticas ? $estadisticas : false;
         }catch(PDOException $e){
-            error_log("Error select obtenerDatosPerfil: " . $e->getMessage());
+            error_log("Error select obtenerEstadisticas: " . $e->getMessage());
             return false;
         }
     }

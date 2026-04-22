@@ -69,7 +69,6 @@ class ClasificacionesDAO {
 
             $ranking = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Agregamos la posición en PHP (ya que no usás ROW_NUMBER)
             foreach ($ranking as $i => &$row) {
                 $row['posicion'] = $i + 1;
             }

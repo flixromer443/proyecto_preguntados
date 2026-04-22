@@ -60,7 +60,7 @@ export class JugarComponent {
   }
 
   ngOnInit(): void {
-    if (!this.authService.isLoggedIn()) {
+    if (!this.authService.isLoggedInAsJugador() && !this.authService.isLoggedInAsSuperUsuario()) {
       this.router.navigate(['/iniciar-sesion']);
     }else{
       setTimeout(() => {

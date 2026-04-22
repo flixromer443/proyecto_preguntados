@@ -77,5 +77,80 @@ class MailService {
             return false;
         }
     }
+
+    public function notificarCambioEstadoUsuario($nombre, $correo, $estado) {
+        try {
+            $mail = $this->createMailer();
+
+            $mail->addAddress($correo, $nombre);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Actualizacion de estado de tu cuenta';
+
+            $mensajeEstado = '';
+            $color = '';
+
+            switch ((int)$estado) {
+                case 1:
+                    $mensajeEstado = 'tu cuenta fue marcada como <b>INACTIVA</b>.';
+                    $color = '#f39c12';
+                    break;
+
+                case 2:
+                    $mensajeEstado = 'tu cuenta está ahora <b>ACTIVA / REHABILITADA</b>.';
+                    $color = '#27ae60';
+                    break;
+
+                case 3:
+                    $mensajeEstado = 'tu cuenta ha sido <b>SUSPENDIDA</b>.';
+                    $color = '#e74c3c';
+                    break;
+
+                default:
+                    $mensajeEstado = 'tu cuenta tuvo una actualización de estado.';
+                    $color = '#2c3e50';
+                    break;
+            }
+
+            $mail->Body = '
+            <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px;">
+                <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 10px; padding: 30px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+
+                    <h2 style="color: ' . $color . ';">Actualización de cuenta</h2>
+
+                    <p style="color: #555; font-size: 16px;">
+                        Hola <strong>' . htmlspecialchars($nombre) . '</strong>,
+                    </p>
+
+                    <p style="color: #555; font-size: 15px;">
+                        ' . $mensajeEstado . '
+                    </p>
+
+                    <p style="color: #777; font-size: 14px;">
+                        Si creés que esto es un error, podés contactar al soporte.
+                    </p>
+
+                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+
+                    <p style="color: #aaa; font-size: 12px;">
+                        Este es un mensaje automático, no respondas este correo.
+                    </p>
+
+                </div>
+            </div>
+            ';
+
+            $mail->AltBody = "Hola $nombre,\n\nEstado de tu cuenta: $mensajeEstado";
+
+            $mail->send();
+            return true;
+
+        } catch (Exception $e) {
+            error_log("Error al enviar mail estado usuario: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
 }
 ?>

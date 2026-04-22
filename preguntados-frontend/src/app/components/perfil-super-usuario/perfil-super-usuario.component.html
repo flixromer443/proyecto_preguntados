@@ -1,0 +1,62 @@
+<section class="home-section">
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-end mb-3">
+      <button class="btn-logout" (click)="cerrarSesion()">
+        Cerrar sesión
+        <i class="fa-solid fa-right-from-bracket ms-2"></i>
+      </button>
+    </div>
+
+    <h1 class="mb-2 fw-bold">Panel de Acceso</h1>
+    <p class="text-muted mb-4">
+      Selecciona cómo querés ingresar al sistema
+    </p>
+
+    <div class="row g-4">
+
+      <!-- JUGADOR -->
+      <div class="col-12 col-md-6">
+        <div class="home-card" (click)="ingresarComoJugador()">
+
+          <div class="icon-circle bg-primary">
+            <i class="fa-solid fa-user"></i>
+          </div>
+
+          <div>
+            <h3 class="mb-1">Ingresar como Jugador</h3>
+            <p class="text-muted mb-0">
+              Acceso a partidas, ranking y estadísticas
+            </p>
+          </div>
+
+          <i class="fa-solid fa-chevron-right arrow"></i>
+
+        </div>
+      </div>
+
+      <!-- ADMINISTRADOR -->
+      <div class="col-12 col-md-6">
+        <div class="home-card" (click)="ingresarComoAdministrador()">
+
+          <div class="icon-circle bg-success">
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+
+          <div>
+            <h3 class="mb-1">Ingresar como Administrador</h3>
+            <p class="text-muted mb-0">
+              Gestión de usuarios, preguntas y sistema
+            </p>
+          </div>
+
+          <i class="fa-solid fa-chevron-right arrow"></i>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>

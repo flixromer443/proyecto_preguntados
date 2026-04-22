@@ -17,8 +17,6 @@ class AuthController {
         return $this->AuthModel->registrarNuevoUsuario($data);
     }
 
-
-
     public function validarCodigoVerificacion($data){
         return $this->AuthModel->validarCodigoVerificacion($data);
     }
