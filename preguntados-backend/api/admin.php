@@ -14,17 +14,30 @@ if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
 }
 
 if($token){
+    
     if($data->metodo == "obtenerPreguntas"){
        $controller = new AdminController();
         echo json_encode($controller->obtenerPreguntas($token));
     }
+
     if($data->metodo == "crearPregunta"){
        $controller = new AdminController();
        echo json_encode($controller->crearPregunta($data, $token));
     }
+
     if($data->metodo == "eliminarPregunta"){
        $controller = new AdminController();
        echo json_encode($controller->eliminarPregunta($data, $token));
+    }
+
+    if($data->metodo == "obtenerUsuarios"){
+       $controller = new AdminController();
+        echo json_encode($controller->obtenerUsuarios($token));
+    }
+
+    if($data->metodo == "cambiarEstadoUsuario"){
+       $controller = new AdminController();
+        echo json_encode($controller->cambiarEstadoUsuario($data, $token));
     }
 }
 

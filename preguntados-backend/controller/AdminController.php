@@ -26,6 +26,16 @@ class AdminController {
         $decoded = $this->tokenService->decodificarToken($token);
         return $this->adminModel->eliminarPregunta($data);
     }
+
+    public function obtenerUsuarios($token){
+        $decoded = $this->tokenService->decodificarToken($token);
+        return $this->adminModel->obtenerUsuarios();
+    }
+
+    public function cambiarEstadoUsuario($data, $token){
+        $decoded = $this->tokenService->decodificarToken($token);
+        return $this->adminModel->cambiarEstadoUsuario($data);
+    }
 }
 
 ?>

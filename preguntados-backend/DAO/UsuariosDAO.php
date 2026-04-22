@@ -198,5 +198,23 @@ class UsuariosDAO {
         }
     }
     
+    public function obtenerUsuarios(){
+        try{
+            $stmt = $this->pdo->prepare("SELECT id, username, id_rol, id_estado FROM usuarios");
+            $stmt->execute();
+
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return array_map(function($row){
+                return RowMapper::mapUsuarioFromDB($row);
+            }, $rows);
+
+        }catch(PDOException $e){
+            error_log("Error select usuarios: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    
 
 }

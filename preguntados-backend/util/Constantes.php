@@ -34,6 +34,7 @@
     define('ERROR_509', "Ha ocurrido un error al guardar resultados");
     define('ERROR_510', "Existe otro usuario registrado con las mismas credenciales");
     define('ERROR_511', "Ha ocurrido un error al intentar eliminar la pregunta");
+    define('ERROR_512', "Ha ocurrido un error al intentar cambiar el estado del usuario");
 
 
 
@@ -50,6 +51,7 @@
     define('SUCCESS_210', "Exito al eliminar usuario."); 
     define('SUCCESS_211', "Los resultados han sido guardados exitosamente"); 
     define('SUCCESS_212', "Exito al eliminar pregunta."); 
+    define('SUCCESS_213', "Exito al cambiar estado del usuario."); 
 
 
 
