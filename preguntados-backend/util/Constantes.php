@@ -33,6 +33,7 @@
     define('ERROR_508', "Ha ocurrido un error al eliminar usuario");
     define('ERROR_509', "Ha ocurrido un error al guardar resultados");
     define('ERROR_510', "Existe otro usuario registrado con las mismas credenciales");
+    define('ERROR_511', "Ha ocurrido un error al intentar eliminar la pregunta");
 
 
 
@@ -48,6 +49,7 @@
     define('SUCCESS_209', "Exito al actualizar datos del perfil."); 
     define('SUCCESS_210', "Exito al eliminar usuario."); 
     define('SUCCESS_211', "Los resultados han sido guardados exitosamente"); 
+    define('SUCCESS_212', "Exito al eliminar pregunta."); 
 
 
 
