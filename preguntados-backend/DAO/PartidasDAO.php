@@ -11,7 +11,7 @@ class PartidasDAO {
         $this->pdo = Database::getConnection();
     }
     
-    public function guardarPartida($data, $idUsuario) : bool{
+    public function guardarPartida($data, $idUsuario){
         try {
             $sql = "INSERT INTO partidas(fallos, aciertos, id_usuario)
                     VALUES(:fallos, :aciertos, :id_usuario)";
