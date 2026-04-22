@@ -35,7 +35,7 @@ class PreguntasDAO {
             
             return (int) $this->pdo->lastInsertId();
         } catch(PDOException $e){
-            error_log("Error insert usuarios: " . $e->getMessage());
+            error_log("Error guardarPregunta: " . $e->getMessage());
         }
     }
 
@@ -51,7 +51,7 @@ class PreguntasDAO {
             return $stmt->rowCount() > 0;
     
         } catch (PDOException $e) {
-            error_log("Error eliminarUsuario: " . $e->getMessage());
+            error_log("Error eliminarPregunta: " . $e->getMessage());
             return false;
         }
     }

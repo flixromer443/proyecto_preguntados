@@ -14,7 +14,7 @@
 
 :host ::ng-deep .user-form {
     width: 90%;
-    position: relative; /* 🔥 importante para overlay */
+    position: relative; 
 }
 
 :host ::ng-deep .p-inputtext{

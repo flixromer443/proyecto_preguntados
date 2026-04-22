@@ -33,7 +33,7 @@ class RespuestasDAO {
             
             return (int) $this->pdo->lastInsertId();
         } catch(PDOException $e){
-            error_log("Error insert usuarios: " . $e->getMessage());
+            error_log("Error insert guardarRespuestaPorIdPregunta: " . $e->getMessage());
         }
     }
 

@@ -30,7 +30,7 @@ class UsuariosDAO {
         
             return (bool) $stmt->fetchColumn();
         }catch(PDOException $e){
-            error_log("Error insert o update datos_personales: " . $e->getMessage());
+            error_log("Error en existeUsuarioConMismoNombreCorreoODocumento: " . $e->getMessage());
             return false;
         }
     }
@@ -57,7 +57,7 @@ class UsuariosDAO {
         
             return (bool) $stmt->fetchColumn();
         }catch(PDOException $e){
-            error_log("Error select datos_personales: " . $e->getMessage());
+            error_log("Error select existeOtroUsuarioConMismoNombreCorreoODocumento: " . $e->getMessage());
             return false;
         }
     }

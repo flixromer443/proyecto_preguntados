@@ -65,7 +65,6 @@ export class EstadisticasJugadorComponent {
     this.datosCompartidosService.esconderBuscador.next(false);
     this.datosCompartidosService.esconderFooter.next(false);
 
-    // this.cargarEstadisticas();
   }
 
   ngOnInit() {
@@ -75,10 +74,6 @@ export class EstadisticasJugadorComponent {
       this.cargarEstadisticas();
     }
   }
-
-  /*verTematica(t: TematicaEstadistica) {
-    this.servicioDialog.abrirDialog(t); // ahora acepta cualquier objeto
-  }*/
 
   cargarEstadisticas() {
     this.gameService.obtenerEstadisticas().subscribe({

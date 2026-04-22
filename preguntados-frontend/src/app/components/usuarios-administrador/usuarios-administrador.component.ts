@@ -74,21 +74,15 @@ export class UsuariosAdministradorComponent implements OnInit {
 
   puedeGestionar(usuario: Usuario): boolean {
 
-    // 👤 jugador: admin y super pueden
     if (usuario.rol === 1) return this.rolActual >= 2;
 
-    // 🛡 admin: solo super
     if (usuario.rol === 2) return this.rolActual === 3;
 
-    // 👑 super: nadie lo toca
     if (usuario.rol === 3) return false;
 
     return false;
   }
 
-  // =========================
-  // PAGINACIÓN
-  // =========================
   get usuariosPaginados(): Usuario[] {
     const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
     return this.usuarios.slice(inicio, inicio + this.itemsPorPagina);

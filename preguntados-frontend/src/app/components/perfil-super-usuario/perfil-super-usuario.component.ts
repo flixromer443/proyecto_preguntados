@@ -15,7 +15,6 @@ export class PerfilSuperUsuarioComponent implements OnInit {
     private datosCompartidosService: DatosCompartidosService,
     private authService: AuthService
   ) {
-    // UI global
     this.datosCompartidosService.esconderBuscador.next(false);
     this.datosCompartidosService.esconderFooter.next(false);
   }

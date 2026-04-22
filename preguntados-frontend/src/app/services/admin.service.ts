@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global';
 import { Pregunta } from '../models/pregunta';
-import { PerfilResponse } from '../models/game.interfaces';
 
 @Injectable({
   providedIn: 'root'

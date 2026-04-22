@@ -87,7 +87,6 @@ class MailService {
             $mail->isHTML(true);
             $mail->Subject = 'Actualizacion de estado de tu cuenta';
 
-            // Texto dinámico según estado
             $mensajeEstado = '';
             $color = '';
 
