@@ -103,6 +103,24 @@ export class AuthService {
     }
   }
 
+  isLoggedInAsSuperUsuario(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+
+    try {
+      const decoded: any = jwtDecode(token);
+
+      const exp = decoded.exp;
+      const now = Math.floor(Date.now() / 1000);
+
+      if (exp <= now) return false;
+
+      return decoded.rol === 3; 
+    } catch (e) {
+      return false;
+    }
+  }
+
 
 
   getToken(): string | null {

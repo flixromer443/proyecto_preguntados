@@ -56,7 +56,7 @@ export class PreguntasAdministradorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.authService.isLoggedInAsAdministrador()) {
+    if (!this.authService.isLoggedInAsAdministrador() && !this.authService.isLoggedInAsSuperUsuario()) {
       this.router.navigate(['/iniciar-sesion']);
       return;
     }

@@ -5,8 +5,6 @@ import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 import { Usuario } from '../../models/admin.interfaces';
 
-type AccionUsuario = 'suspender' | 'rehabilitar' | null;
-
 @Component({
   selector: 'app-usuarios-administrador',
   templateUrl: './usuarios-administrador.component.html',
@@ -20,12 +18,13 @@ export class UsuariosAdministradorComponent implements OnInit {
   itemsPorPagina = 5;
   paginaActual = 1;
 
-  // modal
   mostrarModal = false;
-  accionPendiente: AccionUsuario = null;
+  accionPendiente: 'suspender' | 'rehabilitar' | null = null;
   idUsuarioSeleccionado: number | null = null;
 
   procesandoAccion = false;
+
+  rolActual: number = 0; // 1 jugador, 2 admin, 3 super
 
   constructor(
     private router: Router,
@@ -38,10 +37,17 @@ export class UsuariosAdministradorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.authService.isLoggedInAsAdministrador()) {
+
+    const esAdmin = this.authService.isLoggedInAsAdministrador();
+    const esSuper = this.authService.isLoggedInAsSuperUsuario();
+
+    if (!esAdmin && !esSuper) {
       this.router.navigate(['/iniciar-sesion']);
       return;
     }
+
+    if (esSuper) this.rolActual = 3;
+    else this.rolActual = 2;
 
     this.cargarUsuarios();
   }
@@ -59,14 +65,30 @@ export class UsuariosAdministradorComponent implements OnInit {
           estado: Number(u.id_estado)
         }));
 
-        this.paginaActual = 1;
         this.cargando = false;
+        this.paginaActual = 1;
       },
       error: () => this.cargando = false
     });
   }
 
+  puedeGestionar(usuario: Usuario): boolean {
+
+    // 👤 jugador: admin y super pueden
+    if (usuario.rol === 1) return this.rolActual >= 2;
+
+    // 🛡 admin: solo super
+    if (usuario.rol === 2) return this.rolActual === 3;
+
+    // 👑 super: nadie lo toca
+    if (usuario.rol === 3) return false;
+
+    return false;
+  }
+
+  // =========================
   // PAGINACIÓN
+  // =========================
   get usuariosPaginados(): Usuario[] {
     const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
     return this.usuarios.slice(inicio, inicio + this.itemsPorPagina);
@@ -84,8 +106,7 @@ export class UsuariosAdministradorComponent implements OnInit {
     if (this.paginaActual > 1) this.paginaActual--;
   }
 
-  // MODAL
-  abrirModal(id: number, accion: AccionUsuario): void {
+  abrirModal(id: number, accion: 'suspender' | 'rehabilitar'): void {
     this.idUsuarioSeleccionado = id;
     this.accionPendiente = accion;
     this.mostrarModal = true;
@@ -98,7 +119,17 @@ export class UsuariosAdministradorComponent implements OnInit {
   }
 
   confirmar(): void {
+
     if (!this.idUsuarioSeleccionado || !this.accionPendiente) return;
+
+    const usuario = this.usuarios.find(u => u.id === this.idUsuarioSeleccionado);
+    if (!usuario) return;
+
+    if (!this.puedeGestionar(usuario)) {
+      alert('Sin permisos');
+      this.cerrarModal();
+      return;
+    }
 
     const nuevoEstado = this.accionPendiente === 'suspender' ? 3 : 2;
 
@@ -119,7 +150,7 @@ export class UsuariosAdministradorComponent implements OnInit {
         },
         error: () => {
           this.procesandoAccion = false;
-          alert('Error al actualizar usuario');
+          alert('Error');
         }
       });
   }

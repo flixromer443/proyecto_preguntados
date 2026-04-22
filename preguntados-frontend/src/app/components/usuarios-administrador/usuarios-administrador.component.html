@@ -18,7 +18,7 @@
 
     <h1 class="mb-4 display-5 fw-bold">Gestión de Usuarios</h1>
 
-    <!-- LOADING GENERAL -->
+    <!-- LOADING -->
     <div *ngIf="cargando" class="text-center py-5">
       <p-progressSpinner></p-progressSpinner>
       <p class="mt-3 text-muted">Cargando usuarios...</p>
@@ -56,9 +56,16 @@
               <span class="badge"
                 [ngClass]="{
                   'bg-primary': u.rol == 2,
-                  'bg-secondary': u.rol == 1
+                  'bg-secondary': u.rol == 1,
+                  'bg-info': u.rol == 3
                 }">
-                {{ u.rol == 2 ? 'Admin' : 'Jugador' }}
+
+                {{
+                  u.rol == 2 ? 'Admin' :
+                  u.rol == 3 ? 'Super Usuario' :
+                  'Jugador'
+                }}
+
               </span>
             </td>
 
@@ -81,12 +88,15 @@
             </td>
 
             <!-- ACCIONES -->
-            <td class="text-center align-middle" style="min-width: 140px;">
+            <td class="text-center align-middle" style="min-width: 160px;">
 
-              <!-- SUSPENDER -->
-              <ng-container *ngIf="u.rol == 1 && u.estado != 3">
+              <!-- BOTÓN DINÁMICO -->
+              <ng-container *ngIf="puedeGestionar(u)">
+
+                <!-- SI ESTÁ ACTIVO O INACTIVO => SUSPENDER -->
                 <button
-                  class="btn btn-sm btn-warning"
+                  *ngIf="u.estado != 3"
+                  class="btn btn-sm btn-warning me-1"
                   [disabled]="procesandoAccion"
                   (click)="abrirModal(u.id, 'suspender')">
 
@@ -99,12 +109,11 @@
                   </span>
 
                 </button>
-              </ng-container>
 
-              <!-- REHABILITAR -->
-              <ng-container *ngIf="u.estado == 3">
+                <!-- SI ESTÁ SUSPENDIDO => REHABILITAR -->
                 <button
-                  class="btn btn-sm btn-success"
+                  *ngIf="u.estado == 3"
+                  class="btn btn-sm btn-success me-1"
                   [disabled]="procesandoAccion"
                   (click)="abrirModal(u.id, 'rehabilitar')">
 
@@ -117,7 +126,13 @@
                   </span>
 
                 </button>
+
               </ng-container>
+
+              <!--  SIN PERMISOS -->
+              <span *ngIf="!puedeGestionar(u)" class="text-muted small">
+                Sin permisos
+              </span>
 
             </td>
 
@@ -159,6 +174,7 @@
   </div>
 </section>
 
+<!-- MODAL -->
 <div class="modal fade show"
      *ngIf="mostrarModal"
      style="display:block; background:rgba(0,0,0,0.5)">
@@ -167,17 +183,18 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <h5 class="modal-title"
-            [ngClass]="accionPendiente === 'suspender' ? 'text-warning' : 'text-success'">
 
-          {{ accionPendiente === 'suspender' ? 'Suspender usuario' : 'Rehabilitar usuario' }}
-
+        <h5 class="modal-title">
+          {{ accionPendiente === 'suspender'
+              ? 'Suspender usuario'
+              : 'Rehabilitar usuario' }}
         </h5>
 
         <button class="btn-close" (click)="cerrarModal()"></button>
       </div>
 
       <div class="modal-body">
+
         <p *ngIf="accionPendiente === 'suspender'">
           ¿Seguro que querés suspender este usuario?
         </p>
@@ -185,6 +202,7 @@
         <p *ngIf="accionPendiente === 'rehabilitar'">
           ¿Querés rehabilitar este usuario?
         </p>
+
       </div>
 
       <div class="modal-footer">
