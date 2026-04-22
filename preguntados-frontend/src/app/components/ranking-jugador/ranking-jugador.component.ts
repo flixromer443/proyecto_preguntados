@@ -36,7 +36,7 @@ export class RankingJugadorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.authService.isLoggedInAsJugador()) {
+    if (!this.authService.isLoggedInAsJugador() && !this.authService.isLoggedInAsSuperUsuario()) {
       this.router.navigate(['/iniciar-sesion']);
       return;
     }

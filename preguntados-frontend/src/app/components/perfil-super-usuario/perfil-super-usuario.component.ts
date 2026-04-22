@@ -4,11 +4,11 @@ import { DatosCompartidosService } from '../../services/datos-compartidos.servic
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-perfil-administrador',
-  templateUrl: './perfil-administrador.component.html',
-  styleUrls: ['./perfil-administrador.component.css']
+  selector: 'app-super-usuario-administrador',
+  templateUrl: './perfil-super-usuario.component.html',
+  styleUrls: ['./perfil-super-usuario.component.css']
 })
-export class PerfilAdministradorComponent implements OnInit {
+export class PerfilSuperUsuarioComponent implements OnInit {
 
   constructor(
     private router: Router,
@@ -21,18 +21,18 @@ export class PerfilAdministradorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.authService.isLoggedInAsAdministrador()  && !this.authService.isLoggedInAsSuperUsuario()) {
+    if (!this.authService.isLoggedInAsSuperUsuario()) {
       this.router.navigate(['/iniciar-sesion']);
       return;
     }
   }
 
-  irPreguntas(): void {
-    this.router.navigate(['/preguntas-administrador']);
+  ingresarComoJugador(): void {
+    this.router.navigate(['/perfil-jugador']);
   }
 
-  irUsuarios(): void {
-    this.router.navigate(['/usuarios-administrador']);
+  ingresarComoAdministrador(): void {
+    this.router.navigate(['/perfil-administrador']);
   }
 
   cerrarSesion(): void {

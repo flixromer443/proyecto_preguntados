@@ -69,7 +69,7 @@ export class EstadisticasJugadorComponent {
   }
 
   ngOnInit() {
-    if (!this.authService.isLoggedInAsJugador()) {
+    if (!this.authService.isLoggedInAsJugador() && !this.authService.isLoggedInAsSuperUsuario()) {
       this.router.navigate(['/iniciar-sesion']);
     } else {
       this.cargarEstadisticas();

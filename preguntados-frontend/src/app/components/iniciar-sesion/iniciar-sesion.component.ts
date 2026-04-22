@@ -54,6 +54,8 @@ export class IniciarSesionComponent implements OnInit {
             this.router.navigate(['/perfil-jugador']);
           }else if(this.authService.isLoggedInAsAdministrador()){
             this.router.navigate(['/perfil-administrador']);
+          }else if(this.authService.isLoggedInAsSuperUsuario()){
+            this.router.navigate(['/perfil-super-usuario']);
           }
         }else if (response.success) { 
           if(response.code == 206){ //usuario inactivo

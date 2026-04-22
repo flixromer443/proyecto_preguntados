@@ -47,6 +47,7 @@ import { RankingJugadorComponent } from './components/ranking-jugador/ranking-ju
 import { PerfilAdministradorComponent } from './components/perfil-administrador/perfil-administrador.component';
 import { PreguntasAdministradorComponent } from './components/preguntas-administrador/preguntas-administrador.component';
 import { UsuariosAdministradorComponent } from './components/usuarios-administrador/usuarios-administrador.component';
+import { PerfilSuperUsuarioComponent } from './components/perfil-super-usuario/perfil-super-usuario.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { UsuariosAdministradorComponent } from './components/usuarios-administra
     RankingJugadorComponent, 
     PerfilAdministradorComponent,
     PreguntasAdministradorComponent,
-    UsuariosAdministradorComponent
+    UsuariosAdministradorComponent,
+    PerfilSuperUsuarioComponent
   ],
   imports: [
     BrowserModule,
