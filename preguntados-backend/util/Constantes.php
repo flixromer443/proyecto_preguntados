@@ -52,6 +52,7 @@
     define('SUCCESS_211', "Los resultados han sido guardados exitosamente"); 
     define('SUCCESS_212', "Exito al eliminar pregunta."); 
     define('SUCCESS_213', "Exito al cambiar estado del usuario."); 
+    define('SUCCESS_214', "Su cuenta se encuentra suspendida, comuniquese con soporte."); 
 
 
 

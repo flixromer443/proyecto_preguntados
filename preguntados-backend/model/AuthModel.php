@@ -34,14 +34,34 @@ class AuthModel {
         if($datosUsuario){
             $usuarioActivo = $this->elUsuarioSeEncuentraActivo($datosUsuario);
             return $usuarioActivo ? MessageHandler::success(202, SUCCESS_202, $this->retornarToken($datosUsuario))
-                                  : MessageHandler::success(206, SUCCESS_206, $this->retornarUsuarioInactivo($datosUsuario));
+                                  : $this->retornarUsuarioInactivoOSuspendido($datosUsuario);
         }else{
             return MessageHandler::error(500, ERROR_502);
         }
     }
+
+    private function retornarUsuarioInactivoOSuspendido($datosUsuario){
+        $retorno = null;
+        if($this->elUsuarioSeEncuentraInactivo($datosUsuario)){
+            $retorno = MessageHandler::success(206, SUCCESS_206, $this->retornarUsuarioInactivo($datosUsuario));
+        }
+        if($this->elUsuarioSeEncuentraSuspendido($datosUsuario)){
+            $retorno = MessageHandler::success(214, SUCCESS_214, []);
+        }
+        return $retorno;
+                
+    }
     
+    private function elUsuarioSeEncuentraInactivo($datosUsuario){
+        return $datosUsuario['id_estado'] == ESTADO_1;
+    }
+
     private function elUsuarioSeEncuentraActivo($datosUsuario){
         return $datosUsuario['id_estado'] == ESTADO_2;
+    }
+
+    private function elUsuarioSeEncuentraSuspendido($datosUsuario){
+        return $datosUsuario['id_estado'] == ESTADO_3;
     }
 
     private function obtenerDatosUsuario($credenciales){

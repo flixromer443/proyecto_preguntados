@@ -55,17 +55,19 @@ export class IniciarSesionComponent implements OnInit {
           }else if(this.authService.isLoggedInAsAdministrador()){
             this.router.navigate(['/perfil-administrador']);
           }
+        }else if (response.success) { 
+          if(response.code == 206){ //usuario inactivo
+            this.router.navigate(['/ingresar-codigo'], {
+              queryParams: {
+                id_usuario: response.data.id_usuario,
+                accion: response.data.accion
+              }
+            });  
+          }else if(response.code == 214){ //usuario suspendido
+            this.showError(response.message || 'Su cuenta se encuentra suspendida');
+          }
+          
         }
-
-        else if (response.success && response.code == 206) { //usuario inactivo
-          this.router.navigate(['/ingresar-codigo'], {
-            queryParams: {
-              id_usuario: response.data.id_usuario,
-              accion: response.data.accion
-            }
-          });
-        }
-
         else {
           this.showError(response.message || 'Credenciales incorrectas');
         }
