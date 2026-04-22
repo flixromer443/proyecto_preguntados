@@ -22,7 +22,7 @@ export class PerfilAdministradorComponent implements OnInit {
 
   ngOnInit(): void {
     // Seguridad básica
-    if (!this.authService.isLoggedIn()) {
+    if (!this.authService.isLoggedInAsAdministrador()) {
       this.router.navigate(['/iniciar-sesion']);
       return;
     }

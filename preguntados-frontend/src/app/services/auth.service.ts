@@ -67,7 +67,7 @@ export class AuthService {
 
   
 
-  isLoggedIn(): boolean {
+  isLoggedInAsJugador(): boolean {
     const token = this.getToken();
     if (!token) return false;
 
@@ -77,11 +77,34 @@ export class AuthService {
       const exp = decoded.exp;
       const now = Math.floor(Date.now() / 1000);
 
-      return exp > now;
+      if (exp <= now) return false;
+
+      return decoded.rol === 1;
     } catch (e) {
       return false;
     }
   }
+
+  isLoggedInAsAdministrador(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+
+    try {
+      const decoded: any = jwtDecode(token);
+
+      const exp = decoded.exp;
+      const now = Math.floor(Date.now() / 1000);
+
+      if (exp <= now) return false;
+
+      return decoded.rol === 2; 
+    } catch (e) {
+      return false;
+    }
+  }
+
+
+
   getToken(): string | null {
     return sessionStorage.getItem('token');
   }

@@ -50,7 +50,11 @@ export class IniciarSesionComponent implements OnInit {
 
         if (response.success && response.code == 202) { //usuario activo
           sessionStorage.setItem('token', response.data.token);
-          this.router.navigate(['/perfil-jugador']);
+          if(this.authService.isLoggedInAsJugador()){
+            this.router.navigate(['/perfil-jugador']);
+          }else if(this.authService.isLoggedInAsAdministrador()){
+            this.router.navigate(['/perfil-administrador']);
+          }
         }
 
         else if (response.success && response.code == 206) { //usuario inactivo
