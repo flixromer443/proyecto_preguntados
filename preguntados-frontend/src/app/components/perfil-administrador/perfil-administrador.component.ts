@@ -39,7 +39,7 @@ export class PerfilAdministradorComponent implements OnInit {
   }
 
   irUsuarios(): void {
-    this.router.navigate(['/admin/usuarios']);
+    this.router.navigate(['/usuarios-administrador']);
   }
 
   cerrarSesion(): void {

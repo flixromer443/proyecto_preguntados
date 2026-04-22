@@ -13,6 +13,7 @@ import { HistorialJugadorComponent } from './components/historial-jugador/histor
 import { RankingJugadorComponent } from './components/ranking-jugador/ranking-jugador.component';
 import { PerfilAdministradorComponent } from './components/perfil-administrador/perfil-administrador.component';
 import { PreguntasAdministradorComponent } from './components/preguntas-administrador/preguntas-administrador.component';
+import { UsuariosAdministradorComponent } from './components/usuarios-administrador/usuarios-administrador.component';
 
 //definir las rutas de la aplicacion
 const routes: Routes = [
@@ -29,6 +30,7 @@ const routes: Routes = [
   {path: 'ranking-jugador', component: RankingJugadorComponent},
   {path: 'perfil-administrador', component: PerfilAdministradorComponent},
   {path: 'preguntas-administrador', component: PreguntasAdministradorComponent},
+  {path: 'usuarios-administrador', component: UsuariosAdministradorComponent},
   {path: '**', component: IniciarSesionComponent},
   
 ];

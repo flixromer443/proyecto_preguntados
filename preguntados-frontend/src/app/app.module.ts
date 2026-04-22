@@ -46,6 +46,7 @@ import { HistorialJugadorComponent } from './components/historial-jugador/histor
 import { RankingJugadorComponent } from './components/ranking-jugador/ranking-jugador.component';
 import { PerfilAdministradorComponent } from './components/perfil-administrador/perfil-administrador.component';
 import { PreguntasAdministradorComponent } from './components/preguntas-administrador/preguntas-administrador.component';
+import { UsuariosAdministradorComponent } from './components/usuarios-administrador/usuarios-administrador.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { PreguntasAdministradorComponent } from './components/preguntas-administ
     HistorialJugadorComponent,
     RankingJugadorComponent, 
     PerfilAdministradorComponent,
-    PreguntasAdministradorComponent
+    PreguntasAdministradorComponent,
+    UsuariosAdministradorComponent
   ],
   imports: [
     BrowserModule,

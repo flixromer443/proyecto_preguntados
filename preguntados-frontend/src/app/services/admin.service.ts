@@ -28,4 +28,13 @@ export class AdminService {
   eliminarPregunta(idPregunta:any): Observable<Pregunta[]> {
     return this.http.post<Pregunta[]>(this.apiAdminUrl, {metodo:"eliminarPregunta", id_pregunta:idPregunta});
   }
+  
+  obtenerUsuarios(): Observable<any> {
+    return this.http.post<any>(this.apiAdminUrl, {metodo:"obtenerUsuarios"});
+  }
+
+  cambiarEstadoUsuario(idUsuario:any, idEstado:number): Observable<any> {
+    return this.http.post<any>(this.apiAdminUrl, {metodo:"cambiarEstadoUsuario", id_usuario:idUsuario, id_estado:idEstado});
+  }
+  
 }
