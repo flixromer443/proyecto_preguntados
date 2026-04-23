@@ -1,9 +1,9 @@
 <?php
 
-require_once("../Lib/phpmailer/PHPMailer.php");
-require_once("../Lib/phpmailer/OAuth.php");
-require_once("../Lib/phpmailer/Exception.php");
-require_once("../Lib/phpmailer/SMTP.php");
+require_once("../lib/phpmailer/PHPMailer.php");
+require_once("../lib/phpmailer/OAuth.php");
+require_once("../lib/phpmailer/Exception.php");
+require_once("../lib/phpmailer/SMTP.php");
 require_once("../config/config.php");
 
 use PHPMailer\PHPMailer\PHPMailer;
