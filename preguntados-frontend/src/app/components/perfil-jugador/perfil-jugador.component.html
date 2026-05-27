@@ -1,0 +1,103 @@
+<section class="home-section">
+  <div class="container">
+
+    <!--  HEADER -->
+    <div class="d-flex justify-content-end mb-3">
+      <button class="btn-logout" (click)="cerrarSesion()">
+        Cerrar sesión
+        <i class="fa-solid fa-right-from-bracket ms-2"></i>
+      </button>
+    </div>
+
+    <h1 class="mb-2 fw-bold">Home</h1>
+    <p class="text-muted mb-4">
+      Selecciona una opción para continuar
+    </p>
+
+    <div class="row g-4">
+
+      <!-- PERFIL -->
+      <div class="col-12 col-md-6">
+        <div class="home-card" (click)="irPerfil()">
+          <div class="icon-circle bg-primary">
+            <i class="fa-solid fa-user"></i>
+          </div>
+
+          <div>
+            <h3 class="mb-1">Mi Perfil</h3>
+            <p class="text-muted mb-0">Ver información del jugador</p>
+          </div>
+
+          <i class="fa-solid fa-chevron-right arrow"></i>
+        </div>
+      </div>
+
+      <!-- ESTADISTICAS -->
+      <div class="col-12 col-md-6">
+        <div class="home-card" routerLink="/estadisticas-jugador">
+          <div class="icon-circle bg-success">
+            <i class="fa-solid fa-chart-simple"></i>
+          </div>
+
+          <div>
+            <h3 class="mb-1">Estadísticas</h3>
+            <p class="text-muted mb-0">Rendimiento por temática</p>
+          </div>
+
+          <i class="fa-solid fa-chevron-right arrow"></i>
+        </div>
+      </div>
+
+      <!-- HISTORIAL -->
+      <div class="col-12 col-md-6">
+        <div class="home-card" routerLink="/historial-jugador">
+          <div class="icon-circle bg-warning">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+
+          <div>
+            <h3 class="mb-1">Historial</h3>
+            <p class="text-muted mb-0">Partidas jugadas</p>
+          </div>
+
+          <i class="fa-solid fa-chevron-right arrow"></i>
+        </div>
+      </div>
+
+      <!-- RANKING -->
+      <div class="col-12 col-md-6">
+        <div class="home-card" routerLink="/ranking-jugador">
+          <div class="icon-circle bg-dark">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+
+          <div>
+            <h3 class="mb-1">Ranking</h3>
+            <p class="text-muted mb-0">Clasificación global</p>
+          </div>
+
+          <i class="fa-solid fa-chevron-right arrow"></i>
+        </div>
+      </div>
+
+      <!-- JUGAR GRANDE -->
+      <div class="col-12">
+        <div class="home-card play-card" routerLink="/jugar">
+
+          <div class="icon-circle bg-danger">
+            <i class="fa-solid fa-play"></i>
+          </div>
+
+          <div>
+            <h2 class="mb-1 fw-bold">JUGAR</h2>
+            <p class="mb-0">Comenzar una nueva partida</p>
+          </div>
+
+          <i class="fa-solid fa-rocket arrow"></i>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,159 @@
+<section>
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+      <button class="btn-back" routerLink="/perfil-jugador">
+        <i class="fa-solid fa-arrow-left me-2"></i>
+        Volver
+      </button>
+
+      <button class="btn-logout" (click)="cerrarSesion()">
+        Cerrar sesión
+        <i class="fa-solid fa-right-from-bracket ms-2"></i>
+      </button>
+
+    </div>
+
+    <h1 class="mb-4 display-5 fw-bold">Ranking</h1>
+
+    <!-- TABLA USUARIO LOGUEADO -->
+    <div *ngIf="!cargando && posicionUsuario" class="mb-5">
+
+      <h3 class="mb-3">Tu posición</h3>
+
+      <div class="table-responsive">
+
+        <table class="table table-bordered table-hover shadow-sm fs-5">
+
+          <thead class="table-primary">
+            <tr>
+              <th>#</th>
+              <th>Usuario</th>
+              <th class="text-center">Puntaje</th>
+              <th class="text-center">Aciertos</th>
+              <th class="text-center">Fallos</th>
+              <th class="text-center">% Acierto</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr class="fw-bold table-info">
+
+              <td>{{ posicionUsuario.posicion }}</td>
+
+              <td>{{ posicionUsuario.username }}</td>
+
+              <td class="text-center">
+                {{ posicionUsuario.puntaje }}
+              </td>
+
+              <td class="text-success text-center">
+                {{ posicionUsuario.total_aciertos }}
+              </td>
+
+              <td class="text-danger text-center">
+                {{ posicionUsuario.total_fallos }}
+              </td>
+
+              <td class="text-center">
+                {{ posicionUsuario.porcentaje_acierto | number:'1.0-2' }}%
+              </td>
+
+            </tr>
+          </tbody>
+
+        </table>
+
+      </div>
+    </div>
+
+    <!-- SPINNER -->
+    <div *ngIf="cargando" class="text-center py-5">
+      <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+      <p class="mt-3 text-muted fs-5">Cargando ranking...</p>
+    </div>
+
+    <!-- TABLA RANKING -->
+    <div *ngIf="!cargando && clasificaciones.length > 0" 
+         class="table-responsive py-4">
+
+      <table class="table table-hover align-middle shadow-sm fs-5">
+
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Usuario</th>
+            <th class="text-center">Puntaje</th>
+            <th class="text-center">Aciertos</th>
+            <th class="text-center">Fallos</th>
+            <th class="text-center">% Acierto</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let u of clasificaciones">
+
+            <!-- POSICION -->
+            <td class="fw-semibold">
+              {{ u.posicion }}
+            </td>
+
+            <!-- USER -->
+            <td>
+              {{ u.username }}
+            </td>
+
+            <!-- PUNTAJE -->
+            <td class="text-center fw-bold">
+              {{ u.puntaje }}
+            </td>
+
+            <!-- ACIERTOS -->
+            <td class="text-success text-center">
+              {{ u.total_aciertos }}
+            </td>
+
+            <!-- FALLOS -->
+            <td class="text-danger text-center">
+              {{ u.total_fallos }}
+            </td>
+
+            <!-- PORCENTAJE -->
+            <td class="text-center">
+              <span 
+                class="fw-bold"
+                [ngClass]="{
+                  'text-success': u.porcentaje_acierto >= 70,
+                  'text-warning': u.porcentaje_acierto >= 40 && u.porcentaje_acierto < 70,
+                  'text-danger': u.porcentaje_acierto < 40
+                }"
+              >
+                {{ u.porcentaje_acierto | number:'1.0-2' }}%
+              </span>
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <!-- SIN DATOS -->
+    <div *ngIf="!cargando && clasificaciones.length === 0" 
+         class="text-center py-5">
+
+      <i class="fa-solid fa-face-sad-tear fs-1 text-muted mb-3"></i>
+
+      <p class="text-muted fs-5">
+        No hay ranking disponible
+      </p>
+
+    </div>
+
+  </div>
+</section>

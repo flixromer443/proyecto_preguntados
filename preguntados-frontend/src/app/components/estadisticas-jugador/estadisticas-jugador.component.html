@@ -1,0 +1,57 @@
+<section>
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+      <button class="btn-back" routerLink="/perfil-jugador">
+        <i class="fa-solid fa-arrow-left me-2"></i>
+        Volver
+      </button>
+
+      <button class="btn-logout" (click)="cerrarSesion()">
+        Cerrar sesión
+        <i class="fa-solid fa-right-from-bracket ms-2"></i>
+      </button>
+
+    </div>
+
+    <h1 class="mb-4 display-5 fw-bold">Estadísticas del Juego</h1>
+
+    <p class="text-muted fs-5">
+      Rendimiento general por temática
+    </p>
+
+    <div class="row g-4 py-4">
+
+      <div class="col-12 col-md-4" *ngFor="let t of tematicas">
+        <div class="stat-card d-flex align-items-center p-3">
+
+          <!-- ICONO MÁS GRANDE -->
+          <i [class]="t.iconClass + ' fs-2 me-3'"></i>
+
+          <div>
+            <!-- NOMBRE MÁS GRANDE -->
+            <h3 class="fw-bold mb-2 fs-3">{{ t.nombre }}</h3>
+
+            <!-- PORCENTAJE MÁS GRANDE -->
+            <p 
+              class="mb-0 fw-bold fs-4"
+              [ngClass]="{
+                'text-success': t.porcentaje >= 70,
+                'text-warning': t.porcentaje >= 40 && t.porcentaje < 70,
+                'text-danger': t.porcentaje < 40
+              }"
+            >
+              {{ t.porcentaje | number:'1.0-2' }}%
+            </p>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
